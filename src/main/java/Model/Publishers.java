@@ -19,16 +19,23 @@ public class Publishers extends Users{
     private int Money;
     private String RegistrationDate;
 
-    public Publishers(String id, String name, String gmail, String password, String bank_account, int profit, String description, String AvatarLink, int Money, int role, String RegistrationDate) {
+    public Publishers(String id, String name, String gmail, String password, String bank_account, Integer profit, String description, String AvatarLink, Integer Money, int role, String RegistrationDate) {
         super(id, name, gmail, password, role);
         this.bank_account = bank_account;
         this.profit = profit;
         this.description = description;
-        this.AvatarLink = AvatarLink;
-        this.Money = Money;
+        this.Money = (Money != null) ? Money : 0;
+        this.AvatarLink = (AvatarLink != null && !AvatarLink.isEmpty()) ? AvatarLink : "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
+    
         this.RegistrationDate = RegistrationDate;
     }
-
+    
+    public Publishers(){
+        
+        this.Money = 0;
+        this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
+    }
+    
     public String getBank_account() {
         return bank_account;
     }
