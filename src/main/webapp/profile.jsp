@@ -90,17 +90,22 @@ https://templatemo.com/tm-579-cyborg-gaming
         <div class="page-content">
 
           <!-- ***** Banner Start ***** -->
-          <div class="row">
+          <div class="row" action="#" method="GET">
+              <%
+            // Lấy thông tin người chơi từ request attribute
+            Model.Gamers gamer = (Model.Gamers) request.getAttribute("gamer");
+            if (gamer != null) {
+        %>
             <div class="col-lg-12">
               <div class="main-profile ">
                 <div class="row">
                   <div class="col-lg-4">
-                    <img src="assets/images/logo-fpt-inkythuatso-1-01-01-14-33-35.jpg" alt="" style="border-radius: 23px;">
+                    <img src="<%=gamer.getAvatarLink() %>" alt="" style="border-radius: 23px;">
                   </div>
                   <div class="col-lg-4 align-self-center">
                     <div class="main-info header-text">
-                      <h4>Võ Trần Đăng Khoa</h4>
-                      <p>Email:abx123@gmai.com</p>
+                      <h4><%=gamer.getName() %></h4>
+                      <p>Email: <%=gamer.getGmail()%></p>
                       <p>Tham gia từ : 11/05/2024</p>
                       <div class="main-border-button">
                       </div>
@@ -109,10 +114,13 @@ https://templatemo.com/tm-579-cyborg-gaming
                   <div class="col-lg-4 align-self-center">
                     <ul>
                       <li>Games Downloaded <span>3</span></li>
-                      <li>Cast <span>VNĐ 116000</span></li>
+                      <li>Cast <span><%=gamer.getMoney()%> VNĐ</span></li>
                       <li>Review History <span>None</span></li>
                       <li>Wish Lists <span>2</span></li>
                     </ul>
+                      <div>
+                        <a href="Update.jsp">UPDATE</a><br/>
+                    </div>
                   </div>
                 </div>
                 <div class="row">
@@ -180,6 +188,9 @@ https://templatemo.com/tm-579-cyborg-gaming
                 </div>
               </div>
             </div>
+                       <% } else { %>
+            <p>Không tìm thấy thông tin người chơi.</p>
+        <% } %>
           </div>
           <!-- ***** Banner End ***** -->
 

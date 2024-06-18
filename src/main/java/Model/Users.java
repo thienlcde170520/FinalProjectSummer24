@@ -13,16 +13,16 @@ import java.io.Serializable;
 public class Users implements Serializable{
     private String id;
     private String name;
-    private String email;
+    private String gmail;
     private String password;
-    private String role;
+    private int role;
     
     public Users(){}
 
-    public Users(String id, String name, String email, String password, String role) {
+    public Users(String id, String name, String gmail, String password, int role) {
         this.id = id;
         this.name = name;
-        this.email = email;
+        this.gmail = gmail;
         this.password = password;
         this.role = role;
     }
@@ -43,13 +43,15 @@ public class Users implements Serializable{
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getGmail() {
+        return gmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setGmail(String gmail) {
+        this.gmail = gmail;
     }
+
+    
 
     public String getPassword() {
         return password;
@@ -59,17 +61,17 @@ public class Users implements Serializable{
         this.password = password;
     }
 
-    public String getRole() {
+    public int getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(int role) {
         this.role = role;
     }
 
     @Override
     public String toString() {
-        return "Users{" + "id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", role=" + role + '}';
+        return "Users{" + "id=" + id + ", name=" + name + ", email=" + gmail + ", password=" + password + ", role=" + role + '}';
     }
 
     

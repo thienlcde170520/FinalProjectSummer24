@@ -3,7 +3,12 @@
     Created on : May 28, 2024, 12:58:34 PM
     Author     : LENOVO
 --%>
-
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="Model.Genre" %>
+<%@ page import="Model.Game" %>
+<%@ page import="Controller.JavaMongo" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%><!DOCTYPE html>
 <html lang="en">
 
@@ -52,7 +57,7 @@ https://templatemo.com/tm-579-cyborg-gaming
   <!-- ***** Preloader End ***** -->
 
   <!-- ***** Header Area Start ***** -->
-  <header class="header-area header-sticky">
+<header class="header-area header-sticky">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -74,9 +79,18 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <ul class="nav">
                         <li><a href="Home.jsp" class="active">Home</a></li>
                         <li><a href="browse.html">Browse</a></li>
-                        <li><a href="details.html">Details</a></li>
-                        <li><a href="streams.html">Streams</a></li>
-                        <li><a href="profile.html">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+                        <li><a href="details.html">Genre</a>
+                            
+                        </li>
+
+            
+                    
+                   
+
+                        <li><a href="UploadGame">Upload Game</a></li>
+                        <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
                     </ul>   
                     <a class='menu-trigger'>
                         <span>Menu</span>
@@ -86,7 +100,8 @@ https://templatemo.com/tm-579-cyborg-gaming
             </div>
         </div>
     </div>
-  </header>
+</header>
+
   <!-- ***** Header Area End ***** -->
 
   <div class="container">
@@ -110,166 +125,75 @@ https://templatemo.com/tm-579-cyborg-gaming
           </div>
           <!-- ***** Banner End ***** -->
 
-          <!-- ***** Most Popular Start ***** -->
-          <div class="most-popular">
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="heading-section">
-                  <h4><em>Most Popular</em> Right Now</h4>
-                </div>
-                <div class="row">
-                  <div class="col-lg-3 col-sm-6">
-                    <div class="item">
-                      <img src="assets/images/68753.jpg" alt="">
-                      <h4>Fortnite<br><span>Sandbox</span></h4>
-                      <ul>
-                        <li><i class="fa fa-star"></i> 4.8</li>
-                        <li><i class="fa fa-download"></i> 2.3M</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="col-lg-3 col-sm-6">
-                    <div class="item">
-                      <img src="assets/images/24252.jpg" alt="">
-                      <h4>PubG<br><span>Battle S</span></h4>
-                      <ul>
-                        <li><i class="fa fa-star"></i> 4.8</li>
-                        <li><i class="fa fa-download"></i> 2.3M</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="col-lg-3 col-sm-6">
-                    <div class="item">
-                      <img src="assets/images/46492.jpg" alt="">
-                      <h4>Dota2<br><span>Steam-X</span></h4>
-                      <ul>
-                        <li><i class="fa fa-star"></i> 4.8</li>
-                        <li><i class="fa fa-download"></i> 2.3M</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="col-lg-3 col-sm-6">
-                    <div class="item">
-                      <img src="assets/images/46806.jpg" alt="">
-                      <h4>CS-GO<br><span>Legendary</span></h4>
-                      <ul>
-                        <li><i class="fa fa-star"></i> 4.8</li>
-                        <li><i class="fa fa-download"></i> 2.3M</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="item">
-                      <div class="row">
-                        <div class="col-lg-6 col-sm-6">
-                          <div class="item inner-item">
-                            <img src="assets/images/48041.jpg" alt="">
-                            <h4>Mini Craft<br><span>Legendary</span></h4>
-                            <ul>
-                              <li><i class="fa fa-star"></i> 4.8</li>
-                              <li><i class="fa fa-download"></i> 2.3M</li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-6">
-                          <div class="item">
-                            <img src="assets/images/49977.jpg" alt="">
-                            <h4>Eagles Fly<br><span>Matrix Games</span></h4>
-                            <ul>
-                              <li><i class="fa fa-star"></i> 4.8</li>
-                              <li><i class="fa fa-download"></i> 2.3M</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-3 col-sm-6">
-                    <div class="item">
-                      <img src="assets/images/56794.jpg" alt="">
-                      <h4>Warface<br><span>Max 3D</span></h4>
-                      <ul>
-                        <li><i class="fa fa-star"></i> 4.8</li>
-                        <li><i class="fa fa-download"></i> 2.3M</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="col-lg-3 col-sm-6">
-                    <div class="item">
-                      <img src="assets/images/68753.jpg" alt="">
-                      <h4>Warcraft<br><span>Legend</span></h4>
-                      <ul>
-                        <li><i class="fa fa-star"></i> 4.8</li>
-                        <li><i class="fa fa-download"></i> 2.3M</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="col-lg-12">
-                    <div class="main-button">
-                      <a href="browse.html">Discover Popular</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+       <!-- ***** Most Popular Start ***** -->
+<div class="most-popular">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="heading-section">
+        <h4><em>Most Popular</em> Right Now</h4>
+      </div>
+      <div class="row">
+        <% 
+          ArrayList<Game> Games = (ArrayList<Game>) JavaMongo.getAllGames();
+          if (Games != null) {
+            for (Game game : Games) {
+        %>
+        <div class="col-lg-3 col-sm-6">
+          <div class="item">
+            <img src="<%= game.getAvatarLink() %>" alt="">
+            <h4><%= game.getName() %><br></h4>
+            <ul>
+              <li><i class="fa fa-star"></i> <%= JavaMongo.getAverageRatingByGame(game) %></li>
+              <li><i class="fa fa-download"></i> <%= game.getNumberOfBuyers() %></li>
+            </ul>
           </div>
-          <!-- ***** Most Popular End ***** -->
-          
-          
-          
+        </div>
+        <% 
+            }
+          }
+        %>
+      </div>
+      <div class="col-lg-12">
+        <div class="main-button">
+          <a href="browse.html">Discover Popular</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ***** Most Popular End ***** -->
+
           
    
 
-          <!-- ***** Genres Start ***** -->
-          <div class="most-popular">
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="heading-section">
-                  <h4><em>Genres</em> </h4>
-                </div>
-                <div class="row">
-                  <div class="col-lg-3 col-sm-6">
-                    <div class="item">
-                      <img src="assets/images/68753.jpg" alt="">
-                      <h4>Anime<br></h4>
-                    </div>
-                  </div>
-                  <div class="col-lg-3 col-sm-6">
-                    <div class="item">
-                      <img src="assets/images/top10fighting-1660091625986.jpg" alt="">
-                      <h4>Action<br></h4>
-                    </div>
-                  </div>
-                  <div class="col-lg-3 col-sm-6">
-                    <div class="item">
-                      <img src="assets/images/640px-2012-10-20-152616_800x597_scrot.png" alt="">
-                      <h4>Adventure<br></h4>
-                    </div>
-                  </div>
-                 <div class="col-lg-3 col-sm-6">
-                    <div class="item">
-                      <img src="assets/images/Ace-Attorney.webp" alt="">
-                      <h4>Detective<br></h4>
-                    </div>
-                  </div>
-           
-                 
-              
-                  <div class="col-lg-12">
-                    <div class="main-button">
-                      <a href="browse.html">Discover Popular</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+       <!-- ***** Genres Start ***** -->
+<div class="most-popular">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="heading-section">
+        <h4><em>Genres</em></h4>
+      </div>
+      <div class="row">
+        <% 
+              ArrayList<Genre> genres = (ArrayList<Genre>) JavaMongo.getAllGenres();
+          if (genres != null) {
+            for (Genre genre : genres) {
+        %>
+        <div class="col-lg-3 col-sm-6">
+          <div class="item">
+            <h4><%= genre.getType() %><br></h4>
           </div>
-          <!-- ***** Genres End ***** -->
-          
-          
-          
-          
-          
+        </div>
+        <% 
+            }
+          }
+        %>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ***** Genres End ***** -->
+
           
           
           

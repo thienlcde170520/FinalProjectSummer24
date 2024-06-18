@@ -1,58 +1,22 @@
-package MOdel;
+package Model;
 
-public class Gamers {
-
-    private String ID;
-    private String Name;
-    private String Email;
-    private String Password;
+public class Gamers extends Users{
+    
     private int Money;
     private String AvatarLink;
+    
+    
+    
+    public Gamers(String id, String name, String gmail, String password, int role, Integer Money, String AvatarLink) {
+        super(id, name, gmail, password, role);
+        this.Money = (Money != null) ? Money : 0;
+        this.AvatarLink = (AvatarLink != null && !AvatarLink.isEmpty()) ? AvatarLink : "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
+    }
 
-    // Default constructor
+    // Hàm khởi tạo mặc định, thiết lập giá trị mặc định
     public Gamers() {
-    }
-
-    // Parameterized constructor
-    public Gamers(String ID, String Name, String Email, String Password, int Money, String AvatarLink) {
-        this.ID = ID;
-        this.Name = Name;
-        this.Email = Email;
-        this.Password = Password;
-        this.Money = Money;
-        this.AvatarLink = AvatarLink;
-    }
-
-    public String getID() {
-        return ID;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public void setName(String Name) {
-        this.Name = Name;
-    }
-
-    public String getEmail() {
-        return Email;
-    }
-
-    public void setEmail(String Email) {
-        this.Email = Email;
-    }
-
-    public String getPassword() {
-        return Password;
-    }
-
-    public void setPassword(String Password) {
-        this.Password = Password;
+        this.Money = 0;
+        this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
     }
 
     public int getMoney() {
@@ -73,13 +37,8 @@ public class Gamers {
 
     @Override
     public String toString() {
-        return "Gamer{" +
-                "ID='" + ID + '\'' +
-                ", Name='" + Name + '\'' +
-                ", Email='" + Email + '\'' +
-                ", Password='" + Password + '\'' +
-                ", Money=" + Money +
-                ", AvatarLink='" + AvatarLink + '\'' +
-                '}';
+        return "Gamers{"+ super.toString() + "Money=" + Money + ", AvatarLink=" + AvatarLink + '}';
     }
+    
+    
 }
