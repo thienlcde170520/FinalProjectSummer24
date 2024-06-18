@@ -118,7 +118,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                       <li>  <a href="Update.jsp">UPDATE</a></li>
                       <li>Wish Lists <span>2</span></li>
                     </ul>
-                    
+
                   </div>
                 </div>
                 <div class="row">

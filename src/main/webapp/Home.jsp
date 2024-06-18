@@ -91,6 +91,7 @@
 <%
     }
 %>
+                               <li><a href="LogOutServlet">LOG OUT</a></li>
 
                                 <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
 

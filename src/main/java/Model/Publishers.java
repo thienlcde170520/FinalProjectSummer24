@@ -31,7 +31,9 @@ public class Publishers extends Users{
     }
     
     public Publishers(){
-        
+        this.bank_account = null;
+        this.profit = 0;
+        this.description = "";
         this.Money = 0;
         this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
     }

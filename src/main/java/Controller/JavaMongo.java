@@ -261,7 +261,8 @@ public class JavaMongo {
                             doc.getString("Password"),
                             doc.getInteger("Role"),
                             doc.getInteger("Money", 0),
-                            doc.getString("AvatarLink") // Get AvatarLink from the document
+                            doc.getString("AvatarLink"), // Get AvatarLink from the document
+                            doc.getString("RegistrationDate")
 
                     );
                     gamersList.add(gamers);
@@ -394,7 +395,9 @@ public class JavaMongo {
         return null;
     }
 
-    public static void CreateNewGamerAccount(String name, String password, String email, int role, int Money, String AvatarLink) {
+
+    public static void CreateNewGamerAccount(String name, String password, String email, int role, int Money, String AvatarLink, String RegistrationDate){
+
         MongoClientSettings settings = getConnection();
         try (MongoClient mongoClient = MongoClients.create(settings)) {
 
@@ -414,7 +417,10 @@ public class JavaMongo {
             Document gamer = new Document("Name", name)
                     .append("Password", password)
                     .append("Email", email)
-                    .append("Role", role);
+                    .append("Money", Money)
+                    .append("AvatarLink", AvatarLink)
+                    .append("Role", role)
+                    .append("RegistrationDate",RegistrationDate);
             gamersCollection.insertOne(gamer);
         } catch (MongoException e) {
             e.printStackTrace();
@@ -423,33 +429,41 @@ public class JavaMongo {
     }
 
     /*tao moi publisher*/
-    public static void CreateNewPublisgherAccount(String name, String password, String email, int role, int Money, String AvatarLink) {
+
+    public static void CreateNewPublisgherAccount(String name, String password, String email,String bank_account,
+            int profit,String Description, String AvatarLink,
+            int Money, int role,String RegistrationDate){
         MongoClientSettings settings = getConnection();
-        try (MongoClient mongoClient = MongoClients.create(settings)) {
+        try(MongoClient mongoClient = MongoClients.create(settings)){
+            
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
 
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+                // Access the "Users" collection
+        MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
+        // Access the "Gamers" collection
+        MongoCollection<Document> gamePublishersCollection = fpteamDB.getCollection("GamePublishers");
+        
+        Document user = new Document("Name", name)
+                        .append("Password", password)
+                        .append("Email", email)
+                        .append("Role", role);
+        usersCollection.insertOne(user);
+        
+        Document gamer = new Document("Name", name)
+                        .append("Password", password)
+                        .append("Email", email)
+                        .append("Bank_account",bank_account)
+                        .append("Profit", profit)
+                        .append("Description", Description)                        
+                        .append("AvatarLink", AvatarLink)
+                        .append("Money", Money)                      
+                        .append("Role", role)
+                        .append("RegistrationDate", RegistrationDate);
+        gamePublishersCollection.insertOne(gamer);
+        }catch (MongoException e) {
+        e.printStackTrace();
+         }
 
-            // Access the "Users" collection
-            MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
-            // Access the "Gamers" collection
-            MongoCollection<Document> gamePublishersCollection = fpteamDB.getCollection("GamePublishers");
-
-            Document user = new Document("Name", name)
-                    .append("Password", password)
-                    .append("Email", email)
-                    .append("Role", role);
-            usersCollection.insertOne(user);
-
-            Document gamer = new Document("Name", name)
-                    .append("Password", password)
-                    .append("Email", email)
-                    .append("Money", Money)
-                    .append("AvatarLink", AvatarLink)
-                    .append("Role", role);
-            gamePublishersCollection.insertOne(gamer);
-        } catch (MongoException e) {
-            e.printStackTrace();
-        }
     }
 
     /*---------------------*/
@@ -503,7 +517,8 @@ public class JavaMongo {
                         gamerDoc.getString("Password"),
                         gamerDoc.getInteger("Role"),
                         gamerDoc.getInteger("Money"),
-                        gamerDoc.getString("AvatarLink")
+                        gamerDoc.getString("AvatarLink"),
+                        gamerDoc.getString("RegistrationDate")
                 );
             }
         } catch (MongoException e) {
@@ -513,31 +528,35 @@ public class JavaMongo {
         return null;
     }
 
-    public static Publishers getPublisherByEmail(String email) {
+    /*get publisher by email*/
+    public static Publishers getPublisherByEmail(String email){
+
         MongoClientSettings settings = getConnection();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
             MongoCollection<Document> publishersCollection = fpteamDB.getCollection("GamePublishers");
 
+//GamePublishers
             BasicDBObject query = new BasicDBObject();
             query.put("Email", email);
 
-            Document PublishersDoc = publishersCollection.find(query).first();
+            Document publisherDoc = publishersCollection.find(query).first();
 
-            if (PublishersDoc != null) {
+            if (publisherDoc != null) {
                 return new Publishers(
-                        PublishersDoc.getString("ID"),
-                        PublishersDoc.getString("Name"),
-                        PublishersDoc.getString("Password"),
-                        PublishersDoc.getString("Email"),
-                        PublishersDoc.getString("Bank_account"),
-                        PublishersDoc.getInteger("Profit", 0),
-                        PublishersDoc.getString("Description"),
-                        PublishersDoc.getString("AvatarLink"),
-                        PublishersDoc.getInteger("Money"),
-                        PublishersDoc.getInteger("Role", 0),
-                        PublishersDoc.getString("RegistrationDate")
+                        publisherDoc.getString("ID"),
+                        publisherDoc.getString("Name"),
+                        publisherDoc.getString("Email"),
+                        publisherDoc.getString("Password"),
+                        publisherDoc.getString("Bank_account"),
+                        publisherDoc.getInteger("Profit"),
+                        publisherDoc.getString("Description"),
+                        publisherDoc.getString("AvatarLink"),
+                        publisherDoc.getInteger("Money"),
+                        publisherDoc.getInteger("Role"),                                          
+                        publisherDoc.getString("RegistrationDate")
+
                 );
             }
         } catch (MongoException e) {
@@ -569,6 +588,12 @@ public class JavaMongo {
 
             // Thực hiện update vào MongoDB trong collection "Gamers"
             gamersCollection.updateOne(filter, updatePasswordDoc);
+            
+            // Truy cập bộ sưu tập "GamePublishers"
+            MongoCollection<Document> publishersCollection = fpteamDB.getCollection("GamePublishers");
+
+            // Thực hiện update vào MongoDB trong collection "GamePublishers"
+            publishersCollection.updateOne(filter, updatePasswordDoc);
 
         } catch (Exception e) {
             e.printStackTrace();
