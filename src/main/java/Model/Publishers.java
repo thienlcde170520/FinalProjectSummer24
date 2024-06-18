@@ -19,7 +19,7 @@ public class Publishers extends Users{
     private int Money;
     private String RegistrationDate;
 
-    public Publishers(String id, String name, String gmail, String password, int role, String bank_account, int profit, String description, String AvatarLink, int Money, String RegistrationDate) {
+    public Publishers(String id, String name, String gmail, String password, String bank_account, int profit, String description, String AvatarLink, int Money, int role, String RegistrationDate) {
         super(id, name, gmail, password, role);
         this.bank_account = bank_account;
         this.profit = profit;

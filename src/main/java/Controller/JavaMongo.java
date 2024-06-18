@@ -115,7 +115,7 @@ public class JavaMongo {
                             doc.getInteger("Profit",0),                                                  
                             doc.getString("Description"),
                             doc.getString("AvatarLink"),
-                            doc.getString("Money"),
+                            doc.getInteger("Money"),
                             doc.getInteger("Role",0), 
                             doc.getString("RegistrationDate")
                        
