@@ -67,6 +67,7 @@ public class profileServlet extends HttpServlet {
                 int role = user.getRole();
                 if(role == 3){
                     Gamers gamer = JavaMongo.getGamerByEmail(user.getGmail());
+                    
                     if(gamer != null){
                         request.setAttribute("gamer", gamer);
                         request.getRequestDispatcher("profile.jsp").forward(request, response);

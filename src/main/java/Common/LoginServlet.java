@@ -95,7 +95,13 @@ public class LoginServlet extends HttpServlet {
                     else {
                         
                         HttpSession session = request.getSession();
+                        if (u.getRole() == 3){
                         session.setAttribute("account",JavaMongo.getGamerByEmail(e));
+                        }
+                        if (u.getRole() == 2){
+                        session.setAttribute("account",JavaMongo.getPublisherByEmail(e));
+                        }
+                        
 ////                        session.setAttribute("account", JavaMongo.getAllUser());
 //                        
                         /*

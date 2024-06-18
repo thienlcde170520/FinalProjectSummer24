@@ -90,7 +90,7 @@ https://templatemo.com/tm-579-cyborg-gaming
         <div class="page-content">
 
           <!-- ***** Banner Start ***** -->
-          <div class="row" action="#" method="GET">
+          <div class="row" >
               <%
             // Lấy thông tin người chơi từ request attribute
             Model.Gamers gamer = (Model.Gamers) request.getAttribute("gamer");
@@ -113,14 +113,12 @@ https://templatemo.com/tm-579-cyborg-gaming
                   </div>
                   <div class="col-lg-4 align-self-center">
                     <ul>
-                      <li>Games Downloaded <span>3</span></li>
+                      <li>Games Downloaded <span> 1</span></li>
                       <li>Cast <span><%=gamer.getMoney()%> VNĐ</span></li>
-                      <li>Review History <span>None</span></li>
+                      <li>  <a href="Update.jsp">UPDATE</a></li>
                       <li>Wish Lists <span>2</span></li>
                     </ul>
-                      <div>
-                        <a href="UpdateProfile.jsp">UPDATE</a><br/>
-                    </div>
+
                   </div>
                 </div>
                 <div class="row">
