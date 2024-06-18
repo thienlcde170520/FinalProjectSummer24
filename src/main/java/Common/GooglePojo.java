@@ -4,6 +4,8 @@
  */
 package Common;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 /**
@@ -22,6 +24,7 @@ public class GooglePojo {
         private String password; // bonus
         private int Money;
         private String AvatarLink;
+        private String RegistrationDate;
         
 	public String getId() {
 		return this.id;
@@ -110,12 +113,23 @@ public class GooglePojo {
         public void setAvatarLink(String AvatarLink) {
             this.AvatarLink = AvatarLink;
         }
+
+        public String getRegistrationDate() {
+            return RegistrationDate;
+        }
+
+        public void setRegistrationDate(String RegistrationDate) {
+            this.RegistrationDate = RegistrationDate;
+        }
         
         
     
         public GooglePojo() {
         this.Money = 0;
         this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        this.RegistrationDate = now.format(formatter);
         // Generate a random password when creating a new GooglePojo object
         this.generateRandomPassword();
         }

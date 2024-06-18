@@ -3,15 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package Common;
-
-import static Common.CheckValid.CheckEmail;
-
-import static Controller.JavaMongo.CreateNewGamerAccount;
+package Controller;
 
 import Model.Users;
 import java.io.IOException;
-
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,8 +19,8 @@ import jakarta.servlet.http.HttpSession;
  *
  * @author ASUS
  */
-@WebServlet(name="/loginGG", urlPatterns={"/loginGG"})
-public class LoginGoogleServlet extends HttpServlet {
+@WebServlet(name="LogOutServlet", urlPatterns={"/LogOutServlet"})
+public class LogOutServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -36,28 +32,18 @@ public class LoginGoogleServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String code = request.getParameter("code");
-        GoogleLogin gg = new GoogleLogin();
-        String accessToken = gg.getToken(code);
-        GooglePojo acc = gg.getUserInfo(accessToken);
-        //System.out.print(acc);
-        int role =3;
-        Users a = CheckEmail(acc.getEmail());
-        
-        HttpSession session = request.getSession();
-        
-        if (a != null){
-            session.setAttribute("account", a);
-        }else {
-            // If user does not exist, create a new account
-            CreateNewGamerAccount(acc.getName(), acc.getPassword(), acc.getEmail(),role,acc.getMoney(),acc.getAvatarLink(),acc.getRegistrationDate()); // Set yourRoleValue accordingly
-            // Retrieve the newly created user to set in session
-            a = CheckEmail(acc.getEmail()); // Check again after account creation
-            session.setAttribute("account", a);
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet LogOutServlet</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet LogOutServlet at " + request.getContextPath () + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
-        
-        // Redirect to the homepage or dashboard after login
-        response.sendRedirect("Home.jsp");
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -71,7 +57,12 @@ public class LoginGoogleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        Users a = (Users) session.getAttribute("account");
+        if (a!= null){
+            session.removeAttribute("account");
+            response.sendRedirect("Login.jsp");
+        } 
     } 
 
     /** 

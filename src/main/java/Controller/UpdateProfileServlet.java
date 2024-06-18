@@ -12,13 +12,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author ASUS
  */
-@WebServlet(name="UpdateServlet", urlPatterns={"/UpdateServlet"})
-public class UpdateServlet extends HttpServlet {
+@WebServlet(name="UpdateProfileServlet", urlPatterns={"/UpdateProfileServlet"})
+public class UpdateProfileServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -35,10 +38,10 @@ public class UpdateServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UpdateServlet</title>");  
+            out.println("<title>Servlet UpdateProfileServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UpdateServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet UpdateProfileServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -68,7 +71,23 @@ public class UpdateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+       
+        String newN = request.getParameter("newName");
+        String newEM = request.getParameter("newEmail");
+        String newP = request.getParameter("newPassWord");
+        String conP = request.getParameter("confirmPass");
+        
+        
+        String emailCheck = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@gmail\\.com$";
+        if(!newEM.matches(emailCheck) || !newP.equals(conP)){
+            request.setAttribute("mess", "Invalid email or password!!!!");
+            //response.sendRedirect("SignUp.jsp");
+            request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
+        }else
+        {
+            try{}
+        }
+        
     }
 
     /** 

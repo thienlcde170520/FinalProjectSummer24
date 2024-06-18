@@ -76,7 +76,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                         <li><a href="browse.html">Browse</a></li>
                         <li><a href="details.html">Details</a></li>
                         <li><a href="UploadGame">Upload Game</a></li>
-                        <li><a href="profile.html">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                        <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
                     </ul>   
                     <a class='menu-trigger'>
                         <span>Menu</span>
@@ -95,7 +95,7 @@ https://templatemo.com/tm-579-cyborg-gaming
         <div class="row">
             <!-- Form Section -->
             <div class="col-12">
-                <form action="UpdateProfile" method="post"  enctype="multipart/form-data" >
+                <form action="UpdateProfileServlet" method="post"  enctype="multipart/form-data" >
 
                    
                     <div class="form-group">
@@ -106,19 +106,23 @@ https://templatemo.com/tm-579-cyborg-gaming
 
                     <div class="form-group">
                         <label for="Name">Name</label>
-                        <input type="text" class="form-control" id="Name" name="Name" placeholder="Enter your new name ">
+                        <input type="text" class="form-control" id="Name" name="newName" placeholder="Enter your new name ">
                     </div>
 
                     <div class="form-group">
                         <label for="Name">Email</label>
-                        <input type="text" class="form-control" id="Email" name="Email" placeholder="Enter your new Email ">
+                        <input type="text" class="form-control" id="Email" name="newEmail" placeholder="Enter your new Email ">
                     </div>
 
                        <div class="form-group">
                         <label for="Name">PassWord</label>
-                        <input type="text" class="form-control" id="PassWord" name="PassWord" placeholder="Enter your new PassWord ">
+                        <input type="text" class="form-control" id="PassWord" name="newPassWord" placeholder="Enter your new PassWord ">
                     </div>
-
+                    
+                    <div class="form-group">
+                        <label for="Name">Confirm Password</label>
+                        <input type="text" class="form-control" id="ConfirmPassWord" name="confirmPass" placeholder="Confirm your Password">
+                    </div>
                    
 
 
