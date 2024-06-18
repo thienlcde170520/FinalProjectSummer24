@@ -11,26 +11,36 @@ import java.io.Serializable;
  * @author ASUS
  */
 public class Users implements Serializable{
-    private String Name;
+    private String id;
+    private String name;
     private String email;
-    private String Password;
+    private String password;
     private String role;
     
     public Users(){}
 
-    public Users(String Name, String email, String Password, String role) {
-        this.Name = Name;
+    public Users(String id, String name, String email, String password, String role) {
+        this.id = id;
+        this.name = name;
         this.email = email;
-        this.Password = Password;
+        this.password = password;
         this.role = role;
     }
 
-    public String getName() {
-        return Name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(String Name) {
-        this.Name = Name;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -42,11 +52,11 @@ public class Users implements Serializable{
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
-    public void setPassword(String Password) {
-        this.Password = Password;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getRole() {
@@ -59,7 +69,9 @@ public class Users implements Serializable{
 
     @Override
     public String toString() {
-        return "Users{" + "Name=" + Name + ", email=" + email + ", Password=" + Password + ", role=" + role + '}';
+        return "Users{" + "id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", role=" + role + '}';
     }
+
+    
     
 }
