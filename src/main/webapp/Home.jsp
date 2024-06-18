@@ -9,7 +9,17 @@
 <%@ page import="Model.Genre" %>
 <%@ page import="Model.Game" %>
 <%@ page import="Controller.JavaMongo" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%><!DOCTYPE html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    // Check if a valid user is logged in
+    if (session.getAttribute("account") == null) {
+        // Redirect to login page if not logged in
+        response.sendRedirect("Login.jsp");
+        return; // Exit the JSP execution
+    }
+   
+%>
+<!DOCTYPE html>
 <html lang="en">
 
   <head>
@@ -89,6 +99,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                    
 
                         <li><a href="UploadGame">Upload Game</a></li>
+                        <li><a href="LogOutServlet">LOG OUT</a></li>
                         <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
 
                     </ul>   

@@ -106,7 +106,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <div class="main-info header-text">
                       <h4><%=gamer.getName() %></h4>
                       <p>Email: <%=gamer.getGmail()%></p>
-                      <p>Tham gia từ : 11/05/2024</p>
+                      <p>Tham gia từ : <%=gamer.getRegistrationDate()%></p>
                       <div class="main-border-button">
                       </div>
                     </div>
@@ -119,7 +119,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                       <li>Wish Lists <span>2</span></li>
                     </ul>
                       <div>
-                        <a href="Update.jsp">UPDATE</a><br/>
+                        <a href="UpdateProfile.jsp">UPDATE</a><br/>
                     </div>
                   </div>
                 </div>
