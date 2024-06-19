@@ -5,9 +5,7 @@
 
 package Controller;
 
-import Model.Game;
-import Model.Gamers;
-import Model.Users;
+import Model.Bill;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,15 +13,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.Random;
 
 /**
  *
  * @author LENOVO
  */
-@WebServlet(name="PayProcessServlet", urlPatterns={"/PayProcessServlet"})
-public class PayProcessServlet extends HttpServlet {
+@WebServlet(name="RefundServlet", urlPatterns={"/RefundServlet"})
+public class RefundServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -40,10 +36,10 @@ public class PayProcessServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PayProcessServlet</title>");  
+            out.println("<title>Servlet RefundServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet PayProcessServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet RefundServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,20 +54,17 @@ public class PayProcessServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
         String gameId = request.getParameter("gameId");
-        Game game = JavaMongo.getGameByGameID(gameId);
-        HttpSession session = request.getSession();
-        Gamers gamer = (Gamers) session.getAttribute("account");
-        
-        // Set attributes to be forwarded to the JSP
-        request.setAttribute("game", game);
-        request.setAttribute("gamer", gamer);
-
-        // Forward to paymentConfirmation.jsp
-        request.getRequestDispatcher("paymentConfirmation.jsp").forward(request, response);
+        String billId = request.getParameter("billId");
+        String gamerId = request.getParameter("gamerId");
+        int refundNumber = Integer.parseInt(request.getParameter("refundnumber"));
+            // Process the refund
+            JavaMongo.refundPurchase(billId, gamerId, gameId, refundNumber);
+      request.getRequestDispatcher("Home.jsp");
+    
     }
-
     /** 
      * Handles the HTTP <code>POST</code> method.
      * @param request servlet request
@@ -79,38 +72,11 @@ public class PayProcessServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-@Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    String gameId = request.getParameter("gameId");
-    double gamePrice = Double.parseDouble(request.getParameter("gamePrice"));
-    String buyTime = request.getParameter("buyTime");
-
-    // Generate random bill ID
-    String billId = generateBillId();
-
-    // Retrieve game details and logged-in user (gamer)
-    Game game = JavaMongo.getGameByGameID(gameId);
-    HttpSession session = request.getSession();
-    Gamers gamer = (Gamers) session.getAttribute("account");
-
-    // Convert gamePrice to int (assuming rounding down for whole numbers)
-    int roundedGamePrice = (int) Math.floor(gamePrice);
-
-    // Add purchase details to MongoDB
-    JavaMongo.addPurchase(billId, gamer.getId(), gameId, buyTime, roundedGamePrice);
-
-    // Forward to payment confirmation page or another view
-  request.getRequestDispatcher("Home.jsp").forward(request, response);
-}
-
-
-private String generateBillId() {
-    // Generate random bill ID with format "bill_" followed by a random number
-    Random random = new Random();
-    int randomNumber = random.nextInt(100000); // Adjust the upper limit as needed
-    return "bill_" + randomNumber;
-}
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        processRequest(request, response);
+    }
 
     /** 
      * Returns a short description of the servlet.
