@@ -2,6 +2,7 @@ package Controller;
 
 
 import Model.BankTransactions;
+import Model.Bill;
 import Model.Game;
 import Model.Gamers;
 import Model.Publishers;
@@ -24,9 +25,14 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import org.bson.Document;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,6 +85,140 @@ public class JavaMongo {
             return false; // Handle exceptions as per your application's error handling strategy
         }
     }
+  
+   public static Bill getBillByGameIDAndGamerID(String gameId, String gamerId) {
+        MongoClientSettings settings = getConnection();
+        Bill bill = null;
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+
+            // Access the "Buy" collection
+            MongoCollection<Document> buyCollection = fpteamDB.getCollection("Buy");
+
+            // Create a filter to search for the bill by gameId and gamerId
+            Bson filter = Filters.and(
+                    Filters.eq("ID_Game", gameId),
+                    Filters.eq("ID_Gamer", gamerId)
+            );
+
+            // Find the first document that matches the filter
+            Document billDoc = buyCollection.find(filter).first();
+
+            if (billDoc != null) {
+                // Extract bill attributes from the document
+                String id = billDoc.getString("ID_Bill");
+                String gamerID = billDoc.getString("ID_Gamer");
+                String gameID = billDoc.getString("ID_Game");
+                String buyTime = billDoc.getString("Buy_time");
+                int buyPrice = billDoc.getInteger("Buy_price");
+
+                // Create a Bill object
+                bill = new Bill();
+                bill.setId(id);
+                bill.setGamerId(gamerID);
+                bill.setGameId(gameID);
+                bill.setBuyTime(buyTime);
+                bill.setBuyPrice(buyPrice);
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        return bill;
+    }
+    
+    public static boolean isRefundable(Bill bill) {
+        if (bill == null) {
+            return false;
+        }
+
+        // Define the date format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // Parse the buy time from the bill
+        LocalDateTime buyTime = LocalDateTime.parse(bill.getBuyTime(), formatter);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        // Calculate the difference in hours
+        long hoursBetween = ChronoUnit.HOURS.between(buyTime, currentTime);
+
+        return hoursBetween <= 2;
+    }
+    
+   public static void refundPurchase(String billId, String gamerId, String gameId, int refundPrice) {
+    MongoClientSettings settings = getConnection();
+    try (MongoClient mongoClient = MongoClients.create(settings)) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+
+        // Access the collections
+        MongoCollection<Document> buyCollection = fpteamDB.getCollection("Buy");
+        MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+        MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+        MongoCollection<Document> publishersCollection = fpteamDB.getCollection("GamePublishers");
+
+        // Retrieve the gamer document
+        Document gamerDoc = gamersCollection.find(Filters.eq("ID", gamerId)).first();
+        if (gamerDoc == null) {
+            System.out.println("Gamer not found with ID: " + gamerId);
+            return;
+        }
+
+        // Retrieve the game document
+        Document gameDoc = gamesCollection.find(Filters.eq("ID", gameId)).first();
+        if (gameDoc == null) {
+            System.out.println("Game not found with ID: " + gameId);
+            return;
+        }
+
+        // Calculate the new balance for the gamer after refund
+        int currentMoney = gamerDoc.getInteger("Money");
+        int newBalance = currentMoney + refundPrice;
+
+        // Update the Money field in the Gamers collection
+        Bson updateBalance = Updates.set("Money", newBalance);
+        gamersCollection.updateOne(Filters.eq("ID", gamerId), updateBalance);
+        System.out.println("Gamer balance updated: " + newBalance);
+
+        // Calculate the profit to be reverted (90% of the refund price)
+        int profitReversion = (int) (1.0 * refundPrice);
+
+        // Update the profit for the publisher
+        String publisherId = JavaMongo.getPublisherByGameId(gameId).getId(); // Assuming this method gets publisher ID
+        Document publisherDoc = publishersCollection.find(Filters.eq("ID", publisherId)).first();
+        if (publisherDoc != null) {
+            int currentProfit = publisherDoc.getInteger("Profit");
+            int newProfit = currentProfit - profitReversion;
+
+            // Update the Profit field in the Publishers collection
+            Bson updateProfit = Updates.set("Profit", newProfit);
+            publishersCollection.updateOne(Filters.eq("ID", publisherId), updateProfit);
+            System.out.println("Profit updated for publisher " + publisherId + ": " + newProfit);
+
+            // Decrement the number of buyers for the game in the Games collection
+            int currentBuyers = gameDoc.getInteger("Number_of_buyers");
+            int newBuyers = currentBuyers - 1;
+            Bson updateBuyers = Updates.set("Number_of_buyers", newBuyers);
+            gamesCollection.updateOne(Filters.eq("ID", gameId), updateBuyers);
+            System.out.println("Number of buyers updated for game " + gameId + ": " + newBuyers);
+
+            // Remove the purchase document from the Buy collection
+            Bson deleteFilter = Filters.eq("ID_Bill", billId);
+            DeleteResult result = buyCollection.deleteOne(deleteFilter);
+            if (result.getDeletedCount() > 0) {
+                System.out.println("Purchase refunded: " + billId);
+            } else {
+                System.out.println("No purchase found with ID_Bill: " + billId);
+            }
+        } else {
+            System.out.println("Publisher not found with ID: " + publisherId);
+        }
+    } catch (MongoException e) {
+        e.printStackTrace();
+    }
+}
+
+
  public static void addPurchase(String billId, String gamerId, String gameId, String buyTime, int buyPrice) {
     MongoClientSettings settings = getConnection();
     try (MongoClient mongoClient = MongoClients.create(settings)) {
@@ -116,7 +256,7 @@ public class JavaMongo {
             System.out.println("Gamer balance updated: " + newBalance);
 
             // Calculate the profit as 90% of the buy price
-            int profitAmount = (int) (0.9 * buyPrice);
+            int profitAmount = (int) (1.0 * buyPrice);
 
             // Update the profit for the publisher
             String publisherId = JavaMongo.getPublisherByGameId(gameId).getId(); // Assuming this method gets publisher ID
@@ -188,6 +328,45 @@ public class JavaMongo {
             e.printStackTrace();
         }
     }
+public static void updateGame(Game game) {
+    try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+        MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+
+        // Create a filter to find the existing document by game ID
+        Bson filter = Filters.eq("ID", game.getId());
+
+        // Create a document with updated game information
+        Document updateDoc = new Document()
+                .append("Name", game.getName())
+                .append("Price", game.getPrice())
+                .append("Publish_day", game.getPublishDay())
+                .append("Number_of_buyers", game.getNumberOfBuyers())
+                .append("LinkTrailer", game.getLinkTrailer())
+                .append("AvatarLink", game.getAvatarLink())
+                .append("GameLink", game.getGameLink())
+                .append("Description", game.getDescription())
+                .append("Minimum_CPU", game.getMinimumCPU())
+                .append("Minimum_RAM", game.getMinimumRAM())
+                .append("Minimum_GPU", game.getMinimumGPU())
+                .append("Maximum_CPU", game.getMaximumCPU())
+                .append("Maximum_RAM", game.getMaximumRAM())
+                .append("Maximum_GPU", game.getMaximumGPU());
+
+        // Create an update operation
+        UpdateOptions options = new UpdateOptions().upsert(true); // If document not found, create a new one
+        UpdateResult updateResult = gamesCollection.updateOne(filter, new Document("$set", updateDoc), options);
+
+        // Check if the update was successful
+        if (updateResult.getModifiedCount() > 0) {
+            System.out.println("Game updated successfully in MongoDB.");
+        } else {
+            System.out.println("No game found with ID: " + game.getId() + ". New game added.");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 
     public static void publishGame(String gameId, String publisherId) {
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
@@ -206,6 +385,34 @@ public class JavaMongo {
             e.printStackTrace();
         }
     }
+public static void clearGenresForGame(String gameId) {
+    try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+        MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
+
+        // Delete all documents where "ID_Game" matches gameId
+        gameGenresCollection.deleteMany(new Document("ID_Game", gameId));
+
+        System.out.println("Cleared genres for game ID: " + gameId);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+public static void addExclusiveGenreToGame(String gameId, String genreType) {
+    try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+        MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
+
+        Document gameGenreDoc = new Document()
+                .append("ID_Game", gameId)
+                .append("Type_of_genres", genreType);
+
+        gameGenresCollection.insertOne(gameGenreDoc);
+        System.out.println("Exclusive Genre '" + genreType + "' added to game ID: " + gameId);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 
     public static void addGenreToGame(String gameId, String genreType) {
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
@@ -268,6 +475,20 @@ public class JavaMongo {
 
         return gamesList;
     }
+public static ArrayList<Genre> getExcludeGenresByGameId(String gameID) {
+    ArrayList<Genre> allGenres = getAllGenres();
+    ArrayList<String> gameGenres = getGenreTypesByGameID(gameID);
+    ArrayList<Genre> excludeGenres = new ArrayList<>();
+
+    // Iterate through all genres and add those not associated with the game
+    for (Genre genre : allGenres) {
+        if (!gameGenres.contains(genre.getType())) {
+            excludeGenres.add(genre);
+        }
+    }
+
+    return excludeGenres;
+}
 
     public static ArrayList<Genre> getAllGenres() {
         ArrayList<Genre> genresList = new ArrayList<>();

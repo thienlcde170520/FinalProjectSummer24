@@ -1,3 +1,5 @@
+<%@page import="Model.Users"%>
+<%@page import="Model.Bill"%>
 <%@page import="Model.Gamers"%>
 <%@page import="Controller.JavaMongo"%>
 <%@page import="Model.Genre"%>
@@ -47,9 +49,12 @@
             ArrayList<Review> reviews = (ArrayList<Review>) request.getAttribute("reviews");
             Double rating = (Double) request.getAttribute("rating");
             Publishers publisher = (Publishers) request.getAttribute("publisher");
-
+            Bill bill = (Bill) request.getAttribute("bill");
             Boolean hasBuyObj = (Boolean) request.getAttribute("hasBuy");
             boolean hasBuy = hasBuyObj != null && hasBuyObj.booleanValue();
+            Boolean isRefundableObj = (Boolean) request.getAttribute("isRefundable");
+            boolean isRefundable = isRefundableObj != null && isRefundableObj.booleanValue();
+           
         %>
 
         <!-- Header Area Start -->
@@ -139,12 +144,38 @@
                                             <%-- Display publisher --%>
                                             <p class="publisher-p">Game Publisher: <%= publisher.getName()%></p>
                                         </div>
-                                        <% if (!hasBuy) {%>
-                                        <a id="buyNowButton" class="btn btn-primary" href="PayProcessServlet?gameId=<%= game.getId()%>">Buy Now</a>
-                                        <button type="button" class="btn btn-outline-primary">Follow</button>
-                                        <% } else {%>
-                                        <a id="DowloadNowButton" class="btn btn-primary" href="<%= game.getGameLink()%>">Install Game</a>
-                                        <% }%>
+                                       <%
+// Check if logged-in user is the publisher
+Users loggedInUser = (Users) session.getAttribute("account");
+boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publisher.getId());
+%>
+
+<% if (isPublisher) { %>
+    <!-- Display update button for publisher -->
+    <a id="UpdateButton" class="btn btn-primary" href="UpdateGameServlet?gameId=<%= game.getId() %>">Update</a>
+<% } else { %>
+    <% if (!hasBuy) { %>
+        <a id="buyNowButton" class="btn btn-primary" href="PayProcessServlet?gameId=<%= game.getId() %>">Buy Now</a>
+        <button type="button" class="btn btn-outline-primary">Follow</button>
+    <% } else { %>
+        <a id="DownloadNowButton" class="btn btn-primary" href="<%= game.getGameLink() %>">Install Game</a>
+        
+        <% if (isRefundable) { %>
+            <form action="RefundServlet" method="get" style="display:inline;">
+                <input type="hidden" name="gameId" value="<%= bill.getGameId() %>">
+                <input type="hidden" name="billId" value="<%= bill.getId() %>">
+                <input type="hidden" name="gamerId" value="<%= bill.getGamerId() %>">
+                <input type="hidden" name="refundnumber" value="<%= bill.getBuyPrice() %>">
+                <button type="submit" class="btn btn-primary">Refund</button>
+            </form>
+        <% } %>
+    <% } %>
+    <!-- Display return to home button for non-publisher users -->
+    <a class="btn btn-primary" href="Home.jsp">Return to Home</a>
+<% } %>
+
+
+
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -190,7 +221,7 @@
                                         <h3>Gamer Reviews</h3>
                                     </div>
                                     <div class="col-lg-12">
-                                      
+                                        <% if (hasBuy) {%> <!-- Check if the gamer has bought the game -->
                                         <form id="review-form" action="ReviewGameServlet" method="post">
                                             <!-- Hidden input fields for gamer ID and game ID -->
                                             <input type="hidden" id="gameId" name="gameId" value="<%= game.getId()%>">
@@ -205,37 +236,50 @@
                                             </div>
                                             <button type="submit" class="btn btn-primary">Submit Review</button>
                                         </form>
+                                        <% } else { %>
+                                        <p>You need to purchase the game before you can submit a review.</p>
+                                        <% } %>
                                     </div>
-
                                 </div>
 
 
+
                                 <!-- Display user reviews -->
-                                <div class="row mt-4">
-  <div class="col-lg-12">
-    <h4>User Reviews:</h4>
-    <ul class="list-unstyled" style="color: #F0F5FF">
-        <% 
-        for (Review review : reviews) {
-            // Get the user (gamer) associated with this review
-            Gamers user = JavaMongo.getGamerByGamerId(review.getIdGamer());
-        %>
-        <li>
-            <strong><%= user.getName() %>:</strong> "<%= review.getDescription() %>" 
-            <br> Rating: <%= review.getRating() %>
-            
-            <!-- Delete button form -->
-            <form action="ReviewGameServlet" method="get" style="display: inline;">
-                <input type="hidden" name="reviewGameId" value="<%= review.getIdGame() %>">
-                <input type="hidden" name="reviewGamerId" value="<%= review.getIdGamer() %>">
-                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-            </form>
-        </li>
-        <% } %>
-    </ul>
+                               <div class="row mt-4">
+    <div class="col-lg-12">
+        <h4>User Reviews:</h4>
+        <ul class="list-unstyled" style="color: #F0F5FF">
+            <%
+                
+             
+                
+                for (Review review : reviews) {
+                    // Get the user (gamer) associated with this review
+                    Gamers user = JavaMongo.getGamerByGamerId(review.getIdGamer());
+                    
+                    // Check if the logged-in user is the author of the review
+                    boolean isReviewOwner = loggedInUser != null && loggedInUser.getId().equals(user.getId());
+                    
+                    // Display review details
+            %>
+            <li>
+                <strong><%= user.getName()%>:</strong> "<%= review.getDescription()%>" 
+                <br> Rating: <%= review.getRating()%>
+                
+                <!-- Delete button form (display only if logged-in user is the author of the review) -->
+                <% if (isReviewOwner) { %>
+                    <form action="ReviewGameServlet" method="post" style="display: inline;">
+                        <input type="hidden" name="reviewGameId" value="<%= review.getIdGame()%>">
+                        <input type="hidden" name="reviewGamerId" value="<%= review.getIdGamer()%>">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                <% } %>
+            </li>
+            <% } %>
+        </ul>
+    </div>
 </div>
 
-</div>
 
                             </div>
 

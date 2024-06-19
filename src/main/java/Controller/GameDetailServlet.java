@@ -5,11 +5,13 @@
 
 package Controller;
 
+import Model.Bill;
 import Model.Game;
 import Model.Gamers;
 import Model.Genre;
 import Model.Publishers;
 import Model.Review;
+import Model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -35,28 +37,76 @@ public class GameDetailServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-           String gameid = request.getParameter("gameid");
-           Game game = JavaMongo.getGameByGameID(gameid);
-           ArrayList<Genre> genres  = JavaMongo.getGenresByGameID(gameid);
-           ArrayList<Review> reviews = JavaMongo.getReviewByGame(game);
-           Double rating = JavaMongo.getAverageRatingByGame(game);
-           Publishers publisher = JavaMongo.getPublisherByGameId(gameid);
-                
-        HttpSession session = request.getSession();
+  protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    String gameid = request.getParameter("gameid");
+    
+    // Retrieve game details
+    Game game = JavaMongo.getGameByGameID(gameid);
+    if (game == null) {
+        // Handle case where game is not found
+        response.sendRedirect("error.jsp");
+        return;
+    }
+    
+    // Retrieve genres associated with the game
+    ArrayList<Genre> genres = JavaMongo.getGenresByGameID(gameid);
+    
+    // Retrieve reviews for the game
+    ArrayList<Review> reviews = JavaMongo.getReviewByGame(game);
+    
+    // Calculate average rating for the game
+    Double rating = JavaMongo.getAverageRatingByGame(game);
+    
+    // Retrieve publisher details
+    Publishers publisher = JavaMongo.getPublisherByGameId(gameid);
+    
+    // Get user session and role
+    HttpSession session = request.getSession();
+    Users user = (Users) session.getAttribute("account");
+    
+    if (user == null) {
+        // Handle case where user is not logged in
+        response.sendRedirect("login.jsp");
+        return;
+    }
+    
+    // Check user role
+    int role = user.getRole();
+    
+    boolean hasBuy = false;
+    boolean isRefundable = false;
+    Bill bill = null;
+    
+    if (role == 3) { // Gamer role
         Gamers gamer = (Gamers) session.getAttribute("account");
-        boolean hasBuy = JavaMongo.hasGamerBoughtGame(gamer.getId(), gameid);
-        // Set attributes to be forwarded to the JSP
-         request.setAttribute("hasBuy", hasBuy);
-            request.setAttribute("game", game);
-        request.setAttribute("genres", genres);
-        request.setAttribute("reviews", reviews);
-        request.setAttribute("rating", rating);
-        request.setAttribute("publisher", publisher);
+        
+        // Check if gamer has bought the game
+        hasBuy = JavaMongo.hasGamerBoughtGame(gamer.getId(), gameid);
+        
+        if (hasBuy) {
+            // Retrieve bill details
+            bill = JavaMongo.getBillByGameIDAndGamerID(gameid, gamer.getId());
+            
+            // Check if the purchase is refundable
+            isRefundable = JavaMongo.isRefundable(bill);
+        }
+    }
+    
+    // Set attributes to be forwarded to the JSP
+    request.setAttribute("bill", bill);
+    request.setAttribute("isRefundable", isRefundable);
+    request.setAttribute("hasBuy", hasBuy);
+    request.setAttribute("game", game);
+    request.setAttribute("genres", genres);
+    request.setAttribute("reviews", reviews);
+    request.setAttribute("rating", rating);
+    request.setAttribute("publisher", publisher);
+    
+    // Forward the request to the single-game.jsp page
+    request.getRequestDispatcher("single-game.jsp").forward(request, response);
+}
 
-            request.getRequestDispatcher("single-game.jsp").forward(request, response);
-    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 

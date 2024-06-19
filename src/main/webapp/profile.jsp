@@ -146,7 +146,7 @@ https://templatemo.com/tm-579-cyborg-gaming
     <% for (Game game : games) { %>
         <div class="col-lg-3 col-sm-6">
             <div class="item">
-                <div class="thumb">
+                <div class="thumb"> 
                     <img src="<%= game.getAvatarLink() %>" alt="<%= game.getName() %>" style="border-radius: 23px;">
                     <a href="<%= game.getLinkTrailer() %>" target="_blank"><i class="fa fa-play"></i></a>
                 </div>
