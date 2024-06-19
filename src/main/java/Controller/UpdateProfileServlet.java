@@ -5,6 +5,9 @@
 
 package Controller;
 
+import static Controller.JavaMongo.updateGamerProfile;
+import Model.Gamers;
+import Model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,13 +75,13 @@ public class UpdateProfileServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-       
+        String newA = request.getParameter("newGameAvatar");
         String newN = request.getParameter("newName");
         String newEM = request.getParameter("newEmail");
         String newP = request.getParameter("newPassWord");
         String conP = request.getParameter("confirmPass");
-        
-        
+       
+            
         String emailCheck = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@gmail\\.com$";
         if(!newEM.matches(emailCheck) || !newP.equals(conP)){
             request.setAttribute("mess", "Invalid email or password!!!!");
@@ -85,11 +89,42 @@ public class UpdateProfileServlet extends HttpServlet {
             request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
         }else
         {
-            try{}
+            try{
+                HttpSession session = request.getSession();
+                Users u = (Users) session.getAttribute("account");
+                int role = u.getRole();
+                if(role == 3){
+                    updateGamerProfile(u.getId(),newN,newEM,newP,newA);
+                    Gamers gamer = JavaMongo.getGamerByEmail(u.getGmail());
+                    if(gamer != null){
+                        request.setAttribute("gamer", gamer);
+                        request.getRequestDispatcher("profile.jsp").forward(request, response);                     
+                    }else{
+                        response.sendRedirect("Login.jsp");                       
+                    }
+                }
+                
+            
+            }catch (Exception e) {
+                        try (PrintWriter out = response.getWriter()) {
+                            /* TODO output your page here. You may use following sample code. */
+                            out.println("<!DOCTYPE html>");
+                            out.println("<html>");
+                            out.println("<head>");
+                            out.println("<title>Servlet SignUpServlet</title>");
+                            out.println("</head>");
+                            out.println("<body>");
+                            out.println("<h1>Servlet SignUpServlet at " + e.getMessage() + "</h1>");
+                            out.println("</body>");
+                            out.println("</html>");
+                        }
+                    }
+        
         }
         
+        
+        
     }
-
     /** 
      * Returns a short description of the servlet.
      * @return a String containing servlet description
@@ -98,5 +133,6 @@ public class UpdateProfileServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 
 }
