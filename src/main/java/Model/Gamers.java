@@ -24,10 +24,7 @@ public class Gamers extends Users{
     
 
 
-    @Override
-     public String getId() {
-        return super.getId(); // Giả sử Users có phương thức getId()
-    }
+   
 
     public int getMoney() {
         return Money;

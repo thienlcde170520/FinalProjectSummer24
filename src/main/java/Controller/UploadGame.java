@@ -139,7 +139,7 @@ public class UploadGame extends HttpServlet {
             String mimeType = gameAvatarPart.getContentType();
             String fileName = gameName + "_avatar.jpg"; // Example: "MyGame_avatar.jpg"
             java.io.File uploadedAvatar = saveFileFromPart(gameAvatarPart, fileName);
-            gameAvatarUrl = uploadFileToDrive(fileName, uploadedAvatar, mimeType);
+            gameAvatarUrl = uploadImageToDrive(fileName, uploadedAvatar, mimeType);
         }
         Part gameFilePart = request.getPart("gameFile"); // Assuming "gameFile" is the name of the file input field
         if (gameName != null && !gameName.isEmpty() && gameFilePart != null && gameFilePart.getSize() > 0) {
@@ -222,39 +222,73 @@ public class UploadGame extends HttpServlet {
     }
 
     // Method to upload a file to Google Drive
-    public String uploadFileToDrive(String fileName, java.io.File file, String mimeType)
-            throws IOException, GeneralSecurityException {
+   public String uploadImageToDrive(String fileName, java.io.File file, String mimeType)
+        throws IOException, GeneralSecurityException {
 
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        GoogleCredential credential = DriveQuickstart.getCredentials(HTTP_TRANSPORT);
+    final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+    GoogleCredential credential = DriveQuickstart.getCredentials(HTTP_TRANSPORT);
 
-        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
+    Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+            .setApplicationName(APPLICATION_NAME)
+            .build();
 
-        // Create file metadata
-        File fileMetadata = new File();
-        fileMetadata.setName(fileName);
+    // Create file metadata
+    File fileMetadata = new File();
+    fileMetadata.setName(fileName);
 
-        // Create file content
-        FileContent mediaContent = new FileContent(mimeType, file);
+    // Create file content
+    FileContent mediaContent = new FileContent(mimeType, file);
 
-        // Upload file to Google Drive
-        File uploadedFile = service.files().create(fileMetadata, mediaContent)
-                .setFields("id")
-                .execute();
+    // Upload file to Google Drive
+    File uploadedFile = service.files().create(fileMetadata, mediaContent)
+            .setFields("id")
+            .execute();
 
-        // Create permission for anyone to read
-        Permission permission = new Permission()
-                .setType("anyone")
-                .setRole("reader");
+    // Create permission for anyone to read
+    Permission permission = new Permission()
+            .setType("anyone")
+            .setRole("reader");
 
-        // Apply the permission to the uploaded file
-        service.permissions().create(uploadedFile.getId(), permission).execute();
+    // Apply the permission to the uploaded file
+    service.permissions().create(uploadedFile.getId(), permission).execute();
 
-        // Return the thumbnail URL
-        return "https://drive.google.com/thumbnail?id=" + uploadedFile.getId() + "&sz=w1000";
-    }
+    // Return the thumbnail URL
+    return "https://drive.google.com/thumbnail?id=" + uploadedFile.getId() + "&sz=w1000";
+}
+public String uploadFileToDrive(String fileName, java.io.File file, String mimeType)
+        throws IOException, GeneralSecurityException {
+
+    final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+    GoogleCredential credential = DriveQuickstart.getCredentials(HTTP_TRANSPORT);
+
+    Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+            .setApplicationName(APPLICATION_NAME)
+            .build();
+
+    // Create file metadata
+    File fileMetadata = new File();
+    fileMetadata.setName(fileName);
+
+    // Create file content
+    FileContent mediaContent = new FileContent(mimeType, file);
+
+    // Upload file to Google Drive
+    File uploadedFile = service.files().create(fileMetadata, mediaContent)
+            .setFields("id")
+            .execute();
+
+    // Create permission for anyone to read
+    Permission permission = new Permission()
+            .setType("anyone")
+            .setRole("reader");
+
+    // Apply the permission to the uploaded file
+    service.permissions().create(uploadedFile.getId(), permission).execute();
+
+    // Return the regular file URL
+    return "https://drive.google.com/file/d/" + uploadedFile.getId() + "/view?usp=sharing";
+}
+
     private static int generateRandomNumber() {
         Random random = new Random();
         return random.nextInt(100000); // Adjust as per your requirement for random number range
