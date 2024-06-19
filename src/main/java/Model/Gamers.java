@@ -18,20 +18,17 @@ public class Gamers extends Users{
 
     // Hàm khởi tạo mặc định, thiết lập giá trị mặc định
     public Gamers() {
-//        super(generateRandomId(), "", "", "", 0);
+
         this.Money = 0;
         this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
     }
     
-//    private static String generateRandomId() {
-//        Random random = new Random();
-//        int randomNumber = random.nextInt(10000); // Số ngẫu nhiên từ 0 đến 9999
-//        return "gamer_" + randomNumber;
-//    }
+
     @Override
      public String getId() {
         return super.getId(); // Giả sử Users có phương thức getId()
     }
+
     public int getMoney() {
         return Money;
     }
