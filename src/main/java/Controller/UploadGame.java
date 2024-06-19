@@ -4,8 +4,12 @@
  */
 package Controller;
 
+import static Controller.DriveQuickstart.APPLICATION_NAME;
+import static Controller.DriveQuickstart.JSON_FACTORY;
 import Model.Game;
 import Model.Genre;
+import Model.Publishers;
+import Model.Users;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -28,6 +32,8 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.Permission;
+import jakarta.servlet.http.HttpSession;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
@@ -62,6 +68,7 @@ public class UploadGame extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+            
         ArrayList<Genre> Genres = (JavaMongo.getAllGenres());
         request.setAttribute("genres", Genres);
         request.getRequestDispatcher("UploadGame.jsp").forward(request, response);
@@ -172,6 +179,9 @@ public class UploadGame extends HttpServlet {
                 maxRam,
                 maxGpu
         );
+          HttpSession session = request.getSession();
+         Publishers p = (Publishers) session.getAttribute("account");
+        JavaMongo.publishGame(gameId, p.getId());
         JavaMongo.addGame(game);
         if (selectedGenres != null) {
             for (String genre : selectedGenres) {
@@ -212,14 +222,14 @@ public class UploadGame extends HttpServlet {
     }
 
     // Method to upload a file to Google Drive
-    private String uploadFileToDrive(String fileName, java.io.File file, String mimeType)
+    public String uploadFileToDrive(String fileName, java.io.File file, String mimeType)
             throws IOException, GeneralSecurityException {
 
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         GoogleCredential credential = DriveQuickstart.getCredentials(HTTP_TRANSPORT);
 
-        Drive service = new Drive.Builder(HTTP_TRANSPORT, DriveQuickstart.JSON_FACTORY, credential)
-                .setApplicationName(DriveQuickstart.APPLICATION_NAME)
+        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+                .setApplicationName(APPLICATION_NAME)
                 .build();
 
         // Create file metadata
@@ -234,10 +244,17 @@ public class UploadGame extends HttpServlet {
                 .setFields("id")
                 .execute();
 
-        // Return the file ID (or optionally, construct and return the file URL)
-        return "https://drive.google.com/file/d/" + uploadedFile.getId() + "/view";
-    }
+        // Create permission for anyone to read
+        Permission permission = new Permission()
+                .setType("anyone")
+                .setRole("reader");
 
+        // Apply the permission to the uploaded file
+        service.permissions().create(uploadedFile.getId(), permission).execute();
+
+        // Return the thumbnail URL
+        return "https://drive.google.com/thumbnail?id=" + uploadedFile.getId() + "&sz=w1000";
+    }
     private static int generateRandomNumber() {
         Random random = new Random();
         return random.nextInt(100000); // Adjust as per your requirement for random number range
