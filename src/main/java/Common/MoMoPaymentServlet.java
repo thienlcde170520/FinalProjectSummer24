@@ -37,7 +37,7 @@ public class MoMoPaymentServlet extends HttpServlet {
     private static final String ORDER_INFO = "Thanh toan qua MoMo";
     private static final String AMOUNT = "10000";
     private static final String REDIRECT_URL = "https://dogfish-polished-needlessly.ngrok-free.app/FPTeam/paymentSuccess.jsp";
-    private static final String IPN_URL = "https://dogfish-polished-needlessly.ngrok-free.app/FPTeam/paymentSuccess.jsp";
+    private static final String IPN_URL = "http://localhost:9999/FPTeam/paymentSuccessServlet";
     private static final String EXTRA_DATA = "";
     private static final Logger LOGGER = Logger.getLogger(MoMoPaymentServlet.class.getName());
 
@@ -51,7 +51,7 @@ public class MoMoPaymentServlet extends HttpServlet {
         String orderId = String.valueOf(System.currentTimeMillis());
         String orderInfo = req.getParameter("order-info");
         String amount = req.getParameter("amount");
-        String ipnUrl = REDIRECT_URL;
+        String ipnUrl = REDIRECT_URL;   
         String redirectUrl = IPN_URL ;
         String extraData = EXTRA_DATA;
 

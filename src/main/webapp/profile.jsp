@@ -1,5 +1,10 @@
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%><!DOCTYPE html>
+<%@page import="java.util.ArrayList"%>
+<%@page import="Model.BankTransactions"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    ArrayList<BankTransactions> transactionHistory = (ArrayList<BankTransactions>) request.getAttribute("transactionHistory");
+%>
+<!DOCTYPE html>
 <html lang="en">
 
   <head>
@@ -67,11 +72,11 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <!-- ***** Search End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <li><a href="index.html">Home</a></li>
+                        <li><a href="Home.jsp">Home</a></li>
                         <li><a href="browse.html">Browse</a></li>
                         <li><a href="details.html">Details</a></li>
                         <li><a href="streams.html">Streams</a></li>
-                        <li><a href="profile.html" class="active">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                        <li><a href="profile.jsp" class="active">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
                     </ul>   
                     <a class='menu-trigger'>
                         <span>Menu</span>
@@ -114,12 +119,13 @@ https://templatemo.com/tm-579-cyborg-gaming
                   <div class="col-lg-4 align-self-center">
                     <ul>
                       <li>Games Downloaded <span>3</span></li>
-                      <li>Cast <span><%=gamer.getMoney()%> VNĐ</span></li>
+                      <li>Balance <span><%=gamer.getMoney()%> VNĐ</span></li>
                       <li>Review History <span>None</span></li>
                       <li>Wish Lists <span>2</span></li>
                     </ul>
-                      <div>
-                        <a href="Update.jsp">UPDATE</a><br/>
+                        <div class="d-flex justify-content-start align-items-center">
+                      <a href="Update.jsp" class="btn btn-primary ">Update</a>
+                      <a href="transaction.jsp" class="btn btn-primary">Transaction</a>
                     </div>
                   </div>
                 </div>
@@ -201,33 +207,25 @@ https://templatemo.com/tm-579-cyborg-gaming
               <div class="heading-section">
                 <h4><em>Transaction History</em> </h4>
               </div>
-              <div class="item">
-                <ul>
               
-                  <li><h4>MB bank</h4></li>
-                   <li><h4>Content</h4><span>ID:123</span></li>
-                  <li><h4>Date Added</h4><span>24/08/2036</span></li>
-                   <li><div class="main-border-button border-no-active"><a href="#">120.000</a></div></li>
-                </ul>
-              </div>
-              <div class="item">
-                <ul>
-                  <li><h4>MB bank</h4></li>
-                  
-                   <li><h4>Content</h4><span>ID:123</span></li>
-                  <li><h4>Date Added</h4><span>22/06/2036</span></li>
-                  <li><div class="main-border-button border-no-active"><a href="#">200.000</a></div></li>
-                </ul>
-              </div>
-              <div class="item last-item">
-                <ul>
-                  <li><h4>MB bank</h4></li>
-                  
-                   <li><h4>Content</h4><span>ID:123</span></li>
-                  <li><h4>Date Added</h4><span>21/04/2022</span></li>
-                <li><div class="main-border-button border-no-active"><a href="#">120.000</a></div></li>
-                </ul>
-              </div>
+                 <div class="transactions-container">
+        <%
+            if (transactionHistory != null) {
+                for (BankTransactions transaction : transactionHistory) {
+        %>
+                    <div class="item <%= (transactionHistory.indexOf(transaction) == transactionHistory.size() - 1) ? "last-item" : "" %>">
+                        <ul>
+                            <li><h4>MoMo</h4></li>
+                            <li><h4>Transaction infor</h4><span> <%= transaction.getOrderInfo() %></span></li>
+                            <li><h4>Date of transaction</h4><span><%= transaction.getCreatedAt() %></span></li>
+                            <li><div class="main-border-button border-no-active"><a href="#"><%= transaction.getAmount() %></a></div></li>
+                        </ul>
+                    </div>
+        <%
+                }
+            }
+        %>
+    </div>
             </div>
           </div>
           <!-- ***** Gaming Library End ***** -->

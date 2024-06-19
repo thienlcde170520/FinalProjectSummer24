@@ -8,4 +8,14 @@
             30
         </session-timeout>
     </session-config>
+    <servlet>
+    <servlet-name>PaymentSuccessServlet</servlet-name>
+    <servlet-class>Common.PaymentSuccessServlet</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>PaymentSuccessServlet</servlet-name>
+    <url-pattern>/paymentSuccessServlet</url-pattern>
+</servlet-mapping>
+
 </web-app>

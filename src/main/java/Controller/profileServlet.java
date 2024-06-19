@@ -5,6 +5,7 @@
 
 package Controller;
 
+import Model.BankTransactions;
 import Model.Gamers;
 import Model.Users;
 import java.io.IOException;
@@ -60,15 +61,21 @@ public class profileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         
-        try{
+         try {
             HttpSession session = request.getSession();
             Users user = (Users) session.getAttribute("account");
-            if(user != null){
+
+            if (user != null) {
                 int role = user.getRole();
-                if(role == 3){
+                if (role == 3) {
                     Gamers gamer = JavaMongo.getGamerByEmail(user.getGmail());
-                    if(gamer != null){
+                    if (gamer != null) {
+                        // Fetch transaction history for the gamer (you need to implement this logic)
+                        ArrayList<BankTransactions> transactionHistory = JavaMongo.getTransactionHistoryByPayerId(user.getId());
+                        
+                        // Set attributes to be forwarded to profile.jsp
                         request.setAttribute("gamer", gamer);
+                        request.setAttribute("transactionHistory", transactionHistory);
                         request.getRequestDispatcher("profile.jsp").forward(request, response);
                     }else {
                                 response.sendRedirect("Login.jsp");
