@@ -36,6 +36,10 @@ public class GoogleLogin {
 		String link = Constants.GOOGLE_LINK_GET_USER_INFO + accessToken;
 		String response = Request.Get(link).execute().returnContent().asString();
 		GooglePojo googlePojo = new Gson().fromJson(response, GooglePojo.class);
+                
+                // Ghi đè id với một `id` "gamer_" duy nhất nếu cần
+                googlePojo.setId(null); // Giả sử cần ghi đè `id`
+                
 		System.out.println(googlePojo);
 		return googlePojo;
 

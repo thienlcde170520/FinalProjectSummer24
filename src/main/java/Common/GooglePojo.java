@@ -29,14 +29,32 @@ public class GooglePojo {
         private String RegistrationDate;
         
         // Set để lưu trữ các id đã sinh ra
-        private static Set<String> generatedIds = new HashSet<>();
-    
+        private  static Set<String> generatedIds = new HashSet<>();
+        private static Set<String> generatedNames = new HashSet<>();
+        
+        public GooglePojo() {
+        this.id = generateRandomId();
+        this.name = generateRandomName();
+        
+        this.Money = 0;
+        this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        this.RegistrationDate = now.format(formatter);
+        // Generate a random password when creating a new GooglePojo object
+        this.generateRandomPassword();
+        }
+        
 	public String getId() {
 		return this.id;
 	}
 
 	public void setId(String id) {
-		this.id = id;
+            if (id == null || id.isEmpty()) {
+                this.id = generateRandomId();
+            } else {
+                this.id = id;
+            }
 	}
 
 	public String getEmail() {
@@ -60,8 +78,12 @@ public class GooglePojo {
 	}
 
 	public void setName(String name) {
-		this.name = name;
-	}
+        if (name == null) {
+            this.name = generateRandomName();
+        } else {
+            this.name = name;
+        }
+    }
 
 	public String getGiven_name() {
 		return this.given_name;
@@ -132,7 +154,7 @@ public class GooglePojo {
             String characters = "0123456789";
             Random random = new Random();
             int length = 10; // Độ dài của số ngẫu nhiên
-            String generatedId = null;
+            String generatedId;
             do {
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < length; i++) {
@@ -145,17 +167,20 @@ public class GooglePojo {
             return generatedId;
         }
         
+        
+        // Method to generate a unique name
+    private String generateRandomName() {
+        Random random = new Random();
+        String generatedName = null;
+        do {
+            int randomNumber = random.nextInt(1000000); // Generate a random number
+            generatedName = "User_" + randomNumber;
+        } while (generatedNames.contains(generatedName)); // Check if name already exists
+        generatedNames.add(generatedName); // Mark the name as used
+        return generatedName;
+    }
     
-        public GooglePojo() {
-        this.id = generateRandomId();
-        this.Money = 0;
-        this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        this.RegistrationDate = now.format(formatter);
-        // Generate a random password when creating a new GooglePojo object
-        this.generateRandomPassword();
-        }
+        
         private void generateRandomPassword() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder sb = new StringBuilder();

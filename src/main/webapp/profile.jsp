@@ -128,7 +128,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                       <li>Wish Lists <span>2</span></li>
                     </ul>
                         <div class="d-flex justify-content-start align-items-center">
-                      <a href="Update.jsp" class="btn btn-primary ">Update</a>
+                      <a href="UpdateProfile.jsp" class="btn btn-primary ">Update</a>
                       <a href="transaction.jsp" class="btn btn-primary">Transaction</a>
                     </div>
                   </div>
