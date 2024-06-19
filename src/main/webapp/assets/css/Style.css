@@ -292,3 +292,19 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 .publisher-p {
     margin-bottom: 20px;
 }
+/* Custom button color */
+.btn-pink {
+  background-color: #ff1493; /* Adjusted pink color */
+  border-color: #ff1493; /* Adjusted border color */
+  color: #fff; /* White text */
+  padding: 8px 16px; /* Adjust padding as needed */
+  text-decoration: none; /* Remove underline */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.btn-pink:hover {
+  background-color: #ff007f; /* Darker pink on hover */
+  border-color: #ff007f;
+}
+
