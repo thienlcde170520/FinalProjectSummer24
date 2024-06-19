@@ -698,7 +698,7 @@ public class JavaMongo {
         return transactionsList;
     }
 
-    }
+    
 
     
     public static void updateGamerProfile(String id, String name, String email, String password, String AvatarLink) {

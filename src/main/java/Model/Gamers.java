@@ -18,11 +18,11 @@ public class Gamers extends Users{
 
     // Hàm khởi tạo mặc định, thiết lập giá trị mặc định
     public Gamers() {
-
         this.Money = 0;
         this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
     }
     
+
 
     @Override
      public String getId() {
