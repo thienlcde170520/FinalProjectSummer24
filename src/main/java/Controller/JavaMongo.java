@@ -382,7 +382,7 @@ public class JavaMongo {
     }
 
     
-    public static void CreateNewGamerAccount(String name, String password, String email, int role, int Money, String AvatarLink, String RegistrationDate){
+    public static void CreateNewGamerAccount(String id,String name, String password, String email, int role, int Money, String AvatarLink, String RegistrationDate){
         MongoClientSettings settings = getConnection();
         try (MongoClient mongoClient = MongoClients.create(settings)) {
 
@@ -393,13 +393,15 @@ public class JavaMongo {
 
             MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
 
-            Document user = new Document("Name", name)
+            Document user = new Document("ID", id)
+                    .append("Name", name)
                     .append("Password", password)
                     .append("Email", email)
                     .append("Role", role);
             usersCollection.insertOne(user);
 
-            Document gamer = new Document("Name", name)
+            Document gamer = new Document("ID", id)
+                    .append("Name", name)
                     .append("Password", password)
                     .append("Email", email)
                     .append("Money", Money)
@@ -415,7 +417,7 @@ public class JavaMongo {
     
     
     /*tao moi publisher*/
-    public static void CreateNewPublisgherAccount(String name, String password, String email,String bank_account,
+    public static void CreateNewPublisgherAccount(String id, String name, String password, String email,String bank_account,
             int profit,String Description, String AvatarLink,
             int Money, int role,String RegistrationDate){
         MongoClientSettings settings = getConnection();
@@ -428,13 +430,15 @@ public class JavaMongo {
         // Access the "Gamers" collection
         MongoCollection<Document> gamePublishersCollection = fpteamDB.getCollection("GamePublishers");
         
-        Document user = new Document("Name", name)
+        Document user = new Document("ID", id)
+                        .append("Name", name)
                         .append("Password", password)
                         .append("Email", email)
                         .append("Role", role);
         usersCollection.insertOne(user);
         
-        Document gamer = new Document("Name", name)
+        Document gamer = new Document("ID", id)
+                        .append("Name", name)
                         .append("Password", password)
                         .append("Email", email)
                         .append("Bank_account",bank_account)
@@ -578,6 +582,43 @@ public class JavaMongo {
             e.printStackTrace();
         }
     }
+    
+    public static void updateGamerProfile(String id, String name, String email, String password, String AvatarLink) {
+    try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+        MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+
+        // Tạo một bộ lọc để xác định gamer cần cập nhật dựa trên ID
+        BasicDBObject query = new BasicDBObject();
+        query.put("ID", id);
+
+        // Tạo một document mới chứa thông tin cập nhật (nếu có)
+        Document updateFields = new Document();
+        if (name != null && !name.isEmpty()) {
+            updateFields.append("Name", name);
+        }
+        if (email != null && !email.isEmpty()) {
+            updateFields.append("Email", email);
+        }
+        if (password != null && !password.isEmpty()) {
+            updateFields.append("Password", password);
+        }
+        if(AvatarLink != null && !AvatarLink.isEmpty()){
+            updateFields.append("AvatarLink",AvatarLink);
+        }
+
+        // Tạo một document mới chứa thông tin cập nhật
+        Document updateDoc = new Document("$set", updateFields);
+
+        // Thực hiện update vào MongoDB trong collection "Gamers"
+        gamersCollection.updateOne(query, updateDoc);
+
+        System.out.println("Gamer profile updated successfully with ID: " + id);
+    } catch (MongoException e) {
+        e.printStackTrace();
+    }
+}
+
 }
 
 

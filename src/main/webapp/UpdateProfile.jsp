@@ -116,12 +116,12 @@ https://templatemo.com/tm-579-cyborg-gaming
 
                        <div class="form-group">
                         <label for="Name">PassWord</label>
-                        <input type="text" class="form-control" id="PassWord" name="newPassWord" placeholder="Enter your new PassWord ">
+                        <input type="password" class="form-control" id="PassWord" name="newPassWord" placeholder="Enter your new PassWord ">
                     </div>
                     
                     <div class="form-group">
                         <label for="Name">Confirm Password</label>
-                        <input type="text" class="form-control" id="ConfirmPassWord" name="confirmPass" placeholder="Confirm your Password">
+                        <input type="password" class="form-control" id="ConfirmPassWord" name="confirmPass" placeholder="Confirm your Password">
                     </div>
                    
 
