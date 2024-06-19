@@ -4,7 +4,11 @@
  */
 package Common;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 /**
  *
@@ -22,7 +26,11 @@ public class GooglePojo {
         private String password; // bonus
         private int Money;
         private String AvatarLink;
+        private String RegistrationDate;
         
+        // Set để lưu trữ các id đã sinh ra
+        private static Set<String> generatedIds = new HashSet<>();
+    
 	public String getId() {
 		return this.id;
 	}
@@ -110,12 +118,41 @@ public class GooglePojo {
         public void setAvatarLink(String AvatarLink) {
             this.AvatarLink = AvatarLink;
         }
-        
+
+        public String getRegistrationDate() {
+            return RegistrationDate;
+        }
+
+        public void setRegistrationDate(String RegistrationDate) {
+            this.RegistrationDate = RegistrationDate;
+        }
+        // Hàm sinh ID ngẫu nhiên
+        // Hàm sinh ID ngẫu nhiên và đảm bảo ID là duy nhất
+        private String generateRandomId() {
+            String characters = "0123456789";
+            Random random = new Random();
+            int length = 10; // Độ dài của số ngẫu nhiên
+            String generatedId = null;
+            do {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < length; i++) {
+                    int index = random.nextInt(characters.length());
+                    sb.append(characters.charAt(index));
+                }
+                generatedId = "gamer_" + sb.toString();
+            } while (generatedIds.contains(generatedId)); // Kiểm tra xem ID đã tồn tại chưa
+            generatedIds.add(generatedId); // Đánh dấu ID đã sử dụng
+            return generatedId;
+        }
         
     
         public GooglePojo() {
+        this.id = generateRandomId();
         this.Money = 0;
         this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        this.RegistrationDate = now.format(formatter);
         // Generate a random password when creating a new GooglePojo object
         this.generateRandomPassword();
         }

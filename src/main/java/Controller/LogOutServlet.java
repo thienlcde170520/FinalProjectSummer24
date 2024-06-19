@@ -5,6 +5,7 @@
 
 package Controller;
 
+import Model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,13 +13,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author ASUS
  */
-@WebServlet(name="UpdateServlet", urlPatterns={"/UpdateServlet"})
-public class UpdateServlet extends HttpServlet {
+@WebServlet(name="LogOutServlet", urlPatterns={"/LogOutServlet"})
+public class LogOutServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -35,10 +37,10 @@ public class UpdateServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UpdateServlet</title>");  
+            out.println("<title>Servlet LogOutServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UpdateServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet LogOutServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -55,7 +57,12 @@ public class UpdateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        Users a = (Users) session.getAttribute("account");
+        if (a!= null){
+            session.removeAttribute("account");
+            response.sendRedirect("Login.jsp");
+        } 
     } 
 
     /** 

@@ -6,9 +6,12 @@
 package Common;
 
 import static Common.CheckValid.CheckEmail;
+import Controller.JavaMongo;
 
 import static Controller.JavaMongo.CreateNewGamerAccount;
 import static Controller.JavaMongo.CreateNewPublisgherAccount;
+import Model.Gamers;
+import Model.Publishers;
 import Model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,6 +20,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,10 +89,13 @@ public class SignUpServlet extends HttpServlet {
         String role = request.getParameter("role");
         
         //int role = 3;
-        int money = 0;
-        String avatar = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
+//        int money = 0;
+//        String avatar = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
+        
+        // Generate the current date and time
+        
         String emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@gmail\\.com$";
-        if (em.isEmpty() || !em.matches(emailPattern) || p.isEmpty()|| p == null || role.isEmpty() || role == null) {           
+        if (em.isEmpty() || !em.matches(emailPattern) || p.isEmpty()|| p == null || role.isEmpty() || role == null || n.isEmpty() || n == null) {           
                 request.setAttribute("mess", "Invalid information!!!!");
                 request.setAttribute("blue", true);
                //response.sendRedirect("SignUp.jsp");
@@ -95,35 +104,44 @@ public class SignUpServlet extends HttpServlet {
         }else{
             
             int roleValue;
-            if(role.equals("gamer")){
+            
+            if("gamer".equals(role)){
                 roleValue = 3;
-            }else if(role.equals("publisher")){
+            }else if("publisher".equals(role)){
                 roleValue = 2;
-            }else {
+            }else{
                 request.setAttribute("mess", "Invalid role selected!");
                 request.setAttribute("blue", true);
-                request.getRequestDispatcher("signup.jsp").forward(request, response);
+                request.getRequestDispatcher("Login.jsp").forward(request, response);
                 return;
             }
             try {
-                
+                Gamers g = new Gamers();
+                Publishers pu = new Publishers();
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                String registrationDate = now.format(formatter);
+                //String Id = "game_" + generateRandomNumber();
                 Users as = CheckEmail(em);
                 if (as == null) {
                     try{
 //                        int numberUser = JavaMongo.getAllUser().size();
 //                        int numberCus = JavaMongo.getAllGamers().size();
-                        if(n.isEmpty()){
-                            n = "User" + generateRandomNumber();
-                            
-                        }
+
                         if(roleValue == 3){
-                            CreateNewGamerAccount( n,  p,  em, roleValue,money,avatar);
+                            CreateNewGamerAccount( g.getId(),n,  p,  em, roleValue,g.getMoney(),g.getAvatarLink(),registrationDate);
+                            HttpSession session = request.getSession();
+                            session.setAttribute("account",JavaMongo.getGamerByEmail(em));
                         }else if (roleValue == 2){
-                            CreateNewPublisgherAccount( n,  p,  em, roleValue,money,avatar);
+                            CreateNewPublisgherAccount(pu.getId(), n,  p,  em,pu.getBank_account(),
+                                    pu.getProfit(),pu.getDescription(),pu.getAvatarLink(),pu.getMoney() ,roleValue, registrationDate );
+                            HttpSession session = request.getSession();
+                            session.setAttribute("account",JavaMongo.getPublisherByEmail(em));
                         }
                         //response.sendRedirect("Home.jsp");
                         
                         request.getRequestDispatcher("Home.jsp").forward(request, response);
+                        
                     } catch (Exception e) {
                         try (PrintWriter out = response.getWriter()) {
                             /* TODO output your page here. You may use following sample code. */
@@ -173,10 +191,7 @@ public class SignUpServlet extends HttpServlet {
         }
         
     }
-    public int generateRandomNumber() {
-        Random random = new Random();
-        return random.nextInt(1000); // Số ngẫu nhiên từ 0 đến 999
-    }
+  
 
     /** 
      * Returns a short description of the servlet.
