@@ -23,7 +23,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,7 +35,7 @@ import java.util.logging.Logger;
  */
 @WebServlet(name="SignUpServlet", urlPatterns={"/SignUpServlet"})
 public class SignUpServlet extends HttpServlet {
-   
+   static Set<String> radomaId = new HashSet<>();
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -93,9 +95,9 @@ public class SignUpServlet extends HttpServlet {
 //        String avatar = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
         
         // Generate the current date and time
-        
+        String regex = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // yeu cau pass có it nhat 1 so 1 chu
         String emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@gmail\\.com$";
-        if (em.isEmpty() || !em.matches(emailPattern) || p.isEmpty()|| p == null || role.isEmpty() || role == null || n.isEmpty() || n == null) {           
+        if (em.isEmpty() || !em.matches(emailPattern) || p.isEmpty()|| !p.matches(regex) || role.isEmpty() || role == null || n.isEmpty() || n == null) {           
                 request.setAttribute("mess", "Invalid information!!!!");
                 request.setAttribute("blue", true);
                //response.sendRedirect("SignUp.jsp");
@@ -117,6 +119,8 @@ public class SignUpServlet extends HttpServlet {
             }
             try {
                 Gamers g = new Gamers();
+                String idG = "gamer_"+generateRandomNumber();
+                String idP = "pub_" + generateRandomNumber();
                 Publishers pu = new Publishers();
                 LocalDateTime now = LocalDateTime.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -129,11 +133,11 @@ public class SignUpServlet extends HttpServlet {
 //                        int numberCus = JavaMongo.getAllGamers().size();
 
                         if(roleValue == 3){
-                            CreateNewGamerAccount( g.getId(),n,  p,  em, roleValue,g.getMoney(),g.getAvatarLink(),registrationDate);
+                            CreateNewGamerAccount( idG,n,  p,  em, roleValue,g.getMoney(),g.getAvatarLink(),registrationDate);
                             HttpSession session = request.getSession();
                             session.setAttribute("account",JavaMongo.getGamerByEmail(em));
                         }else if (roleValue == 2){
-                            CreateNewPublisgherAccount(pu.getId(), n,  p,  em,pu.getBank_account(),
+                            CreateNewPublisgherAccount(idP, n,  p,  em,pu.getBank_account(),
                                     pu.getProfit(),pu.getDescription(),pu.getAvatarLink(),pu.getMoney() ,roleValue, registrationDate );
                             HttpSession session = request.getSession();
                             session.setAttribute("account",JavaMongo.getPublisherByEmail(em));
@@ -191,7 +195,32 @@ public class SignUpServlet extends HttpServlet {
         }
         
     }
+    //radomaId
+    private static String generateRandomNumber() {
+        Random random = new Random();
+        String generateID = null;
+        do {
+            int randomNumber = random.nextInt(1000000);
+            generateID = String.valueOf(randomNumber);
+        } while (radomaId.contains(generateID));
+        radomaId.add(generateID);
+        return generateID; // Trả về một chuỗi số ngẫu nhiên
+    }
+
   
+    /*
+    private String generateRandomName() {
+        Random random = new Random();
+        String generatedName = null;
+        do {
+            int randomNumber = random.nextInt(1000000); // Generate a random number
+            generatedName = "User_" + randomNumber;
+        } while (generatedNames.contains(generatedName)); // Check if name already exists
+        generatedNames.add(generatedName); // Mark the name as used
+        return generatedName;
+    }
+    
+    */
 
     /** 
      * Returns a short description of the servlet.

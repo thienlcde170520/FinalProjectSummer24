@@ -1,5 +1,6 @@
 package Controller;
 
+
 import Model.BankTransactions;
 import Model.Game;
 import Model.Gamers;
@@ -56,6 +57,23 @@ public class JavaMongo {
         System.out.println("List of users:");
         for (Users use : usersList) {
             System.out.println(use);
+        }
+        
+         // Replace with a valid email from your database
+        String testEmail = "gamochoRock12@gmail.com";
+        
+        Publishers p = getPublisherByEmail(testEmail);
+        
+        if (p != null) {
+            System.out.println("pub Details:");
+            System.out.println("ID: " + p.getId());
+            System.out.println("Name: " + p.getName());
+            System.out.println("Email: " + p.getGmail());
+            System.out.println("Password: " + p.getPassword());
+            System.out.println("Role: " + p.getRole());
+            
+        } else {
+            System.out.println("No gamer found with email: " + testEmail);
         }
         
         
@@ -444,7 +462,6 @@ public class JavaMongo {
     /*tao moi publisher*/
 
     public static void CreateNewPublisgherAccount(String id, String name, String password, String email,String bank_account,
-
             int profit,String Description, String AvatarLink,
             int Money, int role,String RegistrationDate){
         MongoClientSettings settings = getConnection();
@@ -698,65 +715,87 @@ public class JavaMongo {
         return transactionsList;
     }
 
-    }
+    
 
     
-    public static void updateGamerProfile(String id, String name, String email, String password, String AvatarLink) {
-            try (MongoClient mongoClient = MongoClients.create(getConnection())) {
-                MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+    public static void updateProfile(String id, String name, String email, String password, String AvatarLink, int role) {
+        try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
 
-                // Collection "Gamers"
-                MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
-                // Collection "Users"
-                MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
+            // Collection "Gamers"
+            MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+            // Collection "Users"
+            MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
+            // Collection "Publishers"
+            MongoCollection<Document> publishersCollection = fpteamDB.getCollection("GamePublishers");
+        
+            // Tạo một bộ lọc để xác định gamer cần cập nhật dựa trên ID
+            BasicDBObject query = new BasicDBObject();
+            query.put("ID", id);
 
-                // Tạo một bộ lọc để xác định gamer cần cập nhật dựa trên ID
-                BasicDBObject query = new BasicDBObject();
-                query.put("ID", id);
-
-                // Tạo một document mới chứa thông tin cập nhật (nếu có) cho Gamers
-                Document gamerUpdateFields = new Document();
-                if (name != null && !name.isEmpty()) {
-                    gamerUpdateFields.append("Name", name);
-                }
-                if (email != null && !email.isEmpty()) {
-                    gamerUpdateFields.append("Email", email);
-                }
-                if (password != null && !password.isEmpty()) {
-                    gamerUpdateFields.append("Password", password);
-                }
-                if (AvatarLink != null && !AvatarLink.isEmpty()) {
-                    gamerUpdateFields.append("AvatarLink", AvatarLink);
-                }
-
-                // Tạo một document mới chứa thông tin cập nhật cho Users
-                Document userUpdateFields = new Document();
-                if (name != null && !name.isEmpty()) {
-                    userUpdateFields.append("Name", name);
-                }
-                if (email != null && !email.isEmpty()) {
-                    userUpdateFields.append("Email", email);
-                }
-                if (password != null && !password.isEmpty()) {
-                    userUpdateFields.append("Password", password);
-                }
-
-                // Tạo một document mới chứa thông tin cập nhật
-                Document gamerUpdateDoc = new Document("$set", gamerUpdateFields);
-                Document userUpdateDoc = new Document("$set", userUpdateFields);
-
-                // Thực hiện update vào MongoDB trong collection "Gamers"
-                gamersCollection.updateOne(query, gamerUpdateDoc);
-                // Thực hiện update vào MongoDB trong collection "Users"
-                usersCollection.updateOne(query, userUpdateDoc);
-
-                System.out.println("Gamer profile updated successfully with ID: " + id);
-            } catch (MongoException e) {
-                e.printStackTrace();
+            // Tạo một document mới chứa thông tin cập nhật (nếu có) cho Gamers
+            Document gamerUpdateFields = new Document();
+            if (name != null && !name.isEmpty()) {
+                gamerUpdateFields.append("Name", name);
             }
+            if (email != null && !email.isEmpty()) {
+                gamerUpdateFields.append("Email", email);
+            }
+            if (password != null && !password.isEmpty()) {
+                gamerUpdateFields.append("Password", password);
+            }
+            if (AvatarLink != null && !AvatarLink.isEmpty()) {
+                gamerUpdateFields.append("AvatarLink", AvatarLink);
+            }
+
+            // Tạo một document mới chứa thông tin cập nhật cho Users
+            Document userUpdateFields = new Document();
+            if (name != null && !name.isEmpty()) {
+                userUpdateFields.append("Name", name);
+            }
+            if (email != null && !email.isEmpty()) {
+                userUpdateFields.append("Email", email);
+            }
+            if (password != null && !password.isEmpty()) {
+                userUpdateFields.append("Password", password);
+            }
+            
+            /// Tạo một document mới chứa thông tin cập nhật cho Publishers
+            Document publisherUpdateFields = new Document();
+            if (name != null && !name.isEmpty()) {
+                publisherUpdateFields.append("Name", name);
+            }
+            if (email != null && !email.isEmpty()) {
+                publisherUpdateFields.append("Email", email);
+            }
+            if (password != null && !password.isEmpty()) {
+                publisherUpdateFields.append("Password", password);
+            }
+            
+            if (!gamerUpdateFields.isEmpty() || !userUpdateFields.isEmpty() || !publisherUpdateFields.isEmpty()) {
+                    usersCollection.updateOne(query, new Document("$set", userUpdateFields));
+                
+                    // Kiểm tra xem có gì để cập nhật không
+                    if (role == 3) {
+                        // Cập nhật trong cả Gamers, Users và Publishers
+                        gamersCollection.updateOne(query, new Document("$set", gamerUpdateFields));
+                        
+
+                    } else if (role == 2) {
+                        // Chỉ cập nhật trong Users và Publishers
+                        publishersCollection.updateOne(query, new Document("$set", publisherUpdateFields));
+
+                    }
+            }
+            
+        } catch (MongoException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
-    
+
 
 
 }
