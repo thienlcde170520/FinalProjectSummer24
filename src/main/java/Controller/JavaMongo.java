@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.BankTransactions;
 import Model.Game;
 import Model.Gamers;
 import Model.Publishers;
@@ -18,6 +19,8 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import java.text.SimpleDateFormat;
 import org.bson.Document;
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import org.bson.conversions.Bson;
 
 public class JavaMongo {
 
@@ -605,6 +609,91 @@ public class JavaMongo {
             e.printStackTrace();
         }
     }
+
+      public static void insertTransaction(String partnerCode, String orderId, String requestId, String amount,
+                                         String orderInfo, String orderType, String transId, String payType, String signature, String payerId) throws Exception {
+        try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoCollection<Document> transactionsCollection = fpteamDB.getCollection("BankTransactions");
+             MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+
+            Document transactionDoc = new Document()
+                    .append("partnerCode", partnerCode)
+                    .append("orderId", orderId)
+                    .append("requestId", requestId)
+                    .append("amount", amount)
+                    .append("orderInfo", orderInfo)
+                    .append("orderType", orderType)
+                    .append("transId", transId)
+                    .append("payType", payType)
+                    .append("signature", signature)
+                    .append("payerId", payerId)
+                    .append("createdAt", new Date());
+
+            transactionsCollection.insertOne(transactionDoc);
+            System.out.println("Transaction inserted successfully into MongoDB.");
+              // Retrieve the corresponding gamer from the Gamers collection
+            Bson filter = Filters.eq("ID", payerId);
+            Document gamerDoc = gamersCollection.find(filter).first();
+
+            if (gamerDoc != null) {
+                // Update the money field in the Gamers collection
+                int currentMoney = gamerDoc.getInteger("Money");
+                int transactionAmount = Integer.parseInt(amount);
+                int updatedMoney = currentMoney + transactionAmount;
+
+                Bson updateOperation = Updates.set("Money", updatedMoney);
+                gamersCollection.updateOne(filter, updateOperation);
+
+                System.out.println("Gamer's money updated successfully.");
+            } else {
+                System.out.println("Gamer not found.");
+            }
+        } catch (Exception e) {
+           throw new Exception("Error inserting transaction into MongoDB: " + e.getMessage());
+        }
+        }
+     
+        public static ArrayList<BankTransactions> getTransactionHistoryByPayerId(String payerId) {
+        ArrayList<BankTransactions> transactionsList = new ArrayList<>();
+
+        MongoClientSettings settings = getConnection();
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoCollection<Document> transactionsCollection = fpteamDB.getCollection("BankTransactions");
+
+            BasicDBObject query = new BasicDBObject("payerId", payerId);
+
+            MongoCursor<Document> cursor = transactionsCollection.find(query).iterator();
+
+            while (cursor.hasNext()) {
+                Document doc = cursor.next();
+                BankTransactions transaction = new BankTransactions(
+                        doc.getString("partnerCode"),
+                        doc.getString("orderId"),
+                        doc.getString("requestId"),
+                        doc.getString("amount"),
+                        doc.getString("orderInfo"),
+                        doc.getString("orderType"),
+                        doc.getString("transId"),
+                        doc.getString("payType"),
+                        doc.getString("signature"),
+                        doc.getString("payerId"),
+                        doc.getDate("createdAt").toInstant()
+                );
+                transactionsList.add(transaction);
+            }
+            cursor.close();
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        return transactionsList;
+    }
+
+    }
+
     
     public static void updateGamerProfile(String id, String name, String email, String password, String AvatarLink) {
     try (MongoClient mongoClient = MongoClients.create(getConnection())) {
@@ -629,6 +718,7 @@ public class JavaMongo {
         if(AvatarLink != null && !AvatarLink.isEmpty()){
             updateFields.append("AvatarLink",AvatarLink);
         }
+
 
         // Tạo một document mới chứa thông tin cập nhật
         Document updateDoc = new Document("$set", updateFields);
