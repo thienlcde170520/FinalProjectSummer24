@@ -5,6 +5,7 @@
 
 package Controller;
 
+import static Common.CheckValid.CheckEmail;
 import static Controller.JavaMongo.updateGamerProfile;
 import Model.Gamers;
 import Model.Users;
@@ -75,13 +76,13 @@ public class UpdateProfileServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String newA = request.getParameter("newGameAvatar");
+        
+        String newA = request.getParameter("gameAvatar");
         String newN = request.getParameter("newName");
         String newEM = request.getParameter("newEmail");
         String newP = request.getParameter("newPassWord");
         String conP = request.getParameter("confirmPass");
        
-            
         String emailCheck = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@gmail\\.com$";
         if(!newEM.matches(emailCheck) || !newP.equals(conP)){
             request.setAttribute("mess", "Invalid email or password!!!!");
@@ -89,21 +90,51 @@ public class UpdateProfileServlet extends HttpServlet {
             request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
         }else
         {
+            Users as = CheckEmail(newEM);
+            if(as == null)
+            {
+                try{
+                    HttpSession session = request.getSession();
+                    Users u = (Users) session.getAttribute("account");
+                   
+                        if( u.getRole() == 3){
+                           
+                        updateGamerProfile(u.getId(),newN,newEM,newP,newA);
+                        Gamers gamer = JavaMongo.getGamerByEmail(newEM);
+                            if(gamer != null){
+                                request.setAttribute("gamer", gamer);
+                                request.getRequestDispatcher("profile.jsp").forward(request, response);                     
+                            }else{
+                                 try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet profileServlet</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet profileServlet at " + u.getId()+ "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }                 
+                            }
+                        }else if( u.getRole() ==2){
+                             try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet profileServlet</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>chưa có @@</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }                 
+                        }
+                   
 
-            try{
-                HttpSession session = request.getSession();
-                Users u = (Users) session.getAttribute("account");
-                int role = u.getRole();
-                if(role == 3){
-                    updateGamerProfile(u.getId(),newN,newEM,newP,newA);
-                    Gamers gamer = JavaMongo.getGamerByEmail(u.getGmail());
-                    if(gamer != null){
-                        request.setAttribute("gamer", gamer);
-                        request.getRequestDispatcher("profile.jsp").forward(request, response);                     
-                    }else{
-                        response.sendRedirect("Login.jsp");                       
-                    }
-                }
+                
                 
             
             }catch (Exception e) {
@@ -120,8 +151,12 @@ public class UpdateProfileServlet extends HttpServlet {
                             out.println("</html>");
                         }
                     }
-        
-
+            }else{
+                request.setAttribute("mess", "An Account is Exist!!!");
+                     request.setAttribute("blue", true);
+                    //response.sendRedirect("SignUp.jsp");
+                    request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
+            }
         }
         
         
