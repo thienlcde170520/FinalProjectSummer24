@@ -85,7 +85,7 @@ public class UpdateProfileServlet extends HttpServlet {
             request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
         }else
         {
-            try{}
+            
         }
         
     }
