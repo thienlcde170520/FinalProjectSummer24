@@ -48,7 +48,13 @@ public class JavaMongo {
         for (Gamers gamer : gamersList) {
             System.out.println(gamer);
         }
-
+        ArrayList<Users> usersList = getAllUser();
+        System.out.println("List of users:");
+        for (Users use : usersList) {
+            System.out.println(use);
+        }
+        
+        
     }
 
     public static void addGame(Game game) {
@@ -607,39 +613,61 @@ public class JavaMongo {
     }
     
     public static void updateGamerProfile(String id, String name, String email, String password, String AvatarLink) {
-    try (MongoClient mongoClient = MongoClients.create(getConnection())) {
-        MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
-        MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+            try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+                MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
 
-        // Tạo một bộ lọc để xác định gamer cần cập nhật dựa trên ID
-        BasicDBObject query = new BasicDBObject();
-        query.put("ID", id);
+                // Collection "Gamers"
+                MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+                // Collection "Users"
+                MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
 
-        // Tạo một document mới chứa thông tin cập nhật (nếu có)
-        Document updateFields = new Document();
-        if (name != null && !name.isEmpty()) {
-            updateFields.append("Name", name);
-        }
-        if (email != null && !email.isEmpty()) {
-            updateFields.append("Email", email);
-        }
-        if (password != null && !password.isEmpty()) {
-            updateFields.append("Password", password);
-        }
-        if(AvatarLink != null && !AvatarLink.isEmpty()){
-            updateFields.append("AvatarLink",AvatarLink);
-        }
+                // Tạo một bộ lọc để xác định gamer cần cập nhật dựa trên ID
+                BasicDBObject query = new BasicDBObject();
+                query.put("ID", id);
 
-        // Tạo một document mới chứa thông tin cập nhật
-        Document updateDoc = new Document("$set", updateFields);
+                // Tạo một document mới chứa thông tin cập nhật (nếu có) cho Gamers
+                Document gamerUpdateFields = new Document();
+                if (name != null && !name.isEmpty()) {
+                    gamerUpdateFields.append("Name", name);
+                }
+                if (email != null && !email.isEmpty()) {
+                    gamerUpdateFields.append("Email", email);
+                }
+                if (password != null && !password.isEmpty()) {
+                    gamerUpdateFields.append("Password", password);
+                }
+                if (AvatarLink != null && !AvatarLink.isEmpty()) {
+                    gamerUpdateFields.append("AvatarLink", AvatarLink);
+                }
 
-        // Thực hiện update vào MongoDB trong collection "Gamers"
-        gamersCollection.updateOne(query, updateDoc);
+                // Tạo một document mới chứa thông tin cập nhật cho Users
+                Document userUpdateFields = new Document();
+                if (name != null && !name.isEmpty()) {
+                    userUpdateFields.append("Name", name);
+                }
+                if (email != null && !email.isEmpty()) {
+                    userUpdateFields.append("Email", email);
+                }
+                if (password != null && !password.isEmpty()) {
+                    userUpdateFields.append("Password", password);
+                }
 
-        System.out.println("Gamer profile updated successfully with ID: " + id);
-    } catch (MongoException e) {
-        e.printStackTrace();
+                // Tạo một document mới chứa thông tin cập nhật
+                Document gamerUpdateDoc = new Document("$set", gamerUpdateFields);
+                Document userUpdateDoc = new Document("$set", userUpdateFields);
+
+                // Thực hiện update vào MongoDB trong collection "Gamers"
+                gamersCollection.updateOne(query, gamerUpdateDoc);
+                // Thực hiện update vào MongoDB trong collection "Users"
+                usersCollection.updateOne(query, userUpdateDoc);
+
+                System.out.println("Gamer profile updated successfully with ID: " + id);
+            } catch (MongoException e) {
+                e.printStackTrace();
+            }
     }
-}
+    
+    
+
 
 }

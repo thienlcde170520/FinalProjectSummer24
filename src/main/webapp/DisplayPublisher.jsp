@@ -1,4 +1,3 @@
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%><!DOCTYPE html>
 <html lang="en">
 
@@ -84,30 +83,30 @@ https://templatemo.com/tm-579-cyborg-gaming
   </header>
   <!-- ***** Header Area End ***** -->
 
-  <div class="container">
+        <div class="container">
     <div class="row">
       <div class="col-lg-12">
         <div class="page-content">
 
-          <!-- ***** Banner Start ***** -->
+          <!-- ***** Banner Start ***** -->s
           <div class="row" >
               <%
             // Lấy thông tin người chơi từ request attribute
-            Model.Gamers gamer = (Model.Gamers) request.getAttribute("gamer");
+            Model.Publishers pub = (Model.Publishers) request.getAttribute("pub");
             
-            if (gamer != null) {
+            if (pub != null) {
         %>
             <div class="col-lg-12">
               <div class="main-profile ">
                 <div class="row">
                   <div class="col-lg-4">
-                    <img src="<%=gamer.getAvatarLink() %>" alt="" style="border-radius: 23px;">
+                    <img src="<%=pub.getAvatarLink()%>" alt="" style="border-radius: 23px;">
                   </div>
                   <div class="col-lg-4 align-self-center">
                     <div class="main-info header-text">
-                      <h4><%=gamer.getName() %></h4>
-                      <p>Email: <%=gamer.getGmail()%></p>
-                      <p>Tham gia từ : <%=gamer.getRegistrationDate()%></p>
+                      <h4><%=pub.getName() %></h4>
+                      <p>Email: <%=pub.getGmail()%></p>
+                      <p>Tham gia từ : <%=pub.getRegistrationDate()%></p>
                       <div class="main-border-button">
                       </div>
                     </div>
@@ -115,7 +114,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                   <div class="col-lg-4 align-self-center">
                     <ul>
                       <li>Games Downloaded <span> 1</span></li>
-                      <li>Cast <span><%=gamer.getMoney()%> VNĐ</span></li>
+                      <li>Cast <span><%=pub.getMoney()%> VNĐ</span></li>
                       <li>  <a href="UpdateProfile.jsp">UPDATE</a></li>
                       <li>Wish Lists <span>2</span></li>
                     </ul>
@@ -234,8 +233,8 @@ https://templatemo.com/tm-579-cyborg-gaming
       </div>
     </div>
   </div>
-  
-  <footer>
+    
+<footer>
     <div class="container">
       <div class="row">
         <div class="col-lg-12">

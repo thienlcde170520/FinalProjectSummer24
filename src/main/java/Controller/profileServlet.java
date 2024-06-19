@@ -6,6 +6,7 @@
 package Controller;
 
 import Model.Gamers;
+import Model.Publishers;
 import Model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -76,7 +77,13 @@ public class profileServlet extends HttpServlet {
                             }
 
                 }else if(role ==2){
-                
+                    Publishers pub = JavaMongo.getPublisherByEmail(user.getGmail());
+                    if(pub != null){
+                        request.setAttribute("pub", pub);
+                        request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);
+                    }else {
+                        response.sendRedirect("Login.jsp");
+                        }
                 }
     //            ArrayList<Gamers> gamersList = JavaMongo.getAllGamers();
 

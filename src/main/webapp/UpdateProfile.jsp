@@ -15,7 +15,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <title>Cyborg - Awesome HTML5 Template</title>
-
+    <style>
+        .error mess{
+            color: red;
+            font-weight: bold;
+        }
+</style>
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -95,8 +100,16 @@ https://templatemo.com/tm-579-cyborg-gaming
         <div class="row">
             <!-- Form Section -->
             <div class="col-12">
-                <form action="UpdateProfileServlet" method="post"  enctype="multipart/form-data" >
-
+                <form action="UpdateProfileServlet" method="POST"   >
+                    <%
+        String error = (String) request.getAttribute("error");
+        Boolean red = (Boolean) request.getAttribute("red");
+        if (red != null && red) {
+    %>
+        <p class="error"><%= error %></p>
+    <%
+        }
+    %>
                    
                     <div class="form-group">
                         <label for="gameAvatar">Your Avatar</label>
@@ -105,22 +118,22 @@ https://templatemo.com/tm-579-cyborg-gaming
                     </div>
 
                     <div class="form-group">
-                        <label for="Name">Name</label>
+                        <label for="newName">Name</label>
                         <input type="text" class="form-control" id="Name" name="newName" placeholder="Enter your new name ">
                     </div>
 
                     <div class="form-group">
-                        <label for="Name">Email</label>
+                        <label for="newEmail">Email</label>
                         <input type="text" class="form-control" id="Email" name="newEmail" placeholder="Enter your new Email ">
                     </div>
 
                        <div class="form-group">
-                        <label for="Name">PassWord</label>
+                        <label for="newPassWord">PassWord</label>
                         <input type="password" class="form-control" id="PassWord" name="newPassWord" placeholder="Enter your new PassWord ">
                     </div>
                     
                     <div class="form-group">
-                        <label for="Name">Confirm Password</label>
+                        <label for="confirmPass">Confirm Password</label>
                         <input type="password" class="form-control" id="ConfirmPassWord" name="confirmPass" placeholder="Confirm your Password">
                     </div>
                    
