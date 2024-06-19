@@ -6,8 +6,9 @@
 package Controller;
 
 import static Common.CheckValid.CheckEmail;
-import static Controller.JavaMongo.updateGamerProfile;
+import static Controller.JavaMongo.updateProfile;
 import Model.Gamers;
+import Model.Publishers;
 import Model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -99,38 +100,45 @@ public class UpdateProfileServlet extends HttpServlet {
                    
                         if( u.getRole() == 3){
                            
-                        updateGamerProfile(u.getId(),newN,newEM,newP,newA);
+                        updateProfile(u.getId(),newN,newEM,newP,newA,u.getRole());
                         Gamers gamer = JavaMongo.getGamerByEmail(newEM);
                             if(gamer != null){
                                 request.setAttribute("gamer", gamer);
                                 request.getRequestDispatcher("profile.jsp").forward(request, response);                     
                             }else{
                                  try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet profileServlet</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet profileServlet at " + u.getId()+ "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }                 
+                                    /* TODO output your page here. You may use following sample code. */
+                                    out.println("<!DOCTYPE html>");
+                                    out.println("<html>");
+                                    out.println("<head>");
+                                    out.println("<title>Servlet profileServlet</title>");  
+                                    out.println("</head>");
+                                    out.println("<body>");
+                                    out.println("<h1>Servlet profileServlet at " + u.getRole()+ "</h1>");
+                                    out.println("</body>");
+                                    out.println("</html>");
+                                }                 
                             }
                         }else if( u.getRole() ==2){
-                             try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet profileServlet</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>chưa có @@</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }                 
+                             updateProfile(u.getId(),newN,newEM,newP,newA,u.getRole());
+                             Publishers pub = JavaMongo.getPublisherByEmail(newEM);
+                             if(pub != null){
+                                 request.setAttribute("pub", pub);
+                                 request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);
+                             }else{
+                                 try (PrintWriter out = response.getWriter()) {
+                                    /* TODO output your page here. You may use following sample code. */
+                                    out.println("<!DOCTYPE html>");
+                                    out.println("<html>");
+                                    out.println("<head>");
+                                    out.println("<title>Servlet profileServlet</title>");  
+                                    out.println("</head>");
+                                    out.println("<body>");
+                                    out.println("<h1>Servlet profileServlet at " + u.getId()+ "</h1>");
+                                    out.println("</body>");
+                                    out.println("</html>");
+                                }                 
+                            }
                         }
                    
 
