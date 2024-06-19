@@ -89,6 +89,7 @@ public class UpdateProfileServlet extends HttpServlet {
             request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
         }else
         {
+
             try{
                 HttpSession session = request.getSession();
                 Users u = (Users) session.getAttribute("account");
@@ -120,6 +121,7 @@ public class UpdateProfileServlet extends HttpServlet {
                         }
                     }
         
+
         }
         
         
