@@ -249,10 +249,7 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
     <div class="col-lg-12">
         <h4>User Reviews:</h4>
         <ul class="list-unstyled" style="color: #F0F5FF">
-            <%
-                
-             
-                
+            <%               
                 for (Review review : reviews) {
                     // Get the user (gamer) associated with this review
                     Gamers user = JavaMongo.getGamerByGamerId(review.getIdGamer());
@@ -268,7 +265,7 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
                 
                 <!-- Delete button form (display only if logged-in user is the author of the review) -->
                 <% if (isReviewOwner) { %>
-                    <form action="ReviewGameServlet" method="post" style="display: inline;">
+                    <form action="ReviewGameServlet" method="get" style="display: inline;">
                         <input type="hidden" name="reviewGameId" value="<%= review.getIdGame()%>">
                         <input type="hidden" name="reviewGamerId" value="<%= review.getIdGamer()%>">
                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>

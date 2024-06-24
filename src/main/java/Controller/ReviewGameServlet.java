@@ -83,7 +83,7 @@ public class ReviewGameServlet extends HttpServlet {
         Gamers gamer = (Gamers) session.getAttribute("account");
         String gamerId = gamer.getId();
         String gameId = request.getParameter("gameId");
-        Double rating = Double.parseDouble(request.getParameter("rating"));
+        Double rating = Double.valueOf(request.getParameter("rating"));
         String reviewDescription = request.getParameter("review");
          JavaMongo.addReview(gamerId, gameId, rating, reviewDescription);
 
