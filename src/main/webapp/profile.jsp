@@ -150,6 +150,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                           </div>
                         </div>
                     <div class="row">
+    <% if (games != null && !games.isEmpty()) { %>
     <% for (Game game : games) { %>
         <div class="col-lg-3 col-sm-6">
             <div class="item">
@@ -163,6 +164,10 @@ https://templatemo.com/tm-579-cyborg-gaming
             </div>
         </div>
     <% } %>
+<% } else { %>
+    <p>No games found.</p>
+<% } %>
+
 </div>
 
 
