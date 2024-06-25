@@ -121,7 +121,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <ul>
 
                       <li>Games Downloaded <span> 1</span></li>
-                      <li>Cast <span><%=gamer.getMoney()%> VNĐ</span></li>
+                      <li>Balance <span><%=gamer.getMoney()%> VNĐ</span></li>
                       <li>  <a href="UpdateProfile.jsp">UPDATE</a></li>
 
 

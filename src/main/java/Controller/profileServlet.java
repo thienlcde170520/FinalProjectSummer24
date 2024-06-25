@@ -84,7 +84,9 @@ public class profileServlet extends HttpServlet {
                 }else if(role ==2){
                     Publishers pub = JavaMongo.getPublisherByEmail(user.getGmail());
                     if(pub != null){
+                        ArrayList<BankTransactions> transactionHistory = JavaMongo.getTransactionHistoryByPayerId(user.getId());
                         request.setAttribute("pub", pub);
+                        request.setAttribute("transactionHistory", transactionHistory);
                         request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);
                     }else {
                         response.sendRedirect("Login.jsp");

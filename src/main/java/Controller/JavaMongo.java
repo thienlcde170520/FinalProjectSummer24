@@ -81,7 +81,7 @@ public class JavaMongo {
 
     public static void addGame(Game game) {
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
 
             Document gameDoc = new Document()
@@ -110,7 +110,7 @@ public class JavaMongo {
 
     public static void publishGame(String gameId, String publisherId) {
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Publish");
 
             Document gamePublishDoc = new Document()
@@ -128,7 +128,7 @@ public class JavaMongo {
 
     public static void addGenreToGame(String gameId, String genreType) {
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
 
             Document gameGenreDoc = new Document()
@@ -147,7 +147,7 @@ public class JavaMongo {
         ArrayList<Game> gamesList = new ArrayList<>();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
             MongoCursor<Document> cursor = gamesCollection.find().iterator();
 
@@ -192,7 +192,7 @@ public class JavaMongo {
         ArrayList<Genre> genresList = new ArrayList<>();
 
         try (MongoClient mongoClient = MongoClients.create(CONNECTION_STRING)) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> Collection = fpteamDB.getCollection("Genres");
 
             MongoCursor<Document> cursor = Collection.find().iterator();
@@ -216,7 +216,7 @@ public class JavaMongo {
         ArrayList<Review> reviews = new ArrayList<>();
 
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> collection = fpteamDB.getCollection("Reviews");
 
             MongoCursor<Document> cursor = collection.find(new Document("ID_Game", game.getId())).iterator();
@@ -244,7 +244,7 @@ public class JavaMongo {
         double averageRating = 0.0;
 
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> collection = fpteamDB.getCollection("Reviews");
 
             List<Document> pipeline = Arrays.asList(
@@ -273,7 +273,7 @@ public class JavaMongo {
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             try {
                 // Access the "FPTeam" database
-                MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+                MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
                 // Access the "Gamers" collection
                 MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
@@ -314,7 +314,7 @@ public class JavaMongo {
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             try {
                 // Access the "FPTeam" database
-                MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+                MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
                 // Access the "Gamers" collection
                 MongoCollection<Document> gamePublishersCollection = fpteamDB.getCollection("GamePublishers");
@@ -358,7 +358,7 @@ public class JavaMongo {
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             try {
                 // Access the "FPTeam" database
-                MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+                MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
                 // Access the "Gamers" collection
                 MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
@@ -390,7 +390,7 @@ public class JavaMongo {
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             // Truy cập cơ sở dữ liệu "FPTeam"
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
             // Truy cập bộ sưu tập "Users"
             MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
@@ -430,7 +430,7 @@ public class JavaMongo {
         MongoClientSettings settings = getConnection();
         try (MongoClient mongoClient = MongoClients.create(settings)) {
 
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
             // Access the "Gamers" collection
             MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
@@ -467,7 +467,7 @@ public class JavaMongo {
         MongoClientSettings settings = getConnection();
         try(MongoClient mongoClient = MongoClients.create(settings)){
             
-        MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
                 // Access the "Users" collection
         MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
@@ -506,7 +506,7 @@ public class JavaMongo {
         MongoClientSettings settings = getConnection();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
 
             BasicDBObject query = new BasicDBObject();
@@ -534,7 +534,7 @@ public class JavaMongo {
         MongoClientSettings settings = getConnection();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
 
             BasicDBObject query = new BasicDBObject();
@@ -567,7 +567,7 @@ public class JavaMongo {
         MongoClientSettings settings = getConnection();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> publishersCollection = fpteamDB.getCollection("GamePublishers");
 
 //GamePublishers
@@ -602,7 +602,7 @@ public class JavaMongo {
     public static void updatePassword(String email, String newPassword) {
         try (com.mongodb.client.MongoClient mongoClient = MongoClients.create(getConnection())) {
             // Truy cập cơ sở dữ liệu "FPTeam"
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
             // Tạo một bộ lọc để truy vấn người dùng dựa trên Email
             Document filter = new Document("Email", email);
@@ -636,10 +636,10 @@ public class JavaMongo {
       public static void insertTransaction(String partnerCode, String orderId, String requestId, String amount,
                                          String orderInfo, String orderType, String transId, String payType, String signature, String payerId) throws Exception {
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> transactionsCollection = fpteamDB.getCollection("BankTransactions");
-             MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
-
+            MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+            MongoCollection<Document> publishersCollection = fpteamDB.getCollection("GamePublishers");
             Document transactionDoc = new Document()
                     .append("partnerCode", partnerCode)
                     .append("orderId", orderId)
@@ -658,7 +658,7 @@ public class JavaMongo {
               // Retrieve the corresponding gamer from the Gamers collection
             Bson filter = Filters.eq("ID", payerId);
             Document gamerDoc = gamersCollection.find(filter).first();
-
+            Document pubDoc = publishersCollection.find(filter).first();  
             if (gamerDoc != null) {
                 // Update the money field in the Gamers collection
                 int currentMoney = gamerDoc.getInteger("Money");
@@ -672,6 +672,19 @@ public class JavaMongo {
             } else {
                 System.out.println("Gamer not found.");
             }
+            
+            if(pubDoc!=null){
+                int currentMoney = pubDoc.getInteger("Money");
+                int transactionAmount = Integer.parseInt(amount);
+                int updatedMoney = currentMoney + transactionAmount;
+
+                Bson updateOperation = Updates.set("Money", updatedMoney);
+                publishersCollection.updateOne(filter, updateOperation);
+
+                System.out.println("Phublisher's money updated successfully.");
+            }
+            
+            
         } catch (Exception e) {
            throw new Exception("Error inserting transaction into MongoDB: " + e.getMessage());
         }
@@ -683,7 +696,7 @@ public class JavaMongo {
         MongoClientSettings settings = getConnection();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> transactionsCollection = fpteamDB.getCollection("BankTransactions");
 
             BasicDBObject query = new BasicDBObject("payerId", payerId);
@@ -720,7 +733,7 @@ public class JavaMongo {
     
     public static void updateProfile(String id, String name, String email, String password, String AvatarLink, int role) {
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPTeam");
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
             // Collection "Gamers"
             MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");

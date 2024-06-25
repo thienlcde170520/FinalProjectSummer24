@@ -28,6 +28,7 @@
               </div>
             </div>
             <form action="newPassword" method="POST">
+                <p class="text-danger">${mess}</p>
               <div class="row gy-3 overflow-hidden">               
                 <div class="col-12">
                   <div class="form-floating mb-3">
@@ -47,7 +48,7 @@
                   </div>
                 </div>
               </div>
-               <p class="text-danger">${mess}</p>
+               
             </form>
           </div>
         </div>

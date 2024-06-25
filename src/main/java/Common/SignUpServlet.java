@@ -88,20 +88,19 @@ public class SignUpServlet extends HttpServlet {
         String n = request.getParameter("name");
         String em = request.getParameter("email");
         String p = request.getParameter("password");
+        String rp = request.getParameter("confirm_password");
         String role = request.getParameter("role");
         
-        //int role = 3;
-//        int money = 0;
-//        String avatar = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
+        
         
         // Generate the current date and time
         String regex = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // yeu cau pass có it nhat 1 so 1 chu
         String emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@gmail\\.com$";
-        if (em.isEmpty() || !em.matches(emailPattern) || p.isEmpty()|| !p.matches(regex) || role.isEmpty() || role == null || n.isEmpty() || n == null) {           
+        if (em.isEmpty() || !em.matches(emailPattern) || p.isEmpty()|| !p.matches(regex)|| !p.matches(rp) || role.isEmpty() || role == null || n.isEmpty() || n == null) {           
                 request.setAttribute("mess", "Invalid information!!!!");
                 request.setAttribute("blue", true);
-               //response.sendRedirect("SignUp.jsp");
-                request.getRequestDispatcher("Login.jsp").forward(request, response);
+                
+                request.getRequestDispatcher("Register.jsp").forward(request, response);
             
         }else{
             
@@ -114,7 +113,7 @@ public class SignUpServlet extends HttpServlet {
             }else{
                 request.setAttribute("mess", "Invalid role selected!");
                 request.setAttribute("blue", true);
-                request.getRequestDispatcher("Login.jsp").forward(request, response);
+                request.getRequestDispatcher("Register.jsp").forward(request, response);
                 return;
             }
             try {
