@@ -71,7 +71,7 @@
                             <!-- ***** Logo End ***** -->
                             <!-- ***** Search End ***** -->
                             <div class="search-input">
-                                <form id="search" action="#">
+                                <form id="search" action="SearchGameServlet" method="get">
                                     <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
                                     <i class="fa fa-search"></i>
                                 </form>

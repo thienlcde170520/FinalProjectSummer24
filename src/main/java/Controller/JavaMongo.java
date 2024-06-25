@@ -30,6 +30,7 @@ import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -61,6 +62,13 @@ public class JavaMongo {
     ArrayList <Gamers> gamers = getAllGamers();
     for (Gamers g : gamers){
         System.out.println(g.getName());
+    }
+   ArrayList<Game> searchedGames = searchGames("", "", "2024", "", "", new String[]{"", ""});
+
+    // Print the results
+    System.out.println("\nSearched Games:");
+    for (Game game : searchedGames) {
+        System.out.println(game.getName() + " Year: " + game.getPublishDay() + " | Price: " + game.getPrice());
     }
     }    
   public static boolean hasGamerBoughtGame(String gamerId, String gameId) {
@@ -513,6 +521,8 @@ public static ArrayList<Genre> getExcludeGenresByGameId(String gameID) {
 
         return genresList;
     }
+   
+
  private static ArrayList<String> getGenreTypesByGameID(String gameID) {
         MongoClientSettings settings = getConnection();
         ArrayList<String> genreTypes = new ArrayList<>();
@@ -963,8 +973,206 @@ public static ArrayList<Game> getGamesByGamerId(String gamerId) {
 
         return game;
     }
+public static ArrayList<Game> getGamesByGameName(String gameName) {
+    MongoClientSettings settings = getConnection();
+    ArrayList<Game> games = new ArrayList<>();
+    try (MongoClient mongoClient = MongoClients.create(settings)) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
- 
+        // Access the "Games" collection
+        MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+
+        // Create a filter to search for the game by partial name match using regex
+        Bson filter = Filters.regex("Name", ".*" + gameName + ".*", "i");
+
+        // Find all documents that match the filter
+        FindIterable<Document> gameDocs = gamesCollection.find(filter);
+
+        for (Document gameDoc : gameDocs) {
+            // Extract game attributes from the document
+            String id = gameDoc.getString("ID");
+            String name = gameDoc.getString("Name");
+            double price = gameDoc.getDouble("Price");
+            String publishDay = gameDoc.getString("Publish_day");
+            int numberOfBuyers = gameDoc.getInteger("Number_of_buyers");
+            String linkTrailer = gameDoc.getString("LinkTrailer");
+            String avatarLink = gameDoc.getString("AvatarLink");
+            String gameLink = gameDoc.getString("GameLink");
+            String description = gameDoc.getString("Description");
+            String minimumCPU = gameDoc.getString("Minimum_CPU");
+            String minimumRAM = gameDoc.getString("Minimum_RAM");
+            String minimumGPU = gameDoc.getString("Minimum_GPU");
+            String maximumCPU = gameDoc.getString("Maximum_CPU");
+            String maximumRAM = gameDoc.getString("Maximum_RAM");
+            String maximumGPU = gameDoc.getString("Maximum_GPU");
+
+            // Create a Game object and add it to the list
+            Game game = new Game(id, name, price, publishDay, numberOfBuyers, linkTrailer, avatarLink, gameLink, description, minimumCPU, minimumRAM, minimumGPU, maximumCPU, maximumRAM, maximumGPU);
+            games.add(game);
+        }
+    } catch (MongoException e) {
+        e.printStackTrace();
+    }
+
+    return games;
+}
+public static ArrayList<Game> getGamesByPublisherName(String publisherName) {
+    MongoClientSettings settings = getConnection();
+    ArrayList<Game> games = new ArrayList<>();
+    try (MongoClient mongoClient = MongoClients.create(settings)) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+
+        // Access the "Games" and "Publish" collections
+        MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+        MongoCollection<Document> publishCollection = fpteamDB.getCollection("Publish");
+        MongoCollection<Document> gamePublishersCollection = fpteamDB.getCollection("GamePublishers");
+
+        // Find the publisher document based on the provided publisher name
+        Document publisherDoc = gamePublishersCollection.find(Filters.regex("Name", ".*" + publisherName + ".*", "i")).first();
+
+        if (publisherDoc != null) {
+            String publisherId = publisherDoc.getString("ID");
+
+            // Create a filter to search for game documents with the matching publisher ID in the Publish collection
+            Bson filter = Filters.eq("ID_Game_Publisher", publisherId);
+
+            // Find all documents in the Publish collection that match the filter
+            FindIterable<Document> publishDocs = publishCollection.find(filter);
+
+            for (Document publishDoc : publishDocs) {
+                String gameId = publishDoc.getString("ID_Game");
+
+                // Create a filter to find the game document in the Games collection based on gameId
+                Bson gameFilter = Filters.eq("ID", gameId);
+
+                // Find the game document in the Games collection
+                Document gameDoc = gamesCollection.find(gameFilter).first();
+
+                if (gameDoc != null) {
+                    // Extract game attributes from the document
+                    String id = gameDoc.getString("ID");
+                    String name = gameDoc.getString("Name");
+                    double price = gameDoc.getDouble("Price");
+                    String publishDay = gameDoc.getString("Publish_day");
+                    int numberOfBuyers = gameDoc.getInteger("Number_of_buyers");
+                    String linkTrailer = gameDoc.getString("LinkTrailer");
+                    String avatarLink = gameDoc.getString("AvatarLink");
+                    String gameLink = gameDoc.getString("GameLink");
+                    String description = gameDoc.getString("Description");
+                    String minimumCPU = gameDoc.getString("Minimum_CPU");
+                    String minimumRAM = gameDoc.getString("Minimum_RAM");
+                    String minimumGPU = gameDoc.getString("Minimum_GPU");
+                    String maximumCPU = gameDoc.getString("Maximum_CPU");
+                    String maximumRAM = gameDoc.getString("Maximum_RAM");
+                    String maximumGPU = gameDoc.getString("Maximum_GPU");
+
+                    // Create a Game object and add it to the list
+                    Game game = new Game(id, name, price, publishDay, numberOfBuyers, linkTrailer, avatarLink, gameLink, description, minimumCPU, minimumRAM, minimumGPU, maximumCPU, maximumRAM, maximumGPU);
+                    games.add(game);
+                }
+            }
+        }
+    } catch (MongoException e) {
+        e.printStackTrace();
+    }
+
+    return games;
+}
+public static ArrayList<Game> getGamesByGenres(String[] selectedGenres) {
+        ArrayList<Game> games = new ArrayList<>();
+
+        try {
+            MongoClientSettings settings = getConnection();
+            MongoClient mongoClient = MongoClients.create(settings);
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+
+            // Access the "Game_Has_Genre" collection
+            MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
+
+            // Find games that have exactly the selected genres
+            Bson filter = Filters.all("Type_of_genres", Arrays.asList(selectedGenres));
+            FindIterable<Document> gameDocs = gameGenresCollection.find(filter);
+
+            for (Document gameDoc : gameDocs) {
+                String gameID = gameDoc.getString("ID_Game");
+                Game game = getGameByGameID(gameID); // Implement this method to retrieve a Game by ID
+                if (game != null) {
+                    games.add(game);
+                }
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        return games;
+    }
+public static ArrayList<Game> searchGames(String gameName, String gamePublisher, String year, String priceAmount, String priceCurrency, String[] selectedGenres) {
+    ArrayList<Game> games = new ArrayList<>();
+
+    // Retrieve games by game name
+    if (gameName != null && !gameName.isEmpty()) {
+        ArrayList<Game> gamesByGameName = getGamesByGameName(gameName);
+        games.addAll(gamesByGameName);
+    }
+
+    // Retrieve games by publisher name
+    if (gamePublisher != null && !gamePublisher.isEmpty()) {
+        ArrayList<Game> gamesByPublisherName = getGamesByPublisherName(gamePublisher);
+        games.addAll(gamesByPublisherName);
+    }
+
+    // Retrieve games by selected genres
+    if (selectedGenres != null && selectedGenres.length > 0) {
+        ArrayList<Game> gamesByGenres = getGamesByGenres(selectedGenres);
+        games.addAll(gamesByGenres);
+    }
+
+    // Filter games by year of publication (Publish_day), price amount, and price currency
+    ArrayList<Game> filteredGames = new ArrayList<>();
+    for (Game game : games) {
+        boolean matchYear = year == null || year.isEmpty() || matchYear(game.getPublishDay(), year); // Match by year
+
+        boolean matchPrice = priceAmount == null || priceAmount.isEmpty() || matchPrice(game.getPrice(), priceAmount, priceCurrency); // Match by price range
+
+        if (matchYear && matchPrice) {
+            filteredGames.add(game);
+        }
+    }
+
+    return filteredGames;
+}
+
+// Helper method to match game publish year based on publishDay and year
+private static boolean matchYear(String publishDay, String year) {
+    try {
+        // Parse publishDay to LocalDate
+        LocalDate publishDate = LocalDate.parse(publishDay, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+        // Extract the year as string
+        String gameYear = String.valueOf(publishDate.getYear());
+
+        // Compare with the provided year
+        return gameYear.equals(year);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+// Helper method to match game price based on priceAmount and priceCurrency
+private static boolean matchPrice(double gamePrice, String priceAmount, String priceCurrency) {
+    double amount = Double.parseDouble(priceAmount);
+    if ("Lower".equals(priceCurrency)) {
+        return gamePrice <= amount;
+    } else if ("Upper".equals(priceCurrency)) {
+        return gamePrice >= amount;
+    }
+    return false;
+}
+
+
+
+
  
     public static void CreateNewGamerAccount(String id,String name, String password, String email, int role, int Money, String AvatarLink, String RegistrationDate){
 
@@ -1367,7 +1575,4 @@ public static Publishers getPublisherByEmail(String email) {
         }
     }
     
-
-
-
 }
