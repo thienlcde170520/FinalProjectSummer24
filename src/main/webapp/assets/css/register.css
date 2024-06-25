@@ -13,7 +13,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #1f2122;
+    background: #1f2122; /*mau form*/
     column-gap: 30px;
 }
 .form{
@@ -23,16 +23,17 @@
     padding: 30px;
     border-radius: 6px;
     background: white;
+    
 }
-.form.signup{
+/*.form.signup{
     opacity: 0;
     pointer-events: none;
-}
-.forms.show-signup .form.signup{
+}*/
+.forms .form.signup{
     opacity: 1;
     pointer-events: auto;
 }
-.forms.show-signup .form.login{
+.forms .form.login{
     opacity: 0;
     pointer-events: none;
 }
@@ -51,9 +52,7 @@ form{
     width: 100%;
     margin-top: 35px;
     border-radius: 6px;
-    font-weight: bold;
 }
-
 .field input,
 .field button{
     height: 100%;
@@ -63,6 +62,10 @@ form{
     font-weight: 400;
     border-radius: 6px;
 }
+.input-field label {
+                
+                font-weight: bold;
+            }
 .field input{
     outline: none;
     padding: 0 15px;
@@ -71,7 +74,6 @@ form{
 .field input:focus{
     border-bottom-width: 2px;
 }
-
 .field button{
     color: #fff;
     background-color: #ff1a75;
@@ -82,21 +84,14 @@ form{
     background-color: #016dcb;
 }
 .form-link{
-    margin: 35px 10px;
-    display: flex;
-    justify-content: space-between;
+    text-align: center;
+    margin-top: 10px;
 }
 .form-link span,
 .form-link a{
     font-size: 14px;
     font-weight: 400;
     color: #232836;
-}
-.form-link a:hover{
-    text-decoration: underline;
-}
-.form-link label input{
-    margin-right: 3px; 
 }
 .form a{
     color: #0171d3;
@@ -162,12 +157,12 @@ a.google span{
     opacity: 0.6;
     color: #232836;
 }
-/*bonus*/
 .role-selection{
     display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    padding: 15px;
 }
-
-
 @media screen and (max-width: 400px) {
     .form{
         padding: 20px 10px;

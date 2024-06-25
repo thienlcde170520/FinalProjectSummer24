@@ -27,9 +27,9 @@
         <form action ="ValidateCode" method="post">
             <h3>Check Valid Email</h3>
         
-        <label for="Code">Code</label>
-        <input type="password" name="code" placeholder="Code" id="password">
-        <button>Verify Code</button>       
+        <label for="Code">OTP</label>
+        <input type="password" name="code" placeholder="Enter OTP" id="password">
+        <button>Verify</button>       
     </form>
     </body>
     

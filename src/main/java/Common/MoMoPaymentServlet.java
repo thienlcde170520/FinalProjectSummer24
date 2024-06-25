@@ -36,7 +36,9 @@ public class MoMoPaymentServlet extends HttpServlet {
     private static final String SECRET_KEY = "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa";
     private static final String ORDER_INFO = "Thanh toan qua MoMo";
     private static final String AMOUNT = "10000";
-    private static final String REDIRECT_URL = "https://barely-handy-mink.ngrok-free.app/FPTeam/paymentSuccess.jsp";
+
+    private static final String REDIRECT_URL = "https://gentle-yeti-sound.ngrok-free.app/FPTeam/paymentSuccess.jsp";
+
     private static final String IPN_URL = "http://localhost:9999/FPTeam/paymentSuccessServlet";
     private static final String EXTRA_DATA = "";
     private static final Logger LOGGER = Logger.getLogger(MoMoPaymentServlet.class.getName());

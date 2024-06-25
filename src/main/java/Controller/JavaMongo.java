@@ -745,7 +745,9 @@ public static void deleteReview(String gamerId, String gameId) {
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             try {
+
                 // Access the "FPT" database
+
                 MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
                 // Access the "Gamers" collection
@@ -786,7 +788,9 @@ public static void deleteReview(String gamerId, String gameId) {
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             try {
+
                 // Access the "FPT" database
+
                 MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
                 // Access the "Gamers" collection
@@ -830,7 +834,9 @@ public static void deleteReview(String gamerId, String gameId) {
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             try {
+
                 // Access the "FPT" database
+
                 MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
                 // Access the "Gamers" collection
@@ -862,7 +868,9 @@ public static void deleteReview(String gamerId, String gameId) {
         MongoClientSettings settings = getConnection();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
+
             // Truy cập cơ sở dữ liệu "FPT"
+
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
             // Truy cập bộ sưu tập "Users"
@@ -1313,7 +1321,9 @@ private static boolean matchPrice(double gamePrice, String priceAmount, String p
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+
             MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+
 
             BasicDBObject query = new BasicDBObject();
             query.put("ID", Id);
@@ -1381,7 +1391,9 @@ public static Publishers getPublisherByEmail(String email) {
 
     public static void updatePassword(String email, String newPassword) {
         try (com.mongodb.client.MongoClient mongoClient = MongoClients.create(getConnection())) {
+
             // Truy cập cơ sở dữ liệu "FPT"
+
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
             // Tạo một bộ lọc để truy vấn người dùng dựa trên Email
@@ -1418,8 +1430,8 @@ public static Publishers getPublisherByEmail(String email) {
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> transactionsCollection = fpteamDB.getCollection("BankTransactions");
-             MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
-
+            MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+            MongoCollection<Document> publishersCollection = fpteamDB.getCollection("GamePublishers");
             Document transactionDoc = new Document()
                     .append("partnerCode", partnerCode)
                     .append("orderId", orderId)
@@ -1438,7 +1450,7 @@ public static Publishers getPublisherByEmail(String email) {
               // Retrieve the corresponding gamer from the Gamers collection
             Bson filter = Filters.eq("ID", payerId);
             Document gamerDoc = gamersCollection.find(filter).first();
-
+            Document pubDoc = publishersCollection.find(filter).first();  
             if (gamerDoc != null) {
                 // Update the money field in the Gamers collection
                 int currentMoney = gamerDoc.getInteger("Money");
@@ -1452,6 +1464,19 @@ public static Publishers getPublisherByEmail(String email) {
             } else {
                 System.out.println("Gamer not found.");
             }
+            
+            if(pubDoc!=null){
+                int currentMoney = pubDoc.getInteger("Money");
+                int transactionAmount = Integer.parseInt(amount);
+                int updatedMoney = currentMoney + transactionAmount;
+
+                Bson updateOperation = Updates.set("Money", updatedMoney);
+                publishersCollection.updateOne(filter, updateOperation);
+
+                System.out.println("Phublisher's money updated successfully.");
+            }
+            
+            
         } catch (Exception e) {
            throw new Exception("Error inserting transaction into MongoDB: " + e.getMessage());
         }
