@@ -1,3 +1,12 @@
+<%@page import="Model.Users"%>
+<%@page import="Model.Bill"%>
+<%@page import="Model.Gamers"%>
+<%@page import="Controller.JavaMongo"%>
+<%@page import="Model.Genre"%>
+<%@page import="Model.Publishers"%>
+<%@page import="Model.Review"%>
+<%@page import="Model.Game"%>
+<%@page import="java.util.ArrayList"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,6 +42,20 @@
             </div>
         </div>
         <!-- Preloader End -->
+        <%
+            // Retrieve attributes from request
+            ArrayList<Genre> genres = (ArrayList<Genre>) request.getAttribute("genres");
+            Game game = (Game) request.getAttribute("game");
+            ArrayList<Review> reviews = (ArrayList<Review>) request.getAttribute("reviews");
+            Double rating = (Double) request.getAttribute("rating");
+            Publishers publisher = (Publishers) request.getAttribute("publisher");
+            Bill bill = (Bill) request.getAttribute("bill");
+            Boolean hasBuyObj = (Boolean) request.getAttribute("hasBuy");
+            boolean hasBuy = hasBuyObj != null && hasBuyObj.booleanValue();
+            Boolean isRefundableObj = (Boolean) request.getAttribute("isRefundable");
+            boolean isRefundable = isRefundableObj != null && isRefundableObj.booleanValue();
+           
+        %>
 
         <!-- Header Area Start -->
         <header class="header-area header-sticky">
@@ -78,14 +101,14 @@
                                 <div class="feature-banner header-text">
                                     <div class="row">
                                         <div class="col-lg-4">
-                                            <img src="assets/images/feature-left.jpg" alt=""
+                                            <img src="<%= game.getAvatarLink()%>" alt=""
                                                  style="border-radius: 23px;">
                                         </div>
                                         <div class="col-lg-8">
                                             <div class="thumb">
-                                                <img src="assets/images/feature-right.jpg" alt=""
+                                                <img src="https://coffective.com/wp-content/uploads/2018/06/default-featured-image.png.jpg" alt=""
                                                      style="border-radius: 23px;">
-                                                <a href="https://www.youtube.com/watch?v=r1b03uKWk_M" target="_blank"><i
+                                                <a href="<%= game.getLinkTrailer()%>" target="_blank"><i
                                                         class="fa fa-play"></i></a>
                                             </div>
                                         </div>
@@ -99,57 +122,97 @@
                         <div class="game-details">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <h2>Fortnite Details</h2>
+                                    <h2><%= game.getName()%> Details</h2>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="left-info">
                                         <div class="left">
-                                            <h4>Fortnite</h4>
-                                            <p class="genre-p">Genre: Action</p>
-                                            <p class="publisher-p">Game Publisher: Epic Games</p>
+                                            <h4><%= game.getName()%></h4>
 
+                                            <%-- Display genres --%>
+                                            <p class="genre-p">Genres:
+                                                <%
+                                                    for (Genre genre : genres) {
+                                                        out.println(genre.getType());
+                                                        if (genres.indexOf(genre) < genres.size() - 1) {
+                                                            out.print(", ");
+                                                        }
+                                                    }
+                                                %>
+                                            </p>
+
+                                            <%-- Display publisher --%>
+                                            <p class="publisher-p">Game Publisher: <%= publisher.getName()%></p>
                                         </div>
+                                       <%
+// Check if logged-in user is the publisher
+Users loggedInUser = (Users) session.getAttribute("account");
+boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publisher.getId());
+%>
 
-                                        <button type="button" class="btn btn-primary">Buy Now</button>
-                                        <button type="button" class="btn btn-outline-primary">Follow</button>
+<% if (isPublisher) { %>
+    <!-- Display update button for publisher -->
+    <a id="UpdateButton" class="btn btn-primary" href="UpdateGameServlet?gameId=<%= game.getId() %>">Update</a>
+<% } else { %>
+    <% if (!hasBuy) { %>
+        <a id="buyNowButton" class="btn btn-primary" href="PayProcessServlet?gameId=<%= game.getId() %>">Buy Now</a>
+        <button type="button" class="btn btn-outline-primary">Follow</button>
+    <% } else { %>
+        <a id="DownloadNowButton" class="btn btn-primary" href="<%= game.getGameLink() %>">Install Game</a>
+        
+        <% if (isRefundable) { %>
+            <form action="RefundServlet" method="get" style="display:inline;">
+                <input type="hidden" name="gameId" value="<%= bill.getGameId() %>">
+                <input type="hidden" name="billId" value="<%= bill.getId() %>">
+                <input type="hidden" name="gamerId" value="<%= bill.getGamerId() %>">
+                <input type="hidden" name="refundnumber" value="<%= bill.getBuyPrice() %>">
+                <button type="submit" class="btn btn-primary">Refund</button>
+            </form>
+        <% } %>
+    <% } %>
+    <!-- Display return to home button for non-publisher users -->
+    <a class="btn btn-primary" href="Home.jsp">Return to Home</a>
+<% } %>
+
+
+
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="right-info " style="color: #F0F5FF">
                                         <ul>
-                                            <li><i class="fa fa-star"></i> 4.8</li>
-                                            <li><i class="fa fa-download"></i> 2.3M</li>
-                                            <li><i class="fa fa-server"></i> 36GB</li>
-                                            <li><i class="fa fa-gamepad"></i> Action</li>
+                                            <li><i class="fa fa-star"></i> <%= rating%> </li>
+                                            <li><i class="fa fa-download"></i><%= game.getNumberOfBuyers()%></li>
+
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <h4>Description</h4>
-                                    <p>The future of Fortnite is here. Be the last player standing in Battle Royale and Zero Build, explore and survive in LEGO Fortnite, blast to the finish with Rocket Racing or headline a concert with Fortnite Festival. Play thousands of free creator-made islands with friends including deathruns, tycoons, racing, zombie survival and more! Join the creator community and build your own island with Unreal Editor for Fortnite (UEFN) or Fortnite Creative tools.</p>
+                                    <p><%= game.getDescription()%></p>
                                 </div>
-                               <div class="col-lg-6">
-    <div class="minimum-requirements" style="padding-right: 20px; color: #F0F5FF ; padding-top: 50px; padding-bottom: 50px">
-        <h4>Minimum System Requirements</h4>
-        <ul>
-            <li>CPU: Intel Core i3-4130 or AMD equivalent</li>
-            <li>Memory: 4 GB RAM</li>
-            <li>Graphics: Intel HD 4400 or NVIDIA GeForce GT 630 or AMD Radeon 7730</li>
-           
-        </ul>
-    </div>
-</div>
-<div class="col-lg-6">
-    <div class="recommended-requirements" style="padding-left: 80px;color: #F0F5FF ; padding-top: 50px;  padding-bottom:  50px ">
-        <h4>Recommended System Requirements</h4>
-        <ul>
-            <li>Processor: Intel Core i5-7300U or AMD Ryzen 5 1500X</li>
-            <li>Memory: 8 GB RAM</li>
-            <li>Graphics: NVIDIA GeForce GTX</li>
-            <!-- Add more recommended requirements here -->
-        </ul>
-    </div>
-</div>
+                                <div class="col-lg-6">
+                                    <div class="minimum-requirements" style="padding-right: 20px; color: #F0F5FF ; padding-top: 50px; padding-bottom: 50px">
+                                        <h4>Minimum System Requirements</h4>
+                                        <ul>
+                                            <li>CPU: <%=game.getMinimumCPU()%></li>
+                                            <li>Memory: <%= game.getMinimumRAM()%></li>
+                                            <li>Graphics: <%= game.getMinimumGPU()%></li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="recommended-requirements" style="padding-left: 80px;color: #F0F5FF ; padding-top: 50px;  padding-bottom:  50px ">
+                                        <h4>Recommended System Requirements</h4>
+                                        <ul>
+                                            <li>CPU: <%=game.getMaximumCPU()%></li>
+                                            <li>Memory: <%= game.getMaximumRAM()%></li>
+                                            <li>Graphics: <%= game.getMaximumGPU()%></li>
+                                            <!-- Add more recommended requirements here -->
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                             <!-- Gamer Reviews Start -->
                             <div class="gamer-reviews ">
@@ -158,43 +221,95 @@
                                         <h3>Gamer Reviews</h3>
                                     </div>
                                     <div class="col-lg-12">
-                                        <!-- Form for users to leave reviews -->
-                                        <form id="review-form">
+                                        <% if (hasBuy) {%> <!-- Check if the gamer has bought the game -->
+                                        <form id="review-form" action="ReviewGameServlet" method="post">
+                                            <!-- Hidden input fields for gamer ID and game ID -->
+                                            <input type="hidden" id="gameId" name="gameId" value="<%= game.getId()%>">
+
                                             <div class="form-group">
-                                                <label for="review">Leave Your Review</label>
-                                                <textarea class="form-control" id="review" rows="3"></textarea>
+                                                <label for="rating">Rating (0-5)</label>
+                                                <input type="number" class="form-control" id="rating" name="rating" min="0" max="5" step="0.1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="review">Review Description</label>
+                                                <textarea class="form-control" id="review" name="review" rows="3" required></textarea>
                                             </div>
                                             <button type="submit" class="btn btn-primary">Submit Review</button>
                                         </form>
+                                        <% } else { %>
+                                        <p>You need to purchase the game before you can submit a review.</p>
+                                        <% } %>
                                     </div>
                                 </div>
+
+
+
                                 <!-- Display user reviews -->
-                                <div class="row mt-4">
-                                    <div class="col-lg-12">
-                                        <h4>User Reviews:</h4>
-                                        <ul class="list-unstyled " style ="color: #F0F5FF">
-                                            <li>
-                                                <strong>John Doe:</strong> "This game is amazing! I love the graphics and gameplay."
-                                            </li>
-                                            <li>
-                                                <strong>Jane Smith:</strong> "Fortnite is so addictive. Can't stop playing it!"
-                                            </li>
-                                            <!-- Add more reviews here -->
-                                        </ul>
-                                    </div>
-                                </div>
+                               <div class="row mt-4">
+    <div class="col-lg-12">
+        <h4>User Reviews:</h4>
+        <ul class="list-unstyled" style="color: #F0F5FF">
+            <%               
+                for (Review review : reviews) {
+                    // Get the user (gamer) associated with this review
+                    Gamers user = JavaMongo.getGamerByGamerId(review.getIdGamer());
+                    
+                    // Check if the logged-in user is the author of the review
+                    boolean isReviewOwner = loggedInUser != null && loggedInUser.getId().equals(user.getId());
+                    
+                    // Display review details
+            %>
+            <li>
+                <strong><%= user.getName()%>:</strong> "<%= review.getDescription()%>" 
+                <br> Rating: <%= review.getRating()%>
+                
+                <!-- Delete button form (display only if logged-in user is the author of the review) -->
+                <% if (isReviewOwner) { %>
+                    <form action="ReviewGameServlet" method="get" style="display: inline;">
+                        <input type="hidden" name="reviewGameId" value="<%= review.getIdGame()%>">
+                        <input type="hidden" name="reviewGamerId" value="<%= review.getIdGamer()%>">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                <% } %>
+            </li>
+            <% } %>
+        </ul>
+    </div>
+</div>
+
+
                             </div>
-                            <!-- Gamer Reviews End -->
-                            </footer>
 
-                            <!-- Scripts -->
-                            <!-- Bootstrap core JavaScript -->
-                            <script src="vendor/jquery/jquery.min.js"></script>
-                            <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 
-                            <script src="assets/js/isotope.min.js"></script>
-                            <script src="assets/js/owl-carousel.js"></script>
-                            <script src="assets/js/tabs.js"></script>
-                            <script src="assets/js/popup.js"></script>
-                            <script src="assets/js/custom.js"></script>
-                            </body>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Gamer Reviews End -->
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>Copyright © 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
+
+                            <br>Design: <a href="https://templatemo.com" target="_blank" title="free CSS templates">TemplateMo</a></p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+        <!-- Scripts -->
+        <!-- Bootstrap core JavaScript -->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+        <script src="assets/js/isotope.min.js"></script>
+        <script src="assets/js/owl-carousel.js"></script>
+        <script src="assets/js/tabs.js"></script>
+        <script src="assets/js/popup.js"></script>
+        <script src="assets/js/custom.js"></script>
+    </body>
+</html>

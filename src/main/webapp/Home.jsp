@@ -142,16 +142,19 @@
                                           if (Games != null) {
                                             for (Game game : Games) {
                                         %>
-                                        <div class="col-lg-3 col-sm-6">
-                                            <div class="item">
-                                                <img src="<%= game.getAvatarLink()%>?usp=sharing" alt="">
-                                                <h4><%= game.getName() %><br></h4>
-                                                <ul>
-                                                    <li><i class="fa fa-star"></i> <%= JavaMongo.getAverageRatingByGame(game) %></li>
-                                                    <li><i class="fa fa-download"></i> <%= game.getNumberOfBuyers() %></li>
-                                                </ul>
-                                            </div>
-                                        </div>
+                                       <div class="col-lg-3 col-sm-6">
+    <div class="item">
+        <a href="GameDetailServlet?gameid=<%= game.getId() %>">
+            <img src="<%= game.getAvatarLink()%>?usp=sharing" alt="">
+            <h4><%= game.getName() %><br></h4>
+            <ul>
+                <li><i class="fa fa-star"></i> <%= JavaMongo.getAverageRatingByGame(game) %></li>
+                <li><i class="fa fa-download"></i> <%= game.getNumberOfBuyers() %></li>
+            </ul>
+        </a>
+    </div>
+</div>
+
                                         <% 
                                             }
                                           }
@@ -367,17 +370,18 @@
             </div>
         </div>
 
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <p>Copyright © 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
+      <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <p>Copyright © 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
+          
+          <br>Design: <a href="https://templatemo.com" target="_blank" title="free CSS templates">TemplateMo</a></p>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-                            <br>Design: <a href="https://templatemo.com" target="_blank" title="free CSS templates">TemplateMo</a></p>
-                    </div>
-                </div>
-            </div>
-        </footer>
 
 
         <!-- Scripts -->
