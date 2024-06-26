@@ -21,7 +21,7 @@ public class Publishers extends Users{
     private String RegistrationDate;
 
     public Publishers(String id, String name, String gmail, String password, String bank_account, Integer profit, String description, String AvatarLink, Integer Money, int role, String RegistrationDate) {
-        super(generateRandomId(), name, gmail, password, role);
+        super(id, name, gmail, password, role);
         this.bank_account = bank_account;
         this.profit = profit;
         this.description = description;
@@ -32,18 +32,23 @@ public class Publishers extends Users{
     }
     
     public Publishers(){
-        super(generateRandomId(), "", "", "", 0);
-        this.bank_account = null;
+        //super(generateRandomId(), "", "", "", 0);
+        this.bank_account = " ";
         this.profit = 0;
-        this.description = "";
-        this.Money = 0;
+        this.description = " ";
+        /*
+        this.Money = 0;*/
         this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
+
     }
+    /*
     private static String generateRandomId() {
         Random random = new Random();
         int randomNumber = random.nextInt(10000); // Số ngẫu nhiên từ 0 đến 9999
         return "pub_" + randomNumber;
     }
+    */
+    
     public String getBank_account() {
         return bank_account;
     }

@@ -5,8 +5,11 @@
 
 package Controller;
 
+import static Controller.JavaMongo.getGamesByGamerId;
 import Model.BankTransactions;
+import Model.Game;
 import Model.Gamers;
+import Model.Publishers;
 import Model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,10 +43,10 @@ public class profileServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet profileServlet</title>");  
+            out.println("<title>Servlet profile 9</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet profileServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet profileServlet at " + 123 + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -73,15 +76,48 @@ public class profileServlet extends HttpServlet {
                     
                     if(gamer != null){
           ArrayList<BankTransactions> transactionHistory = JavaMongo.getTransactionHistoryByPayerId(user.getId());
+          ArrayList<Game> games = JavaMongo.getGamesByGamerId(gamer.getId());
                         request.setAttribute("gamer", gamer);
-                        request.setAttribute("transactionHistory", transactionHistory);
+                         request.setAttribute("games", games);
+                        request.setAttribute("transactionHistory", transactionHistory)
+                                ;
                         request.getRequestDispatcher("profile.jsp").forward(request, response);
                     }else {
-                                response.sendRedirect("Login.jsp");
+                                 try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet profile 4</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet profileServlet at " + 321 + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
                             }
 
                 }else if(role ==2){
-                
+                    Publishers pub = JavaMongo.getPublisherByEmail(user.getGmail());
+                    if(pub != null){
+                        ArrayList<BankTransactions> transactionHistory = JavaMongo.getTransactionHistoryByPayerId(user.getId());
+                        request.setAttribute("pub", pub);
+                        request.setAttribute("transactionHistory", transactionHistory);
+                        request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);
+                    }else {
+                        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet profile 3 </title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet profileServlet at " +456 + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
+                        }
                 }
     //            ArrayList<Gamers> gamersList = JavaMongo.getAllGamers();
 
@@ -89,7 +125,18 @@ public class profileServlet extends HttpServlet {
             }
             else
             {
-                response.sendRedirect("Login.jsp");
+                  try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet Login 2</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Error at " + 778 + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
             }
         }catch (Exception ex) {
                       try (PrintWriter out = response.getWriter()) {
@@ -97,7 +144,7 @@ public class profileServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");  
+            out.println("<title>Servlet Login 1</title>");  
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Error at " + ex.getMessage() + "</h1>");

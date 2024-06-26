@@ -1,4 +1,3 @@
-<%@page import="Model.Game"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="Model.BankTransactions"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -99,21 +98,21 @@ https://templatemo.com/tm-579-cyborg-gaming
           <div class="row" >
               <%
             // Lấy thông tin người chơi từ request attribute
-            Model.Gamers gamer = (Model.Gamers) request.getAttribute("gamer");
-            ArrayList<Game> games = (ArrayList<Game>) request.getAttribute("games");
-            if (gamer != null) {
+            Model.Publishers pub = (Model.Publishers) request.getAttribute("pub");
+            
+            if (pub != null) {
         %>
             <div class="col-lg-12">
               <div class="main-profile ">
                 <div class="row">
                   <div class="col-lg-4">
-                    <img src="<%=gamer.getAvatarLink() %>" alt="" style="border-radius: 23px;">
+                    <img src="<%=pub.getAvatarLink() %>" alt="" style="border-radius: 23px;">
                   </div>
                   <div class="col-lg-4 align-self-center">
                     <div class="main-info header-text">
-                      <h4><%=gamer.getName() %></h4>
-                      <p>Email: <%=gamer.getGmail()%></p>
-                      <p>Tham gia từ : <%=gamer.getRegistrationDate()%></p>
+                      <h4><%=pub.getName() %></h4>
+                      <p>Email: <%=pub.getGmail()%></p>
+                      <p>Tham gia từ : <%=pub.getRegistrationDate()%></p>
                       <div class="main-border-button">
                       </div>
                     </div>
@@ -122,14 +121,12 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <ul>
 
                       <li>Games Downloaded <span> 1</span></li>
-
-                      <li>Balance <span><%=gamer.getMoney()%> VNĐ</span></li>
+                      <li>Balance <span><%=pub.getMoney()%> VNĐ</span></li>
                       <li>  <a href="UpdateProfile.jsp">UPDATE</a></li>
 
 
                       
                       
-
                       <li>Review History <span>None</span></li>
 
                       <li>Wish Lists <span>2</span></li>
@@ -149,28 +146,51 @@ https://templatemo.com/tm-579-cyborg-gaming
                             <h4><em>Recent game</em></h4>
                           </div>
                         </div>
-                    <div class="row">
-    <% if (games != null && !games.isEmpty()) { %>
-    <% for (Game game : games) { %>
-        <div class="col-lg-3 col-sm-6">
-            <div class="item">
-                <div class="thumb"> 
-                    <img src="<%= game.getAvatarLink() %>" alt="<%= game.getName() %>" style="border-radius: 23px;">
-                    <a href="<%= game.getLinkTrailer() %>" target="_blank"><i class="fa fa-play"></i></a>
-                </div>
-                <div class="down-content">
-                    <h4><a href="GameDetailServlet?gameid=<%= game.getId() %>"><%= game.getName() %></a></h4>
-                </div>
-            </div>
-        </div>
-    <% } %>
-<% } else { %>
-    <p>No games found.</p>
-<% } %>
+                        <div class="col-lg-3 col-sm-6">
+                          <div class="item">
+                            <div class="thumb">
+                              <img src="assets/images/unnamed.png" alt="" style="border-radius: 23px;">
+                              <a href="https://youtube.com/watch?v=R8htow_6tRc" target="_blank"><i class="fa fa-play"></i></a>
+                            </div>
+                            <div class="down-content">
+                              <h4>Wuthering Wave</h4>
 
-</div>
-
-
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                          <div class="item">
+                            <div class="thumb">
+                              <img src="assets/images/genshin.jpg" alt="" style="border-radius: 23px;">
+                              <a href="https://www.youtube.com/watch?v=qqnEjmnitgc" target="_blank"><i class="fa fa-play"></i></a>
+                            </div>
+                            <div class="down-content">
+                              <h4>Genshin Impact</h4>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                          <div class="item">
+                            <div class="thumb">
+                              <img src="assets/images/Honai.jpg" alt="" style="border-radius: 23px;">
+                              <a href="https://www.youtube.com/watch?v=w8vPZrMFiZ4" target="_blank"><i class="fa fa-play"></i></a>
+                            </div>
+                            <div class="down-content">
+                              <h4>Honkai Star Rail</h4>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                          <div class="item">
+                            <div class="thumb">
+                              <img src="assets/images/PUBG.jpg" alt="" style="border-radius: 23px;">
+                              <a href="https://www.youtube.com/watch?v=URBy9t6e8rY" target="_blank"><i class="fa fa-play"></i></a>
+                            </div>
+                            <div class="down-content">
+                              <h4>PUBG : Player Unknow Battleground</h4>
+                            </div>
+                          </div>
+                        </div>
                         <div class="col-lg-12">
                           <div class="main-button">
                             <a href="#">Load More Games</a>

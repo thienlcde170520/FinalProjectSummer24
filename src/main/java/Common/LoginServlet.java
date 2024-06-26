@@ -89,7 +89,7 @@ public class LoginServlet extends HttpServlet {
                     Users u = userValid(e, p);
                     if(u == null){
                         request.setAttribute("error", "An Account not Exist!!!");
-                        request.setAttribute("red", true);
+                        request.setAttribute("red", true);                       
                         request.getRequestDispatcher("Login.jsp").forward(request, response);
                     }
                     else {
