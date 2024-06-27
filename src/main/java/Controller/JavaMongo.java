@@ -40,10 +40,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import org.bson.conversions.Bson;
 
 public class JavaMongo {
-
+//
     private static final String CONNECTION_STRING = "mongodb+srv://viet81918:conchode239@cluster0.hzr2fsy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
     public static MongoClientSettings getConnection() {
@@ -51,10 +52,16 @@ public class JavaMongo {
                 .version(ServerApiVersion.V1)
                 .build();
 
+        // Adjust connection pool settings
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(CONNECTION_STRING))
                 .serverApi(serverApi)
+                .applyToConnectionPoolSettings(builder -> 
+                    builder.maxSize(50) // Example: set max pool size
+                           .minSize(5)  // Example: set min pool size
+                           .maxWaitTime(1000, TimeUnit.MILLISECONDS)) // Example: set max wait time
                 .build();
+
         return settings;
     }
 
@@ -119,7 +126,7 @@ public class JavaMongo {
                 String gamerID = billDoc.getString("ID_Gamer");
                 String gameID = billDoc.getString("ID_Game");
                 String buyTime = billDoc.getString("Buy_time");
-                int buyPrice = billDoc.getInteger("Buy_price");
+                Double buyPrice = billDoc.getDouble("Buy_price");
 
                 // Create a Bill object
                 bill = new Bill();
@@ -154,7 +161,7 @@ public class JavaMongo {
         return hoursBetween <= 2;
     }
     
-   public static void refundPurchase(String billId, String gamerId, String gameId, int refundPrice) {
+   public static void refundPurchase(String billId, String gamerId, String gameId, Double refundPrice) {
     MongoClientSettings settings = getConnection();
     try (MongoClient mongoClient = MongoClients.create(settings)) {
         MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
@@ -180,8 +187,8 @@ public class JavaMongo {
         }
 
         // Calculate the new balance for the gamer after refund
-        int currentMoney = gamerDoc.getInteger("Money");
-        int newBalance = currentMoney + refundPrice;
+        Double currentMoney = gamerDoc.getDouble("Money");
+        Double newBalance = currentMoney + refundPrice;
 
         // Update the Money field in the Gamers collection
         Bson updateBalance = Updates.set("Money", newBalance);
@@ -189,14 +196,14 @@ public class JavaMongo {
         System.out.println("Gamer balance updated: " + newBalance);
 
         // Calculate the profit to be reverted (90% of the refund price)
-        int profitReversion = (int) (1.0 * refundPrice);
+        Double profitReversion = (Double) (1.0 * refundPrice);
 
         // Update the profit for the publisher
         String publisherId = JavaMongo.getPublisherByGameId(gameId).getId(); // Assuming this method gets publisher ID
         Document publisherDoc = publishersCollection.find(Filters.eq("ID", publisherId)).first();
         if (publisherDoc != null) {
-            int currentProfit = publisherDoc.getInteger("Profit");
-            int newProfit = currentProfit - profitReversion;
+            Double currentProfit = publisherDoc.getDouble("Profit");
+            Double newProfit = currentProfit - profitReversion;
 
             // Update the Profit field in the Publishers collection
             Bson updateProfit = Updates.set("Profit", newProfit);
@@ -227,7 +234,7 @@ public class JavaMongo {
 }
 
 
- public static void addPurchase(String billId, String gamerId, String gameId, String buyTime, int buyPrice) {
+ public static void addPurchase(String billId, String gamerId, String gameId, String buyTime, Double buyPrice) {
     MongoClientSettings settings = getConnection();
     try (MongoClient mongoClient = MongoClients.create(settings)) {
         MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
@@ -253,10 +260,10 @@ public class JavaMongo {
             return;
         }
 
-        int currentMoney = gamerDoc.getInteger("Money");
+        Double currentMoney = gamerDoc.getDouble("Money");
         if (currentMoney >= buyPrice) {
             // Calculate the new balance for the gamer after purchase
-            int newBalance = currentMoney - buyPrice;
+            Double newBalance = currentMoney - buyPrice;
 
             // Update the Money field in the Gamers collection
             Bson updateBalance = Updates.set("Money", newBalance);
@@ -264,14 +271,14 @@ public class JavaMongo {
             System.out.println("Gamer balance updated: " + newBalance);
 
             // Calculate the profit as 90% of the buy price
-            int profitAmount = (int) (1.0 * buyPrice);
+            Double profitAmount = (Double) (1.0 * buyPrice);
 
             // Update the profit for the publisher
             String publisherId = JavaMongo.getPublisherByGameId(gameId).getId(); // Assuming this method gets publisher ID
             Document publisherDoc = publishersCollection.find(Filters.eq("ID", publisherId)).first();
             if (publisherDoc != null) {
-                int currentProfit = publisherDoc.getInteger("Profit");
-                int newProfit = currentProfit + profitAmount;
+                Double currentProfit = publisherDoc.getDouble("Profit");
+                Double newProfit = currentProfit + profitAmount;
 
                 // Update the Profit field in the Publishers collection
                 Bson updateProfit = Updates.set("Profit", newProfit);
@@ -697,10 +704,10 @@ public static void deleteReview(String gamerId, String gameId) {
                             publisherDoc.getString("Password"),
                             publisherDoc.getString("Email"),
                             publisherDoc.getString("Bank_account"),
-                            publisherDoc.getInteger("Profit", 0),
+                            publisherDoc.getDouble("Profit"),
                             publisherDoc.getString("Description"),
                             publisherDoc.getString("AvatarLink"),
-                            publisherDoc.getInteger("Money"),
+                            publisherDoc.getDouble("Money"),
                             publisherDoc.getInteger("Role", 0),
                             publisherDoc.getString("RegistrationDate")
                     );
@@ -763,7 +770,7 @@ public static void deleteReview(String gamerId, String gameId) {
                             doc.getString("Email"),
                             doc.getString("Password"),
                             doc.getInteger("Role"),
-                            doc.getInteger("Money", 0),
+                            doc.getDouble("Money"),
                             doc.getString("AvatarLink"), // Get AvatarLink from the document
                             doc.getString("RegistrationDate")
 
@@ -806,10 +813,10 @@ public static void deleteReview(String gamerId, String gameId) {
                             doc.getString("Password"),
                             doc.getString("Email"),
                             doc.getString("Bank_account"),
-                            doc.getInteger("Profit", 0),
+                            doc.getDouble("Profit"),
                             doc.getString("Description"),
                             doc.getString("AvatarLink"),
-                            doc.getInteger("Money"),
+                            doc.getDouble("Money"),
                             doc.getInteger("Role", 0),
                             doc.getString("RegistrationDate")
                     );
@@ -1182,7 +1189,7 @@ private static boolean matchPrice(double gamePrice, String priceAmount, String p
 
 
  
-    public static void CreateNewGamerAccount(String id,String name, String password, String email, int role, int Money, String AvatarLink, String RegistrationDate){
+    public static void CreateNewGamerAccount(String id,String name, String password, String email, int role, Double Money, String AvatarLink, String RegistrationDate){
 
         MongoClientSettings settings = getConnection();
         try (MongoClient mongoClient = MongoClients.create(settings)) {
@@ -1219,8 +1226,8 @@ private static boolean matchPrice(double gamePrice, String priceAmount, String p
     /*tao moi publisher*/
 
     public static void CreateNewPublisgherAccount(String id, String name, String password, String email,String bank_account,
-            int profit,String Description, String AvatarLink,
-            int Money, int role,String RegistrationDate){
+            Double profit,String Description, String AvatarLink,
+            Double Money, int role,String RegistrationDate){
         MongoClientSettings settings = getConnection();
         try(MongoClient mongoClient = MongoClients.create(settings)){
             
@@ -1306,7 +1313,7 @@ private static boolean matchPrice(double gamePrice, String priceAmount, String p
                         gamerDoc.getString("Email"),
                         gamerDoc.getString("Password"),
                         gamerDoc.getInteger("Role"),
-                        gamerDoc.getInteger("Money"),
+                        gamerDoc.getDouble("Money"),
                         gamerDoc.getString("AvatarLink"),
                         gamerDoc.getString("RegistrationDate")
                 );
@@ -1337,7 +1344,7 @@ private static boolean matchPrice(double gamePrice, String priceAmount, String p
                         gamerDoc.getString("Email"),
                         gamerDoc.getString("Password"),
                         gamerDoc.getInteger("Role"),
-                        gamerDoc.getInteger("Money"),
+                        gamerDoc.getDouble("Money"),
                         gamerDoc.getString("AvatarLink"),
                         gamerDoc.getString("RegistrationDate")
                 );
@@ -1371,10 +1378,10 @@ public static Publishers getPublisherByEmail(String email) {
                 publisherDoc.getString("Email"),
                 publisherDoc.getString("Password"),
                 publisherDoc.getString("Bank_account"),
-                publisherDoc.getInteger("Profit"),
+                publisherDoc.getDouble("Profit"),
                 publisherDoc.getString("Description"),
                 publisherDoc.getString("AvatarLink"),
-                publisherDoc.getInteger("Money"),
+                publisherDoc.getDouble("Money"),
                 publisherDoc.getInteger("Role"),
                 publisherDoc.getString("RegistrationDate")
             );
@@ -1453,9 +1460,9 @@ public static Publishers getPublisherByEmail(String email) {
             Document pubDoc = publishersCollection.find(filter).first();  
             if (gamerDoc != null) {
                 // Update the money field in the Gamers collection
-                int currentMoney = gamerDoc.getInteger("Money");
+                Double currentMoney = gamerDoc.getDouble("Money");
                 int transactionAmount = Integer.parseInt(amount);
-                int updatedMoney = currentMoney + transactionAmount;
+                Double updatedMoney = currentMoney + transactionAmount;
 
                 Bson updateOperation = Updates.set("Money", updatedMoney);
                 gamersCollection.updateOne(filter, updateOperation);
@@ -1466,9 +1473,9 @@ public static Publishers getPublisherByEmail(String email) {
             }
             
             if(pubDoc!=null){
-                int currentMoney = pubDoc.getInteger("Money");
+                Double currentMoney = pubDoc.getDouble("Money");
                 int transactionAmount = Integer.parseInt(amount);
-                int updatedMoney = currentMoney + transactionAmount;
+                Double updatedMoney = currentMoney + transactionAmount;
 
                 Bson updateOperation = Updates.set("Money", updatedMoney);
                 publishersCollection.updateOne(filter, updateOperation);

@@ -95,7 +95,7 @@ public class SignUpServlet extends HttpServlet {
         
         // Generate the current date and time
         String regex = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // yeu cau pass có it nhat 1 so 1 chu
-        String emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@gmail\\.com$";
+        String emailPattern = "^[^ ]+@[^ ]+\\\\.[a-z]{2,3}$";
         if (em.isEmpty() || !em.matches(emailPattern) || p.isEmpty()|| !p.matches(regex)|| !p.matches(rp) || role.isEmpty() || role == null || n.isEmpty() || n == null) {           
                 request.setAttribute("mess", "Invalid information!!!!");
                 request.setAttribute("blue", true);
