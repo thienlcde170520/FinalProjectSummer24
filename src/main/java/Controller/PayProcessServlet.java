@@ -95,10 +95,10 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     Gamers gamer = (Gamers) session.getAttribute("account");
 
     // Convert gamePrice to int (assuming rounding down for whole numbers)
-    int roundedGamePrice = (int) Math.floor(gamePrice);
+   
 
     // Add purchase details to MongoDB
-    JavaMongo.addPurchase(billId, gamer.getId(), gameId, buyTime, roundedGamePrice);
+    JavaMongo.addPurchase(billId, gamer.getId(), gameId, buyTime, gamePrice);
 
     // Forward to payment confirmation page or another view
   request.getRequestDispatcher("Home.jsp").forward(request, response);

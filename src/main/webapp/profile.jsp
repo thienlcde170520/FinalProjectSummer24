@@ -1,3 +1,4 @@
+<%@page import="Model.Users"%>
 <%@page import="Model.Game"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="Model.BankTransactions"%>
@@ -53,41 +54,53 @@ https://templatemo.com/tm-579-cyborg-gaming
   <!-- ***** Preloader End ***** -->
 
   <!-- ***** Header Area Start ***** -->
-  <header class="header-area header-sticky">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <nav class="main-nav">
-                    <!-- ***** Logo Start ***** -->
-                    <a href="index.html" class="logo">
-                        <img src="assets/images/logo.png" alt="">
-                    </a>
-                    <!-- ***** Logo End ***** -->
-                    <!-- ***** Search End ***** -->
-                    <div class="search-input">
-                      <form id="search" action="#">
-                        <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                        <i class="fa fa-search"></i>
-                      </form>
+   <!-- ***** Header Area Start ***** -->
+        <header class="header-area header-sticky">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <nav class="main-nav">
+                            <!-- ***** Logo Start ***** -->
+                            <a href="Home.jsp" class="logo">
+                                <img src="assets/images/logo.png" alt="">
+                            </a>
+                            <!-- ***** Logo End ***** -->
+                            <!-- ***** Search End ***** -->
+                            <div class="search-input">
+                                <form id="search" action="SearchGameServlet" method="get">
+                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                                    <i class="fa fa-search"></i>
+                                </form>
+                            </div>
+                            <!-- ***** Search End ***** -->
+                            <!-- ***** Menu Start ***** -->
+                            <ul class="nav">
+                                <li><a href="Home.jsp" class="active">Home</a></li>
+                                <li><a href="browse.html">Browse</a></li>
+                                <li><a href="details.html">Genre</a></li>
+                                
+                                <%
+    Users user = (Users) session.getAttribute("account");
+    if (user != null && user.getRole()== 2 ) {
+%>
+        <li><a href="UploadGame">Upload Game</a></li>
+<%
+    }
+%>
+                               <li><a href="LogOutServlet">LOG OUT</a></li>
+
+                                <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+                            </ul>   
+                            <a class='menu-trigger'>
+                                <span>Menu</span>
+                            </a>
+                            <!-- ***** Menu End ***** -->
+                        </nav>
                     </div>
-                    <!-- ***** Search End ***** -->
-                    <!-- ***** Menu Start ***** -->
-                    <ul class="nav">
-                        <li><a href="Home.jsp">Home</a></li>
-                        <li><a href="browse.html">Browse</a></li>
-                        <li><a href="details.html">Details</a></li>
-                        <li><a href="streams.html">Streams</a></li>
-                        <li><a href="profile.jsp" class="active">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
-                    </ul>   
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
-                    <!-- ***** Menu End ***** -->
-                </nav>
+                </div>
             </div>
-        </div>
-    </div>
-  </header>
+        </header>
   <!-- ***** Header Area End ***** -->
 
   <div class="container">

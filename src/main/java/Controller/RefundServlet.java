@@ -33,7 +33,7 @@ public class RefundServlet extends HttpServlet {
 String gameId = request.getParameter("gameId");
         String billId = request.getParameter("billId");
         String gamerId = request.getParameter("gamerId");
-        int refundNumber = Integer.parseInt(request.getParameter("refundnumber"));
+        Double refundNumber = Double.valueOf(request.getParameter("refundnumber"));
             // Process the refund
             JavaMongo.refundPurchase(billId, gamerId, gameId, refundNumber);
       request.getRequestDispatcher("Home.jsp");
@@ -53,10 +53,10 @@ String gameId = request.getParameter("gameId");
         String gameId = request.getParameter("gameId");
         String billId = request.getParameter("billId");
         String gamerId = request.getParameter("gamerId");
-        int refundNumber = Integer.parseInt(request.getParameter("refundnumber"));
+      Double refundNumber = Double.valueOf(request.getParameter("refundnumber"));
             // Process the refund
             JavaMongo.refundPurchase(billId, gamerId, gameId, refundNumber);
-      request.getRequestDispatcher("Home.jsp");
+      request.getRequestDispatcher("Home.jsp").forward(request, response);
     
     }
     /** 
