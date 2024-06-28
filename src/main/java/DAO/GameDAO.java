@@ -52,10 +52,35 @@ import org.bson.conversions.Bson;
  */
 public class GameDAO {
         public static void addGame(Game game) {
+              try (MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+            MongoCollection<Document> gamesCollectionLocal = fpteamDBLocal.getCollection("Games");
+
+            Document gameDoc = new Document()
+                    .append("ID", game.getId())
+                    .append("Name", game.getName())
+                    .append("Price", game.getPrice())
+                    .append("Publish_day", game.getPublishDay())
+                    .append("Number_of_buyers", game.getNumberOfBuyers())
+                    .append("LinkTrailer", game.getLinkTrailer())
+                    .append("AvatarLink", game.getAvatarLink())
+                    .append("GameLink", game.getGameLink())
+                    .append("Description", game.getDescription())
+                    .append("Minimum_CPU", game.getMinimumCPU())
+                    .append("Minimum_RAM", game.getMinimumRAM())
+                    .append("Minimum_GPU", game.getMinimumGPU())
+                    .append("Maximum_CPU", game.getMaximumCPU())
+                    .append("Maximum_RAM", game.getMaximumRAM())
+                    .append("Maximum_GPU", game.getMaximumGPU());
+
+            gamesCollectionLocal.insertOne(gameDoc);
+            System.out.println("Game added successfully to MongoDB.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
-
             Document gameDoc = new Document()
                     .append("ID", game.getId())
                     .append("Name", game.getName())
@@ -78,11 +103,49 @@ public class GameDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+      
     }
           public static void updateGame(Game game) {
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+
+            // Create a filter to find the existing document by game ID
+            Bson filter = Filters.eq("ID", game.getId());
+
+            // Create a document with updated game information
+            Document updateDoc = new Document()
+                    .append("Name", game.getName())
+                    .append("Price", game.getPrice())
+                    .append("Publish_day", game.getPublishDay())
+                    .append("Number_of_buyers", game.getNumberOfBuyers())
+                    .append("LinkTrailer", game.getLinkTrailer())
+                    .append("AvatarLink", game.getAvatarLink())
+                    .append("GameLink", game.getGameLink())
+                    .append("Description", game.getDescription())
+                    .append("Minimum_CPU", game.getMinimumCPU())
+                    .append("Minimum_RAM", game.getMinimumRAM())
+                    .append("Minimum_GPU", game.getMinimumGPU())
+                    .append("Maximum_CPU", game.getMaximumCPU())
+                    .append("Maximum_RAM", game.getMaximumRAM())
+                    .append("Maximum_GPU", game.getMaximumGPU());
+
+            // Create an update operation
+            UpdateOptions options = new UpdateOptions().upsert(true); // If document not found, create a new one
+            UpdateResult updateResult = gamesCollection.updateOne(filter, new Document("$set", updateDoc), options);
+
+            // Check if the update was successful
+            if (updateResult.getModifiedCount() > 0) {
+                System.out.println("Game updated successfully in MongoDB.");
+            } else {
+                System.out.println("No game found with ID: " + game.getId() + ". New game added.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+         try (MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+            MongoCollection<Document> gamesCollection = fpteamDBLocal.getCollection("Games");
 
             // Create a filter to find the existing document by game ID
             Bson filter = Filters.eq("ID", game.getId());

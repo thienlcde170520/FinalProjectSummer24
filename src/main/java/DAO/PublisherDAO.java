@@ -26,7 +26,7 @@ import org.bson.conversions.Bson;
  */
 public class PublisherDAO {
      public static void publishGame(String gameId, String publisherId) {
-        try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+        try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Publish");
 
@@ -37,7 +37,6 @@ public class PublisherDAO {
                     .append("isPublishable", true);
 
             gamesCollection.insertOne(gamePublishDoc);
-            System.out.println("Game ID: " + gameId + " published by publisher ID: " + publisherId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -161,9 +160,41 @@ public class PublisherDAO {
         } catch (MongoException e) {
             e.printStackTrace();
         }
+         MongoClientSettings settingsLocal = getConnectionLocal();
+        try (MongoClient mongoClientLocal = MongoClients.create(settingsLocal)) {
+
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+
+            // Access the "Users" collection
+            MongoCollection<Document> usersCollection = fpteamDBLocal.getCollection("Users");
+            // Access the "Gamers" collection
+            MongoCollection<Document> gamePublishersCollection = fpteamDBLocal.getCollection("GamePublishers");
+
+            Document user = new Document("ID", id)
+                    .append("Name", name)
+                    .append("Password", password)
+                    .append("Email", email)
+                    .append("Role", role);
+            usersCollection.insertOne(user);
+
+            Document gamer = new Document("ID", id)
+                    .append("Name", name)
+                    .append("Password", password)
+                    .append("Email", email)
+                    .append("Bank_account", bank_account)
+                    .append("Profit", profit)
+                    .append("Description", Description)
+                    .append("AvatarLink", AvatarLink)
+                    .append("Money", Money)
+                    .append("Role", role)
+                    .append("RegistrationDate", RegistrationDate);
+            gamePublishersCollection.insertOne(gamer);
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
 
     } public static Publishers getPublisherByEmail(String email) {
-        MongoClientSettings settings = getConnection();
+        MongoClientSettings settings = getConnectionLocal();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");

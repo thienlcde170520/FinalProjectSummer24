@@ -4,7 +4,6 @@
  */
 package DAO;
 
-import Controller.JavaMongo;
 import static Controller.JavaMongo.getConnection;
 import static Controller.JavaMongo.getConnectionLocal;
 import Model.BankTransactions;
@@ -95,6 +94,7 @@ public class TransactionBillDAO {
 
     public static void refundPurchase(String billId, String gamerId, String gameId, Double refundPrice) {
         MongoClientSettings settings = getConnection();
+              MongoClientSettings settingsLocal = getConnectionLocal();
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
@@ -102,7 +102,59 @@ public class TransactionBillDAO {
             MongoCollection<Document> buyCollection = fpteamDB.getCollection("Buy");
             MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
             MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
-            MongoCollection<Document> publishersCollection = fpteamDB.getCollection("GamePublishers");
+       
+
+            // Retrieve the gamer document
+            Document gamerDoc = gamersCollection.find(Filters.eq("ID", gamerId)).first();
+            if (gamerDoc == null) {
+                System.out.println("Gamer not found with ID: " + gamerId);
+                return;
+            }
+
+            // Retrieve the game document
+            Document gameDoc = gamesCollection.find(Filters.eq("ID", gameId)).first();
+            if (gameDoc == null) {
+                System.out.println("Game not found with ID: " + gameId);
+                return;
+            }
+
+            // Calculate the new balance for the gamer after refund
+            Double currentMoney = gamerDoc.getDouble("Money");
+            Double newBalance = currentMoney + refundPrice;
+
+            // Update the Money field in the Gamers collection
+            Bson updateBalance = Updates.set("Money", newBalance);
+            gamersCollection.updateOne(Filters.eq("ID", gamerId), updateBalance);
+            System.out.println("Gamer balance updated: " + newBalance);
+         
+           
+                // Decrement the number of buyers for the game in the Games collection
+                int currentBuyers = gameDoc.getInteger("Number_of_buyers");
+                int newBuyers = currentBuyers - 1;
+                Bson updateBuyers = Updates.set("Number_of_buyers", newBuyers);
+                gamesCollection.updateOne(Filters.eq("ID", gameId), updateBuyers);
+                System.out.println("Number of buyers updated for game " + gameId + ": " + newBuyers);
+
+                // Remove the purchase document from the Buy collection
+                Bson deleteFilter = Filters.eq("ID_Bill", billId);
+                DeleteResult result = buyCollection.deleteOne(deleteFilter);
+                if (result.getDeletedCount() > 0) {
+                    System.out.println("Purchase refunded: " + billId);
+                } else {
+                    System.out.println("No purchase found with ID_Bill: " + billId);
+                }
+            
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+         try (MongoClient mongoClientLocal = MongoClients.create(settingsLocal)) {
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+
+            // Access the collections
+            MongoCollection<Document> buyCollection = fpteamDBLocal.getCollection("Buy");
+            MongoCollection<Document> gamersCollection = fpteamDBLocal.getCollection("Gamers");
+            MongoCollection<Document> gamesCollection = fpteamDBLocal.getCollection("Games");
+            MongoCollection<Document> publishersCollection = fpteamDBLocal.getCollection("GamePublishers");
 
             // Retrieve the gamer document
             Document gamerDoc = gamersCollection.find(Filters.eq("ID", gamerId)).first();
@@ -167,6 +219,7 @@ public class TransactionBillDAO {
 
     public static void addPurchase(String billId, String gamerId, String gameId, String buyTime, Double buyPrice) {
         MongoClientSettings settings = getConnection();
+            MongoClientSettings settingsLocal = getConnectionLocal();
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
@@ -174,7 +227,67 @@ public class TransactionBillDAO {
             MongoCollection<Document> buyCollection = fpteamDB.getCollection("Buy");
             MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
             MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
-            MongoCollection<Document> publishersCollection = fpteamDB.getCollection("GamePublishers");
+           
+            // Retrieve the current balance of the gamer
+            Document gamerDoc = gamersCollection.find(Filters.eq("ID", gamerId)).first();
+            if (gamerDoc == null) {
+                System.out.println("Gamer not found with ID: " + gamerId);
+                return;
+            }
+
+            // Check if the game exists in the Games collection
+            Document gameDoc = gamesCollection.find(Filters.eq("ID", gameId)).first();
+            if (gameDoc == null) {
+                System.out.println("Game not found with ID: " + gameId);
+                return;
+            }
+
+            Double currentMoney = gamerDoc.getDouble("Money");
+            if (currentMoney >= buyPrice) {
+                // Calculate the new balance for the gamer after purchase
+                Double newBalance = currentMoney - buyPrice;
+
+                // Update the Money field in the Gamers collection
+                Bson updateBalance = Updates.set("Money", newBalance);
+                gamersCollection.updateOne(Filters.eq("ID", gamerId), updateBalance);
+                System.out.println("Gamer balance updated: " + newBalance);
+
+                
+
+                // Update the profit for the publisher
+               
+                    // Increment the number of buyers for the game in the Games collection
+                    int currentBuyers = gameDoc.getInteger("Number_of_buyers");
+                    int newBuyers = currentBuyers + 1;
+                    Bson updateBuyers = Updates.set("Number_of_buyers", newBuyers);
+                    gamesCollection.updateOne(Filters.eq("ID", gameId), updateBuyers);
+                    System.out.println("Number of buyers updated for game " + gameId + ": " + newBuyers);
+
+                    // Create the document to be inserted in the Buy collection
+                    Document buyDoc = new Document("ID_Bill", billId)
+                            .append("ID_Gamer", gamerId)
+                            .append("ID_Game", gameId)
+                            .append("Buy_time", buyTime)
+                            .append("Buy_price", buyPrice);
+
+                    // Insert the document into the Buy collection
+                    buyCollection.insertOne(buyDoc);
+                    System.out.println("Purchase added: " + buyDoc.toJson());
+                
+            } else {
+                System.out.println("Insufficient funds for gamer ID: " + gamerId);
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+        try (MongoClient mongoClientLocal = MongoClients.create(settingsLocal)) {
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+
+            // Access the collections
+            MongoCollection<Document> buyCollection = fpteamDBLocal.getCollection("Buy");
+            MongoCollection<Document> gamersCollection = fpteamDBLocal.getCollection("Gamers");
+            MongoCollection<Document> gamesCollection = fpteamDBLocal.getCollection("Games");
+            MongoCollection<Document> publishersCollection = fpteamDBLocal.getCollection("GamePublishers");
 
             // Retrieve the current balance of the gamer
             Document gamerDoc = gamersCollection.find(Filters.eq("ID", gamerId)).first();
@@ -246,9 +359,47 @@ public class TransactionBillDAO {
             String orderInfo, String orderType, String transId, String payType, String signature, String payerId) throws Exception {
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
-            MongoCollection<Document> transactionsCollection = fpteamDB.getCollection("BankTransactions");
+  
             MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
             MongoCollection<Document> publishersCollection = fpteamDB.getCollection("GamePublishers");
+         
+            // Retrieve the corresponding gamer from the Gamers collection
+            Bson filter = Filters.eq("ID", payerId);
+            Document gamerDoc = gamersCollection.find(filter).first();
+            Document pubDoc = publishersCollection.find(filter).first();
+            if (gamerDoc != null) {
+                // Update the money field in the Gamers collection
+                Double currentMoney = gamerDoc.getDouble("Money");
+                int transactionAmount = Integer.parseInt(amount);
+                Double updatedMoney = currentMoney + transactionAmount;
+
+                Bson updateOperation = Updates.set("Money", updatedMoney);
+                gamersCollection.updateOne(filter, updateOperation);
+
+                System.out.println("Gamer's money updated successfully.");
+            } else {
+                System.out.println("Gamer not found.");
+            }
+
+            if (pubDoc != null) {
+                Double currentMoney = pubDoc.getDouble("Money");
+                int transactionAmount = Integer.parseInt(amount);
+                Double updatedMoney = currentMoney + transactionAmount;
+
+                Bson updateOperation = Updates.set("Money", updatedMoney);
+                publishersCollection.updateOne(filter, updateOperation);
+
+                System.out.println("Phublisher's money updated successfully.");
+            }
+
+        } catch (Exception e) {
+            throw new Exception("Error inserting transaction into MongoDB: " + e.getMessage());
+        }
+        try (MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+            MongoCollection<Document> transactionsCollection = fpteamDBLocal.getCollection("BankTransactions");
+            MongoCollection<Document> gamersCollection = fpteamDBLocal.getCollection("Gamers");
+            MongoCollection<Document> publishersCollection = fpteamDBLocal.getCollection("GamePublishers");
             Document transactionDoc = new Document()
                     .append("partnerCode", partnerCode)
                     .append("orderId", orderId)
@@ -301,7 +452,7 @@ public class TransactionBillDAO {
     public static ArrayList<BankTransactions> getTransactionHistoryByPayerId(String payerId) {
         ArrayList<BankTransactions> transactionsList = new ArrayList<>();
 
-        MongoClientSettings settings = getConnection();
+        MongoClientSettings settings = getConnectionLocal();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");

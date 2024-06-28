@@ -117,10 +117,39 @@ public class GamerDAO {
         } catch (MongoException e) {
             e.printStackTrace();
         }
+         MongoClientSettings settingsLocal = getConnectionLocal();
+        try (MongoClient mongoClientLocal = MongoClients.create(settingsLocal)) {
+
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+
+            // Access the "Gamers" collection
+            MongoCollection<Document> usersCollection = fpteamDBLocal.getCollection("Users");
+
+            MongoCollection<Document> gamersCollection = fpteamDBLocal.getCollection("Gamers");
+
+            Document user = new Document("ID", id)
+                    .append("Name", name)
+                    .append("Password", password)
+                    .append("Email", email)
+                    .append("Role", role);
+            usersCollection.insertOne(user);
+
+            Document gamer = new Document("ID", id)
+                    .append("Name", name)
+                    .append("Password", password)
+                    .append("Email", email)
+                    .append("Money", Money)
+                    .append("AvatarLink", AvatarLink)
+                    .append("Role", role)
+                    .append("RegistrationDate", RegistrationDate);
+            gamersCollection.insertOne(gamer);
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
 
     }
          public static Gamers getGamerByEmail(String email) {
-        MongoClientSettings settings = getConnection();
+        MongoClientSettings settings = getConnectionLocal();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
@@ -150,7 +179,7 @@ public class GamerDAO {
         return null;
     }
            public static Gamers getGamerByGamerId(String Id) {
-        MongoClientSettings settings = getConnection();
+        MongoClientSettings settings = getConnectionLocal();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");

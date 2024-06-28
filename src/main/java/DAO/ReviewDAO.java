@@ -55,7 +55,7 @@ public class ReviewDAO {
     }
 
     public static void deleteReview(String gamerId, String gameId) {
-        try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+        try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> collection = fpteamDB.getCollection("Reviews");
 
@@ -83,7 +83,7 @@ public class ReviewDAO {
     }
 
     public static void addReview(String gamerId, String gameId, double rating, String description) {
-        try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+        try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> collection = fpteamDB.getCollection("Reviews");
 
