@@ -25,7 +25,7 @@ import org.bson.conversions.Bson;
  */
 public class GenreDAO {
       public static void clearGenresForGame(String gameId) {
-        try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+        try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
 
@@ -39,7 +39,7 @@ public class GenreDAO {
     }
 
     public static void addExclusiveGenreToGame(String gameId, String genreType) {
-        try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+        try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
 
@@ -55,7 +55,7 @@ public class GenreDAO {
     }
 
     public static void addGenreToGame(String gameId, String genreType) {
-        try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+        try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
 

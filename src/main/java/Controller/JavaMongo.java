@@ -1,12 +1,5 @@
 package Controller;
 
-import Model.BankTransactions;
-import Model.Bill;
-import Model.Game;
-import Model.Gamers;
-import Model.Publishers;
-import Model.Genre;
-import Model.Review;
 import Model.Users;
 import com.mongodb.BasicDBObject;
 import com.mongodb.ConnectionString;
@@ -14,33 +7,14 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
-import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.model.Updates;
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import org.bson.Document;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import org.bson.conversions.Bson;
 
 public class JavaMongo {
 //
@@ -176,7 +150,7 @@ public class JavaMongo {
     /*tao moi publisher*/
  /*---------------------*/
     public Users getUserByEmail(String email) {
-        MongoClientSettings settings = getConnection();
+        MongoClientSettings settings = getConnectionLocal();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
@@ -205,7 +179,7 @@ public class JavaMongo {
 
     /*get publisher by email*/
     public static void updatePassword(String email, String newPassword) {
-        try (com.mongodb.client.MongoClient mongoClient = MongoClients.create(getConnection())) {
+        try ( MongoClient mongoClient = MongoClients.create(getConnection())) {
 
             // Truy cập cơ sở dữ liệu "FPT"
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
@@ -237,6 +211,38 @@ public class JavaMongo {
         } catch (Exception e) {
             e.printStackTrace();
         }
+         try ( MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
+
+            // Truy cập cơ sở dữ liệu "FPT"
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+
+            // Tạo một bộ lọc để truy vấn người dùng dựa trên Email
+            Document filter = new Document("Email", email);
+
+            // Tạo một document mới chứa thông tin mật khẩu mới
+            Document updatePasswordDoc = new Document("$set", new Document("Password", newPassword));
+
+            // Truy cập bộ sưu tập "Users"
+            MongoCollection<Document> usersCollection = fpteamDBLocal.getCollection("Users");
+
+            // Thực hiện update vào MongoDB trong collection "Users"
+            usersCollection.updateOne(filter, updatePasswordDoc);
+
+            // Truy cập bộ sưu tập "Gamers"
+            MongoCollection<Document> gamersCollection = fpteamDBLocal.getCollection("Gamers");
+
+            // Thực hiện update vào MongoDB trong collection "Gamers"
+            gamersCollection.updateOne(filter, updatePasswordDoc);
+
+            // Truy cập bộ sưu tập "GamePublishers"
+            MongoCollection<Document> publishersCollection = fpteamDBLocal.getCollection("GamePublishers");
+
+            // Thực hiện update vào MongoDB trong collection "GamePublishers"
+            publishersCollection.updateOne(filter, updatePasswordDoc);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void updateProfile(String id, String name, String email, String password, String AvatarLink, int role) {
@@ -246,9 +252,50 @@ public class JavaMongo {
             // Collection "Gamers"
             MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
             // Collection "Users"
-            MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
+          
+
+            // Tạo một bộ lọc để xác định gamer cần cập nhật dựa trên ID
+            BasicDBObject query = new BasicDBObject();
+            query.put("ID", id);
+
+            // Tạo một document mới chứa thông tin cập nhật (nếu có) cho Gamers
+            Document gamerUpdateFields = new Document();
+            if (name != null && !name.isEmpty()) {
+                gamerUpdateFields.append("Name", name);
+            }
+            if (email != null && !email.isEmpty()) {
+                gamerUpdateFields.append("Email", email);
+            }
+            if (password != null && !password.isEmpty()) {
+                gamerUpdateFields.append("Password", password);
+            }
+            if (AvatarLink != null && !AvatarLink.isEmpty()) {
+                gamerUpdateFields.append("AvatarLink", AvatarLink);
+            }
+            if (!gamerUpdateFields.isEmpty() ) {
+              
+                // Kiểm tra xem có gì để cập nhật không
+                if (role == 3) {
+                    // Cập nhật trong cả Gamers, Users và Publishers
+                    gamersCollection.updateOne(query, new Document("$set", gamerUpdateFields));
+
+                } 
+            }
+
+        } catch (MongoException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+          try (MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+
+            // Collection "Gamers"
+            MongoCollection<Document> gamersCollection = fpteamDBLocal.getCollection("Gamers");
+            // Collection "Users"
+            MongoCollection<Document> usersCollection = fpteamDBLocal.getCollection("Users");
             // Collection "Publishers"
-            MongoCollection<Document> publishersCollection = fpteamDB.getCollection("GamePublishers");
+            MongoCollection<Document> publishersCollection = fpteamDBLocal.getCollection("GamePublishers");
 
             // Tạo một bộ lọc để xác định gamer cần cập nhật dựa trên ID
             BasicDBObject query = new BasicDBObject();
