@@ -5,6 +5,7 @@
 package Common;
 
 import Controller.JavaMongo;
+import static DAO.GamerDAO.getAllGamers;
 import Model.Gamers;
 import Model.Users;
 import java.util.ArrayList;

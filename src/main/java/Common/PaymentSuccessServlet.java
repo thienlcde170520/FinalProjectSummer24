@@ -6,6 +6,7 @@
 package Common;
 
 import Controller.JavaMongo;
+import static DAO.TransactionBillDAO.insertTransaction;
 import Model.Users;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -73,7 +74,7 @@ public class PaymentSuccessServlet extends HttpServlet {
         }
   try {
             // Insert transaction into MongoDB using JavaMongo class
-            JavaMongo.insertTransaction(partnerCode, orderId, requestId, amount, orderInfo,
+            insertTransaction(partnerCode, orderId, requestId, amount, orderInfo,
                     orderType, transId, payType,
                     signature,payerId);
       

@@ -5,6 +5,7 @@
 
 package Controller;
 
+import DAO.TransactionBillDAO;
 import Model.Bill;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,7 +36,7 @@ String gameId = request.getParameter("gameId");
         String gamerId = request.getParameter("gamerId");
         Double refundNumber = Double.valueOf(request.getParameter("refundnumber"));
             // Process the refund
-            JavaMongo.refundPurchase(billId, gamerId, gameId, refundNumber);
+            TransactionBillDAO.refundPurchase(billId, gamerId, gameId, refundNumber);
       request.getRequestDispatcher("Home.jsp");
     } 
 
@@ -55,7 +56,7 @@ String gameId = request.getParameter("gameId");
         String gamerId = request.getParameter("gamerId");
       Double refundNumber = Double.valueOf(request.getParameter("refundnumber"));
             // Process the refund
-            JavaMongo.refundPurchase(billId, gamerId, gameId, refundNumber);
+            TransactionBillDAO.refundPurchase(billId, gamerId, gameId, refundNumber);
       request.getRequestDispatcher("Home.jsp").forward(request, response);
     
     }

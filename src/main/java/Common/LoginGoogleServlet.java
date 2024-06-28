@@ -7,7 +7,7 @@ package Common;
 
 import static Common.CheckValid.CheckEmail;
 
-import static Controller.JavaMongo.CreateNewGamerAccount;
+import static DAO.GamerDAO.CreateNewGamerAccount;
 
 import Model.Users;
 import java.io.IOException;

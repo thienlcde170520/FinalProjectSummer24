@@ -1,3 +1,4 @@
+<%@page import="DAO.GamerDAO"%>
 <%@page import="Model.Users"%>
 <%@page import="Model.Bill"%>
 <%@page import="Model.Gamers"%>
@@ -268,7 +269,7 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
             <%               
                 for (Review review : reviews) {
                     // Get the user (gamer) associated with this review
-                    Gamers gamer = JavaMongo.getGamerByGamerId(review.getIdGamer());
+                    Gamers gamer = GamerDAO.getGamerByGamerId(review.getIdGamer());
                     
                     // Check if the logged-in user is the author of the review
                     boolean isReviewOwner = loggedInUser != null && loggedInUser.getId().equals(gamer.getId());

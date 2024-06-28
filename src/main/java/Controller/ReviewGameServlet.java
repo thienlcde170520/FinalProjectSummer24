@@ -5,6 +5,7 @@
 
 package Controller;
 
+import DAO.ReviewDAO;
 import Model.Gamers;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -63,7 +64,7 @@ public class ReviewGameServlet extends HttpServlet {
         // Validate parameters (make sure they are not null or empty)
         if (reviewGameId != null && !reviewGameId.isEmpty() && reviewGamerId != null && !reviewGamerId.isEmpty()) {
             // Call a method to delete the review based on the IDs
-             JavaMongo.deleteReview( reviewGamerId, reviewGameId);
+             ReviewDAO.deleteReview( reviewGamerId, reviewGameId);
               
             request.getRequestDispatcher("Home.jsp").forward(request, response);
             
@@ -85,7 +86,7 @@ public class ReviewGameServlet extends HttpServlet {
         String gameId = request.getParameter("gameId");
         Double rating = Double.valueOf(request.getParameter("rating"));
         String reviewDescription = request.getParameter("review");
-         JavaMongo.addReview(gamerId, gameId, rating, reviewDescription);
+         ReviewDAO.addReview(gamerId, gameId, rating, reviewDescription);
 
         // Redirect back to the page where the form was submitted from
         response.sendRedirect("Home.jsp");
