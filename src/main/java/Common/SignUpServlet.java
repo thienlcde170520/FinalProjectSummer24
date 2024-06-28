@@ -7,9 +7,12 @@ package Common;
 
 import static Common.CheckValid.CheckEmail;
 import Controller.JavaMongo;
+import static DAO.GamerDAO.CreateNewGamerAccount;
+import static DAO.GamerDAO.getGamerByEmail;
+import static DAO.PublisherDAO.CreateNewPublisgherAccount;
+import static DAO.PublisherDAO.getPublisherByEmail;
 
-import static Controller.JavaMongo.CreateNewGamerAccount;
-import static Controller.JavaMongo.CreateNewPublisgherAccount;
+
 import Model.Gamers;
 import Model.Publishers;
 import Model.Users;
@@ -95,7 +98,7 @@ public class SignUpServlet extends HttpServlet {
         
         // Generate the current date and time
         String regex = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // yeu cau pass có it nhat 1 so 1 chu
-        String emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@gmail\\.com$";
+        String emailPattern = "^[^ ]+@[^ ]+\\\\.[a-z]{2,3}$";
         if (em.isEmpty() || !em.matches(emailPattern) || p.isEmpty()|| !p.matches(regex)|| !p.matches(rp) || role.isEmpty() || role == null || n.isEmpty() || n == null) {           
                 request.setAttribute("mess", "Invalid information!!!!");
                 request.setAttribute("blue", true);
@@ -134,18 +137,18 @@ public class SignUpServlet extends HttpServlet {
                         if(roleValue == 3){
                             CreateNewGamerAccount( idG,n,  p,  em, roleValue,g.getMoney(),g.getAvatarLink(),registrationDate);
                             HttpSession session = request.getSession();
-                            session.setAttribute("account",JavaMongo.getGamerByEmail(em));
+                            session.setAttribute("account",getGamerByEmail(em));
                         }else if (roleValue == 2){
                             CreateNewPublisgherAccount(idP, n,  p,  em,pu.getBank_account(),
                                     pu.getProfit(),pu.getDescription(),pu.getAvatarLink(),pu.getMoney() ,roleValue, registrationDate );
                             HttpSession session = request.getSession();
-                            session.setAttribute("account",JavaMongo.getPublisherByEmail(em));
+                            session.setAttribute("account",getPublisherByEmail(em));
                         }
                         //response.sendRedirect("Home.jsp");
                         
                         request.getRequestDispatcher("Home.jsp").forward(request, response);
                         
-                    } catch (Exception e) {
+                    } catch (ServletException | IOException e) {
                         try (PrintWriter out = response.getWriter()) {
                             /* TODO output your page here. You may use following sample code. */
                             out.println("<!DOCTYPE html>");

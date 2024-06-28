@@ -1,3 +1,4 @@
+<%@page import="DAO.GamerDAO"%>
 <%@page import="Model.Users"%>
 <%@page import="Model.Bill"%>
 <%@page import="Model.Gamers"%>
@@ -58,32 +59,48 @@
         %>
 
         <!-- Header Area Start -->
+        <!-- ***** Header Area Start ***** -->
         <header class="header-area header-sticky">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
                         <nav class="main-nav">
-                            <a href="index.html" class="logo">
+                            <!-- ***** Logo Start ***** -->
+                            <a href="Home.jsp" class="logo">
                                 <img src="assets/images/logo.png" alt="">
                             </a>
+                            <!-- ***** Logo End ***** -->
+                            <!-- ***** Search End ***** -->
                             <div class="search-input">
-                                <form id="search" action="#">
-                                    <input type="text" placeholder="Type Something" id="searchText" name="searchKeyword"
-                                           onkeypress="handle" />
+                                <form id="search" action="SearchGameServlet" method="get">
+                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
                                     <i class="fa fa-search"></i>
                                 </form>
                             </div>
+                            <!-- ***** Search End ***** -->
+                            <!-- ***** Menu Start ***** -->
                             <ul class="nav">
-                                <li><a href="index.html">Home</a></li>
+                                <li><a href="Home.jsp" class="active">Home</a></li>
                                 <li><a href="browse.html">Browse</a></li>
-                                <li><a href="details.html" class="active">Details</a></li>
-                                <li><a href="streams.html">Streams</a></li>
-                                <li><a href="profile.html">Profile <img src="assets/images/profile-header.jpg"
-                                                                        alt=""></a></li>
-                            </ul>
-                            <a class="menu-trigger">
+                                <li><a href="details.html">Genre</a></li>
+                                
+                                <%
+    Users user = (Users) session.getAttribute("account");
+    if (user != null && user.getRole()== 2 ) {
+%>
+        <li><a href="UploadGame">Upload Game</a></li>
+<%
+    }
+%>
+                               <li><a href="LogOutServlet">LOG OUT</a></li>
+
+                                <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+                            </ul>   
+                            <a class='menu-trigger'>
                                 <span>Menu</span>
                             </a>
+                            <!-- ***** Menu End ***** -->
                         </nav>
                     </div>
                 </div>
@@ -252,15 +269,15 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
             <%               
                 for (Review review : reviews) {
                     // Get the user (gamer) associated with this review
-                    Gamers user = JavaMongo.getGamerByGamerId(review.getIdGamer());
+                    Gamers gamer = GamerDAO.getGamerByGamerId(review.getIdGamer());
                     
                     // Check if the logged-in user is the author of the review
-                    boolean isReviewOwner = loggedInUser != null && loggedInUser.getId().equals(user.getId());
+                    boolean isReviewOwner = loggedInUser != null && loggedInUser.getId().equals(gamer.getId());
                     
                     // Display review details
             %>
             <li>
-                <strong><%= user.getName()%>:</strong> "<%= review.getDescription()%>" 
+                <strong><%= gamer.getName()%>:</strong> "<%= review.getDescription()%>" 
                 <br> Rating: <%= review.getRating()%>
                 
                 <!-- Delete button form (display only if logged-in user is the author of the review) -->

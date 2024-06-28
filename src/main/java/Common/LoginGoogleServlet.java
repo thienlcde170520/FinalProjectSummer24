@@ -7,7 +7,7 @@ package Common;
 
 import static Common.CheckValid.CheckEmail;
 
-import static Controller.JavaMongo.CreateNewGamerAccount;
+import static DAO.GamerDAO.CreateNewGamerAccount;
 
 import Model.Users;
 import java.io.IOException;
@@ -50,7 +50,7 @@ public class LoginGoogleServlet extends HttpServlet {
             session.setAttribute("account", a);
         }else {
             // If user does not exist, create a new account
-            CreateNewGamerAccount(acc.getId(),acc.getName(), acc.getPassword(), acc.getEmail(),role,acc.getMoney(),acc.getAvatarLink(),acc.getRegistrationDate()); // Set yourRoleValue accordingly
+            CreateNewGamerAccount(acc.getId(),acc.getName(), acc.getPassword(), acc.getEmail(),role,0.0,acc.getAvatarLink(),acc.getRegistrationDate()); // Set yourRoleValue accordingly
             // Retrieve the newly created user to set in session
             a = CheckEmail(acc.getEmail()); // Check again after account creation
             session.setAttribute("account", a);

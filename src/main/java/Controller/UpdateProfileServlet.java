@@ -7,6 +7,8 @@ package Controller;
 
 import static Common.CheckValid.CheckEmail;
 import static Controller.JavaMongo.updateProfile;
+import DAO.GamerDAO;
+import DAO.PublisherDAO;
 import Model.Gamers;
 import Model.Publishers;
 import Model.Users;
@@ -101,7 +103,7 @@ public class UpdateProfileServlet extends HttpServlet {
                         if( u.getRole() == 3){
                            
                         updateProfile(u.getId(),newN,newEM,newP,newA,u.getRole());
-                        Gamers gamer = JavaMongo.getGamerByEmail(newEM);
+                        Gamers gamer = GamerDAO.getGamerByEmail(newEM);
                             if(gamer != null){
                                 request.setAttribute("gamer", gamer);
                                 request.getRequestDispatcher("profile.jsp").forward(request, response);                     
@@ -121,7 +123,7 @@ public class UpdateProfileServlet extends HttpServlet {
                             }
                         }else if( u.getRole() ==2){
                              updateProfile(u.getId(),newN,newEM,newP,newA,u.getRole());
-                             Publishers pub = JavaMongo.getPublisherByEmail(newEM);
+                             Publishers pub = PublisherDAO.getPublisherByEmail(newEM);
                              if(pub != null){
                                  request.setAttribute("pub", pub);
                                  request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);

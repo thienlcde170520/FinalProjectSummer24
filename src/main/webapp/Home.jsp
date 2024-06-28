@@ -3,6 +3,9 @@
     Created on : May 28, 2024, 12:58:34 PM
     Author     : LENOVO
 --%>
+<%@page import="DAO.ReviewDAO"%>
+<%@page import="DAO.GenreDAO"%>
+<%@page import="DAO.GameDAO" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.ArrayList" %>
@@ -138,7 +141,7 @@
                                     </div>
                                     <div class="row">
                                         <% 
-                                          ArrayList<Game> Games = (ArrayList<Game>) JavaMongo.getAllGames();
+                                          ArrayList<Game> Games = (ArrayList<Game>) GameDAO.getAllGames();
                                           if (Games != null) {
                                             for (Game game : Games) {
                                         %>
@@ -148,7 +151,7 @@
             <img src="<%= game.getAvatarLink()%>?usp=sharing" alt="">
             <h4><%= game.getName() %><br></h4>
             <ul>
-                <li><i class="fa fa-star"></i> <%= JavaMongo.getAverageRatingByGame(game) %></li>
+                <li><i class="fa fa-star"></i> <%= ReviewDAO.getAverageRatingByGame(game) %></li>
                 <li><i class="fa fa-download"></i> <%= game.getNumberOfBuyers() %></li>
             </ul>
         </a>
@@ -182,7 +185,7 @@
                                     </div>
                                     <div class="row">
                                         <% 
-                                              ArrayList<Genre> genres = (ArrayList<Genre>) JavaMongo.getAllGenres();
+                                              ArrayList<Genre> genres = (ArrayList<Genre>) GenreDAO.getAllGenres();
                                           if (genres != null) {
                                             for (Genre genre : genres) {
                                         %>
