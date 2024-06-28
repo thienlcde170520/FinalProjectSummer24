@@ -6,6 +6,8 @@
 package Common;
 import static Common.CheckValid.userValid;
 import Controller.JavaMongo;
+import static DAO.GamerDAO.getGamerByEmail;
+import static DAO.PublisherDAO.getPublisherByEmail;
 import Model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -96,10 +98,10 @@ public class LoginServlet extends HttpServlet {
                         
                         HttpSession session = request.getSession();
                         if (u.getRole() == 3){
-                        session.setAttribute("account",JavaMongo.getGamerByEmail(e));
+                        session.setAttribute("account",getGamerByEmail(e));
                         }
                         if (u.getRole() == 2){
-                        session.setAttribute("account",JavaMongo.getPublisherByEmail(e));
+                        session.setAttribute("account",getPublisherByEmail(e));
                         }
                         
 ////                        session.setAttribute("account", JavaMongo.getAllUser());
@@ -134,7 +136,7 @@ public class LoginServlet extends HttpServlet {
                         // response.sendRedirect("Home.jsp");
                         response.sendRedirect("Home.jsp");
                     }
-                } catch (Exception ex) {
+                } catch (Exception ex ) {
                       try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
@@ -157,7 +159,7 @@ public class LoginServlet extends HttpServlet {
             out.println("<title>Servlet LoginServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Error at " + ex.getMessage() + "</h1>");
+            out.println("<h1>Error at " + 456+ "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -171,7 +173,7 @@ public class LoginServlet extends HttpServlet {
             out.println("<title>Servlet LoginServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Error at " + ex.getMessage() + "</h1>");
+            out.println("<h1>Error at " + 789 + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }

@@ -7,6 +7,8 @@ package Controller;
 
 import static Controller.DriveQuickstart.APPLICATION_NAME;
 import static Controller.DriveQuickstart.JSON_FACTORY;
+import DAO.GameDAO;
+import DAO.GenreDAO;
 import Model.Game;
 import Model.Genre;
 import Model.Publishers;
@@ -56,11 +58,11 @@ public class UpdateGameServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String gameId = request.getParameter("gameId");
-        ArrayList<Genre> inlusiveGenres = JavaMongo.getGenresByGameID(gameId);
-        ArrayList<Genre> exclusiveGenres = JavaMongo.getExcludeGenresByGameId(gameId);
+        ArrayList<Genre> inlusiveGenres = GenreDAO.getGenresByGameID(gameId);
+        ArrayList<Genre> exclusiveGenres = GenreDAO.getExcludeGenresByGameId(gameId);
         request.setAttribute("inlusiveGenres", inlusiveGenres);
         request.setAttribute("exclusiveGenres", exclusiveGenres);
-        request.setAttribute("game", JavaMongo.getGameByGameID(gameId));
+        request.setAttribute("game", GameDAO.getGameByGameID(gameId));
         request.getRequestDispatcher("UpdateGame.jsp").forward(request, response);
     } 
 
@@ -90,7 +92,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
     // Retrieve parameters from the form
     String gameId = request.getParameter("gameId");
-    Game game = JavaMongo.getGameByGameID(gameId); // Retrieve the existing game by its ID
+    Game game = GameDAO.getGameByGameID(gameId); // Retrieve the existing game by its ID
 
     // Update game details from form inputs
     String gameName = request.getParameter("gameName");
@@ -155,26 +157,26 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     game.setGameLink(gameFileUrl);
 
     // Update the game in the database
-    JavaMongo.updateGame(game);
+    GameDAO.updateGame(game);
 
     // Handle genres (inclusive and exclusive)
     String[] inclusiveGenres = request.getParameterValues("incluGenres");
     String[] exclusiveGenres = request.getParameterValues("excluGenres");
 
     // Clear existing genres for the game
-    JavaMongo.clearGenresForGame(gameId);
+    GenreDAO.clearGenresForGame(gameId);
 
     // Add inclusive genres
     if (inclusiveGenres != null) {
         for (String genre : inclusiveGenres) {
-            JavaMongo.addGenreToGame(gameId, genre);
+            GenreDAO.addGenreToGame(gameId, genre);
         }
     }
 
     // Add exclusive genres
     if (exclusiveGenres != null) {
         for (String genre : exclusiveGenres) {
-            JavaMongo.addExclusiveGenreToGame(gameId, genre);
+            GenreDAO.addExclusiveGenreToGame(gameId, genre);
         }
     }
 

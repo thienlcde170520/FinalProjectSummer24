@@ -6,6 +6,9 @@ package Controller;
 
 import static Controller.DriveQuickstart.APPLICATION_NAME;
 import static Controller.DriveQuickstart.JSON_FACTORY;
+import DAO.GameDAO;
+import DAO.GenreDAO;
+import DAO.PublisherDAO;
 import Model.Game;
 import Model.Genre;
 import Model.Publishers;
@@ -69,7 +72,7 @@ public class UploadGame extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
           
-        ArrayList<Genre> Genres = (JavaMongo.getAllGenres());
+        ArrayList<Genre> Genres = (GenreDAO.getAllGenres());
         request.setAttribute("genres", Genres);
         request.getRequestDispatcher("UploadGame.jsp").forward(request, response);
     }
@@ -195,11 +198,11 @@ public class UploadGame extends HttpServlet {
         );
           HttpSession session = request.getSession();
          Publishers p = (Publishers) session.getAttribute("account");
-        JavaMongo.publishGame(gameId, p.getId());
-        JavaMongo.addGame(game);
+        PublisherDAO.publishGame(gameId, p.getId());
+        GameDAO.addGame(game);
         if (selectedGenres != null) {
             for (String genre : selectedGenres) {
-                JavaMongo.addGenreToGame(gameId, genre);
+                GenreDAO.addGenreToGame(gameId, genre);
             }
         }
         // Optionally, you can redirect to a success page or do other actions

@@ -5,6 +5,8 @@
 
 package Controller;
 
+import DAO.GameDAO;
+import DAO.GenreDAO;
 import Model.Game;
 import Model.Genre;
 import com.mongodb.client.model.Filters;
@@ -39,8 +41,8 @@ public class SearchGameServlet extends HttpServlet {
         String priceAmount = request.getParameter("priceAmount");
         String priceCurrency = request.getParameter("priceCurrency");
         String[] selectedGenres = request.getParameterValues("selectedGenres");
-             ArrayList<Game> games = JavaMongo.searchGames(gameName, gamePublisher, year, priceAmount, priceCurrency, selectedGenres);
-        ArrayList<Genre> genres = JavaMongo.getAllGenres();
+             ArrayList<Game> games = GameDAO.searchGames(gameName, gamePublisher, year, priceAmount, priceCurrency, selectedGenres);
+        ArrayList<Genre> genres = GenreDAO.getAllGenres();
 
         request.setAttribute("genres", genres);
         request.setAttribute("games", games);

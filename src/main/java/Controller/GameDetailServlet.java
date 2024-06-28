@@ -5,6 +5,13 @@
 
 package Controller;
 
+
+import DAO.GameDAO;
+import DAO.GamerDAO;
+import DAO.GenreDAO;
+import DAO.PublisherDAO;
+import DAO.ReviewDAO;
+import DAO.TransactionBillDAO;
 import Model.Bill;
 import Model.Game;
 import Model.Gamers;
@@ -42,7 +49,7 @@ public class GameDetailServlet extends HttpServlet {
     String gameid = request.getParameter("gameid");
     
     // Retrieve game details
-    Game game = JavaMongo.getGameByGameID(gameid);
+    Game game = GameDAO.getGameByGameID(gameid);
     if (game == null) {
         // Handle case where game is not found
         response.sendRedirect("error.jsp");
@@ -50,16 +57,16 @@ public class GameDetailServlet extends HttpServlet {
     }
     
     // Retrieve genres associated with the game
-    ArrayList<Genre> genres = JavaMongo.getGenresByGameID(gameid);
+    ArrayList<Genre> genres = GenreDAO.getGenresByGameID(gameid);
     
     // Retrieve reviews for the game
-    ArrayList<Review> reviews = JavaMongo.getReviewByGame(game);
+    ArrayList<Review> reviews = ReviewDAO.getReviewByGame(game);
     
     // Calculate average rating for the game
-    Double rating = JavaMongo.getAverageRatingByGame(game);
+    Double rating = ReviewDAO.getAverageRatingByGame(game);
     
     // Retrieve publisher details
-    Publishers publisher = JavaMongo.getPublisherByGameId(gameid);
+    Publishers publisher = PublisherDAO.getPublisherByGameId(gameid);
     
     // Get user session and role
     HttpSession session = request.getSession();
@@ -82,14 +89,14 @@ public class GameDetailServlet extends HttpServlet {
         Gamers gamer = (Gamers) session.getAttribute("account");
         
         // Check if gamer has bought the game
-        hasBuy = JavaMongo.hasGamerBoughtGame(gamer.getId(), gameid);
+        hasBuy = GamerDAO.hasGamerBoughtGame(gamer.getId(), gameid);
         
         if (hasBuy) {
             // Retrieve bill details
-            bill = JavaMongo.getBillByGameIDAndGamerID(gameid, gamer.getId());
+            bill = TransactionBillDAO.getBillByGameIDAndGamerID(gameid, gamer.getId());
             
             // Check if the purchase is refundable
-            isRefundable = JavaMongo.isRefundable(bill);
+            isRefundable = TransactionBillDAO.isRefundable(bill);
         }
     }
     
