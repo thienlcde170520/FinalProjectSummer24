@@ -14,13 +14,13 @@ import java.util.Random;
 public class Publishers extends Users{
 
     private String bank_account;
-    private int profit;
+    private Double profit;
     private String description;
     private String AvatarLink;
-    private int Money;
+    private Double Money;
     private String RegistrationDate;
 
-    public Publishers(String id, String name, String gmail, String password, String bank_account, Integer profit, String description, String AvatarLink, Integer Money, int role, String RegistrationDate) {
+    public Publishers(String id, String name, String gmail, String password, String bank_account, Double profit, String description, String AvatarLink, Double Money, int role, String RegistrationDate) {
         super(id, name, gmail, password, role);
         this.bank_account = bank_account;
         this.profit = profit;
@@ -34,10 +34,10 @@ public class Publishers extends Users{
     public Publishers(){
         //super(generateRandomId(), "", "", "", 0);
         this.bank_account = " ";
-        this.profit = 0;
+        this.profit = 0.0;
         this.description = " ";
-        /*
-        this.Money = 0;*/
+      
+        this.Money = 0.0;
         this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
 
     }
@@ -57,11 +57,11 @@ public class Publishers extends Users{
         this.bank_account = bank_account;
     }
 
-    public int getProfit() {
+    public Double getProfit() {
         return profit;
     }
 
-    public void setProfit(int profit) {
+    public void setProfit(Double profit) {
         this.profit = profit;
     }
 
@@ -81,11 +81,11 @@ public class Publishers extends Users{
         this.AvatarLink = AvatarLink;
     }
 
-    public int getMoney() {
+    public Double getMoney() {
         return Money;
     }
 
-    public void setMoney(int Money) {
+    public void setMoney(Double Money) {
         this.Money = Money;
     }
 

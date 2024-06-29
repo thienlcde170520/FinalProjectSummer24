@@ -5,7 +5,7 @@ public class Bill {
     private String gamerId;
     private String gameId;
     private String buyTime;
-    private int buyPrice;
+    private Double buyPrice;
 
     // Getters and setters
     public String getId() {
@@ -40,11 +40,11 @@ public class Bill {
         this.buyTime = buyTime;
     }
 
-    public int getBuyPrice() {
+    public Double getBuyPrice() {
         return buyPrice;
     }
 
-    public void setBuyPrice(int buyPrice) {
+    public void setBuyPrice(Double buyPrice) {
         this.buyPrice = buyPrice;
     }
 }

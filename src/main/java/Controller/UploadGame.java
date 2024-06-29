@@ -6,6 +6,9 @@ package Controller;
 
 import static Controller.DriveQuickstart.APPLICATION_NAME;
 import static Controller.DriveQuickstart.JSON_FACTORY;
+import DAO.GameDAO;
+import DAO.GenreDAO;
+import DAO.PublisherDAO;
 import Model.Game;
 import Model.Genre;
 import Model.Publishers;
@@ -69,7 +72,7 @@ public class UploadGame extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
           
-        ArrayList<Genre> Genres = (JavaMongo.getAllGenres());
+        ArrayList<Genre> Genres = (GenreDAO.getAllGenres());
         request.setAttribute("genres", Genres);
         request.getRequestDispatcher("UploadGame.jsp").forward(request, response);
     }
@@ -131,7 +134,7 @@ public class UploadGame extends HttpServlet {
         // Initialize variables for file URLs
         String gameFileUrl = null;
         String gameAvatarUrl = null;
-
+        
         try {
         // Upload game file to Google Drive if provided
          Part gameAvatarPart = request.getPart("gameAvatar"); // Assuming "gameAvatar" is the name of the file input field
@@ -148,7 +151,21 @@ public class UploadGame extends HttpServlet {
             java.io.File uploadedFile = saveFileFromPart(gameFilePart, fileName);
             gameFileUrl = uploadFileToDrive(fileName, uploadedFile, mimeType);
         }
-
+        if (gameFilePart == null ||gameAvatarPart == null ){
+         response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet UpdateProfileServlet</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet UpdateProfileServlet at " + request.getContextPath () + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
+        }
         // Upload game avatar file to Google Drive if provided
        
 
@@ -159,7 +176,7 @@ public class UploadGame extends HttpServlet {
         response.getWriter().println("Failed to upload game files: " + e.getMessage());
     }
 
-        String gameId = "game_" + generateRandomNumber();
+            String gameId = "game_" + generateRandomNumber();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         String currentDate = dateFormat.format(new Date());
         Game game = new Game(
@@ -181,11 +198,11 @@ public class UploadGame extends HttpServlet {
         );
           HttpSession session = request.getSession();
          Publishers p = (Publishers) session.getAttribute("account");
-        JavaMongo.publishGame(gameId, p.getId());
-        JavaMongo.addGame(game);
+        PublisherDAO.publishGame(gameId, p.getId());
+        GameDAO.addGame(game);
         if (selectedGenres != null) {
             for (String genre : selectedGenres) {
-                JavaMongo.addGenreToGame(gameId, genre);
+                GenreDAO.addGenreToGame(gameId, genre);
             }
         }
         // Optionally, you can redirect to a success page or do other actions

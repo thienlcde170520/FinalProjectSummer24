@@ -54,7 +54,10 @@ https://templatemo.com/tm-579-cyborg-gaming
   <!-- ***** Preloader End ***** -->
 
   <!-- ***** Header Area Start ***** -->
-<header class="header-area header-sticky">
+
+   <!-- ***** Header Area Start ***** -->
+        <header class="header-area header-sticky">
+
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -100,7 +103,6 @@ https://templatemo.com/tm-579-cyborg-gaming
                 </div>
             </div>
         </header>
-
 
   <!-- ***** Header Area End ***** -->
 
@@ -181,6 +183,7 @@ https://templatemo.com/tm-579-cyborg-gaming
 <% } else { %>
     <p>No games found.</p>
 <% } %>
+
 </div>
 
 

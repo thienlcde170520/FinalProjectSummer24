@@ -5,8 +5,11 @@
 
 package Controller;
 
-import DAO.TransactionBillDAO;
-import Model.Bill;
+import DAO.GameDAO;
+import DAO.GenreDAO;
+import Model.Game;
+import Model.Genre;
+import com.mongodb.client.model.Filters;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,13 +17,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
 /**
  *
  * @author LENOVO
  */
-@WebServlet(name="RefundServlet", urlPatterns={"/RefundServlet"})
-public class RefundServlet extends HttpServlet {
+@WebServlet(name="SearchGameServlet", urlPatterns={"/SearchGameServlet"})
+public class SearchGameServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -31,15 +35,19 @@ public class RefundServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+            String gameName = request.getParameter("searchKeyword");
+        String gamePublisher = request.getParameter("gamePublisher");
+        String year = request.getParameter("yearFilter");
+        String priceAmount = request.getParameter("priceAmount");
+        String priceCurrency = request.getParameter("priceCurrency");
+        String[] selectedGenres = request.getParameterValues("selectedGenres");
+             ArrayList<Game> games = GameDAO.searchGames(gameName, gamePublisher, year, priceAmount, priceCurrency, selectedGenres);
+        ArrayList<Genre> genres = GenreDAO.getAllGenres();
 
-String gameId = request.getParameter("gameId");
-        String billId = request.getParameter("billId");
-        String gamerId = request.getParameter("gamerId");
-        Double refundNumber = Double.valueOf(request.getParameter("refundnumber"));
-            // Process the refund
-            TransactionBillDAO.refundPurchase(billId, gamerId, gameId, refundNumber);
-
-      request.getRequestDispatcher("Home.jsp");
+        request.setAttribute("genres", genres);
+        request.setAttribute("games", games);
+        request.getRequestDispatcher("SearchResult.jsp").forward(request, response);
+            
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -53,15 +61,10 @@ String gameId = request.getParameter("gameId");
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String gameId = request.getParameter("gameId");
-        String billId = request.getParameter("billId");
-        String gamerId = request.getParameter("gamerId");
-      Double refundNumber = Double.valueOf(request.getParameter("refundnumber"));
-            // Process the refund
-            TransactionBillDAO.refundPurchase(billId, gamerId, gameId, refundNumber);
-      request.getRequestDispatcher("Home.jsp").forward(request, response);
-    
-    }
+       processRequest(request,response);
+           
+    } 
+
     /** 
      * Handles the HTTP <code>POST</code> method.
      * @param request servlet request
@@ -72,8 +75,10 @@ String gameId = request.getParameter("gameId");
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        processRequest(request,response);
+    
     }
+    
 
     /** 
      * Returns a short description of the servlet.

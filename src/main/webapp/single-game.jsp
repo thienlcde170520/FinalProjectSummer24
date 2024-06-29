@@ -1,3 +1,4 @@
+<%@page import="DAO.GamerDAO"%>
 <%@page import="Model.Users"%>
 <%@page import="Model.Bill"%>
 <%@page import="Model.Gamers"%>
@@ -58,7 +59,10 @@
         %>
 
         <!-- Header Area Start -->
- <header class="header-area header-sticky">
+
+        <!-- ***** Header Area Start ***** -->
+        <header class="header-area header-sticky">
+
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -268,7 +272,9 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
             <%               
                 for (Review review : reviews) {
                     // Get the user (gamer) associated with this review
-                    Gamers gamer = JavaMongo.getGamerByGamerId(review.getIdGamer());
+
+                    Gamers gamer = GamerDAO.getGamerByGamerId(review.getIdGamer());
+
                     
                     // Check if the logged-in user is the author of the review
                     boolean isReviewOwner = loggedInUser != null && loggedInUser.getId().equals(gamer.getId());
@@ -308,7 +314,7 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <p>Copyright © 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
+                        <p>Copyright Â© 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
 
                             <br>Design: <a href="https://templatemo.com" target="_blank" title="free CSS templates">TemplateMo</a></p>
                     </div>

@@ -4,12 +4,12 @@ import java.util.Random;
 
 public class Gamers extends Users{
     
-    private int Money;
+    private Double Money;
     private String AvatarLink;
     private String RegistrationDate;
     
     
-    public Gamers(String id, String name, String gmail, String password, int role, Integer Money, String AvatarLink, String RegistrationDate) {
+    public Gamers(String id, String name, String gmail, String password, int role, Double Money, String AvatarLink, String RegistrationDate) {
         super(id, name, gmail, password, role);
         //if Money = null => this.Money = 0;
         this.Money = (Money != null) ? Money : 0;
@@ -19,16 +19,16 @@ public class Gamers extends Users{
 
     // Hàm khởi tạo mặc định, thiết lập giá trị mặc định
     public Gamers() {
-        this.Money = 0;
+        this.Money = 0.0;
         this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
     }
     
 
-    public int getMoney() {
+    public Double getMoney() {
         return Money;
     }
 
-    public void setMoney(int Money) {
+    public void setMoney(Double Money) {
         this.Money = Money;
     }
 

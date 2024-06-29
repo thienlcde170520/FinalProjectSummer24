@@ -5,6 +5,8 @@
 
 package Controller;
 
+import DAO.GameDAO;
+import DAO.TransactionBillDAO;
 import Model.Game;
 import Model.Gamers;
 import Model.Users;
@@ -60,7 +62,7 @@ public class PayProcessServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String gameId = request.getParameter("gameId");
-        Game game = JavaMongo.getGameByGameID(gameId);
+        Game game = GameDAO.getGameByGameID(gameId);
         HttpSession session = request.getSession();
         Gamers gamer = (Gamers) session.getAttribute("account");
         
@@ -90,15 +92,15 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     String billId = generateBillId();
 
     // Retrieve game details and logged-in user (gamer)
-    Game game = JavaMongo.getGameByGameID(gameId);
+    Game game = GameDAO.getGameByGameID(gameId);
     HttpSession session = request.getSession();
     Gamers gamer = (Gamers) session.getAttribute("account");
 
     // Convert gamePrice to int (assuming rounding down for whole numbers)
-    int roundedGamePrice = (int) Math.floor(gamePrice);
+   
 
     // Add purchase details to MongoDB
-    JavaMongo.addPurchase(billId, gamer.getId(), gameId, buyTime, roundedGamePrice);
+    TransactionBillDAO.addPurchase(billId, gamer.getId(), gameId, buyTime, gamePrice);
 
     // Forward to payment confirmation page or another view
   request.getRequestDispatcher("Home.jsp").forward(request, response);

@@ -5,7 +5,10 @@
 
 package Controller;
 
-import static Controller.JavaMongo.getGamesByGamerId;
+import DAO.GameDAO;
+import DAO.GamerDAO;
+import DAO.PublisherDAO;
+import DAO.TransactionBillDAO;
 import Model.BankTransactions;
 import Model.Game;
 import Model.Gamers;
@@ -71,12 +74,14 @@ public class profileServlet extends HttpServlet {
             if (user != null) {
                 int role = user.getRole();
                 if (role == 3) {
-                    Gamers gamer = JavaMongo.getGamerByEmail(user.getGmail());
+                    Gamers gamer = GamerDAO.getGamerByEmail(user.getGmail());
 
                     
                     if(gamer != null){
-          ArrayList<BankTransactions> transactionHistory = JavaMongo.getTransactionHistoryByPayerId(user.getId());
-          //ArrayList<Game> games = JavaMongo.getGamesByGamerId(gamer.getId());
+
+          ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(user.getId());
+          ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
+
                         request.setAttribute("gamer", gamer);
                          //request.setAttribute("games", games);
                         request.setAttribute("transactionHistory", transactionHistory)
@@ -98,9 +103,9 @@ public class profileServlet extends HttpServlet {
                             }
 
                 }else if(role ==2){
-                    Publishers pub = JavaMongo.getPublisherByEmail(user.getGmail());
+                    Publishers pub = PublisherDAO.getPublisherByEmail(user.getGmail());
                     if(pub != null){
-                        ArrayList<BankTransactions> transactionHistory = JavaMongo.getTransactionHistoryByPayerId(user.getId());
+                        ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(user.getId());
                         request.setAttribute("pub", pub);
                         request.setAttribute("transactionHistory", transactionHistory);
                         request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);
