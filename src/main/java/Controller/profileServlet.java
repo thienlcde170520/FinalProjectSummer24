@@ -76,9 +76,9 @@ public class profileServlet extends HttpServlet {
                     
                     if(gamer != null){
           ArrayList<BankTransactions> transactionHistory = JavaMongo.getTransactionHistoryByPayerId(user.getId());
-          ArrayList<Game> games = JavaMongo.getGamesByGamerId(gamer.getId());
+          //ArrayList<Game> games = JavaMongo.getGamesByGamerId(gamer.getId());
                         request.setAttribute("gamer", gamer);
-                         request.setAttribute("games", games);
+                         //request.setAttribute("games", games);
                         request.setAttribute("transactionHistory", transactionHistory)
                                 ;
                         request.getRequestDispatcher("profile.jsp").forward(request, response);

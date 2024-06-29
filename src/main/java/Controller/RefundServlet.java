@@ -30,19 +30,13 @@ public class RefundServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet RefundServlet</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet RefundServlet at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+       String gameId = request.getParameter("gameId");
+        String billId = request.getParameter("billId");
+        String gamerId = request.getParameter("gamerId");
+        int refundNumber = Integer.parseInt(request.getParameter("refundnumber"));
+            // Process the refund
+            JavaMongo.refundPurchase(billId, gamerId, gameId, refundNumber);
+      request.getRequestDispatcher("Home.jsp");
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

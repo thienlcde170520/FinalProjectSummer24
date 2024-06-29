@@ -27,6 +27,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.mail.Authenticator;
 
 /**
@@ -38,7 +40,7 @@ public class ForgetPassServlet extends HttpServlet {
 		
 		String email = request.getParameter("email");
                 
-                String emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@gmail\\.com$";
+                String emailPattern = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
                 if (email.isEmpty() || !email.matches(emailPattern)) {
                     request.setAttribute("mess", "Invalid information!!!!");                 
                     //response.sendRedirect("SignUp.jsp");
@@ -83,7 +85,7 @@ public class ForgetPassServlet extends HttpServlet {
                                     message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to,false));
                                     message.setSubject("Hello");
                                     message.setSentDate(new Date());
-                                    message.setText("your code is: " + codeValue);
+                                    message.setText("your OTP is: " + codeValue);
                                     // send message
                                     Transport.send(message);
                                     System.out.println("message sent successfully");
@@ -101,11 +103,14 @@ public class ForgetPassServlet extends HttpServlet {
                                             out.println("</body>");
                                             out.println("</html>");
                                         }
-                            }                       
+                            }        
+                            
+                
                             request.setAttribute("message","Code is sent to your email id");
                             //request.setAttribute("connection", con);
                             mySession.setAttribute("code",codeValue); 
                             mySession.setAttribute("email",email); 
+                            mySession.setAttribute("otpTimestamp", new Date().getTime());
                             request.getRequestDispatcher("EnterCode.jsp").forward(request, response);
                             //request.setAttribute("status", "success");
                         }

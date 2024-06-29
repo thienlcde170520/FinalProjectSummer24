@@ -1,3 +1,4 @@
+<%@page import="Model.Users"%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,7 +38,7 @@
         </div>
         <!-- Preloader End -->
         <!-- ***** Header Area Start ***** -->
-        <header class="header-area header-sticky">
+       <header class="header-area header-sticky">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -49,9 +50,8 @@
                             <!-- ***** Logo End ***** -->
                             <!-- ***** Search End ***** -->
                             <div class="search-input">
-                                <form id="search" action="#">
-                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword"
-                                           onkeypress="handle" />
+                                <form id="search" action="SearchGameServlet" method="get">
+                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
                                     <i class="fa fa-search"></i>
                                 </form>
                             </div>
@@ -60,11 +60,21 @@
                             <ul class="nav">
                                 <li><a href="Home.jsp" class="active">Home</a></li>
                                 <li><a href="browse.html">Browse</a></li>
-                                <li><a href="details.html">Details</a></li>
-                                <li><a href="streams.html">Streams</a></li>
-                                <li><a href="profile.html">Profile <img src="assets/images/profile-header.jpg"
-                                                                        alt=""></a></li>
-                            </ul>
+                                <li><a href="details.html">Genre</a></li>
+                                
+                                <%
+    Users user = (Users) session.getAttribute("account");
+    if (user != null && user.getRole()== 2 ) {
+%>
+        <li><a href="UploadGame">Upload Game</a></li>
+<%
+    }
+%>
+                               <li><a href="LogOutServlet">LOG OUT</a></li>
+
+                                <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+                            </ul>   
                             <a class='menu-trigger'>
                                 <span>Menu</span>
                             </a>
