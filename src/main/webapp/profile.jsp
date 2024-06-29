@@ -54,8 +54,10 @@ https://templatemo.com/tm-579-cyborg-gaming
   <!-- ***** Preloader End ***** -->
 
   <!-- ***** Header Area Start ***** -->
+
    <!-- ***** Header Area Start ***** -->
         <header class="header-area header-sticky">
+
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -101,6 +103,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                 </div>
             </div>
         </header>
+
   <!-- ***** Header Area End ***** -->
 
   <div class="container">
@@ -109,7 +112,7 @@ https://templatemo.com/tm-579-cyborg-gaming
         <div class="page-content">
 
           <!-- ***** Banner Start ***** -->
-          <div class="row" >
+         <div class="row" >
               <%
             // Lấy thông tin người chơi từ request attribute
             Model.Gamers gamer = (Model.Gamers) request.getAttribute("gamer");

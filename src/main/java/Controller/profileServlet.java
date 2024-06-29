@@ -78,10 +78,12 @@ public class profileServlet extends HttpServlet {
 
                     
                     if(gamer != null){
+
           ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(user.getId());
           ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
+
                         request.setAttribute("gamer", gamer);
-                         request.setAttribute("games", games);
+                         //request.setAttribute("games", games);
                         request.setAttribute("transactionHistory", transactionHistory)
                                 ;
                         request.getRequestDispatcher("profile.jsp").forward(request, response);

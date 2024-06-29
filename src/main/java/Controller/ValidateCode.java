@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Date;
 
 /**
  *
@@ -37,21 +38,42 @@ public class ValidateCode extends HttpServlet {
 
 		int value=Integer.parseInt(request.getParameter("code"));
 		HttpSession session=request.getSession();
-		int code=(int)session.getAttribute("code");
-				
-		if (value==code) 
-		{
-			
-                    request.setAttribute("email", request.getParameter("email"));
-                    request.setAttribute("status", "success");
-                    request.getRequestDispatcher("resetPass.jsp").forward(request, response);
-			
-		}
-		else
-		{
-			request.setAttribute("message","wrong code");			
-                        request.getRequestDispatcher("EnterCode.jsp").forward(request, response);	
-		}
+		Integer code=(Integer)session.getAttribute("code");
+		Long otpTimestamp = (Long) session.getAttribute("otpTimestamp");
+                
+                if(code != null && otpTimestamp != null){
+                    long currentTime = new Date().getTime();
+                    if(currentTime - otpTimestamp <= 60000){
+                        if(value == code){
+                            request.setAttribute("mess", "OTP is Valid");
+                            request.getRequestDispatcher("resetPass.jsp").forward(request, response);
+                        }else{
+                            request.setAttribute("message", "Invalid OTP");
+                            request.getRequestDispatcher("EnterCode.jsp").forward(request, response);
+                        }
+                    }else {
+                        request.setAttribute("message", "OTP has expired.");
+                        request.getRequestDispatcher("EnterCode.jsp").forward(request, response);
+                    }
+                }else{
+                    request.setAttribute("message", "No OTP generated.");
+                    request.getRequestDispatcher("EnterCode.jsp").forward(request, response);
+                }
+                
+                
+//		if (value==code) 
+//		{
+//			
+//                    request.setAttribute("email", request.getParameter("email"));
+//                    request.setAttribute("status", "success");
+//                    request.getRequestDispatcher("resetPass.jsp").forward(request, response);
+//			
+//		}
+//		else
+//		{
+//			request.setAttribute("message","wrong code");			
+//                        request.getRequestDispatcher("EnterCode.jsp").forward(request, response);	
+//		}
 		
 	}
     
