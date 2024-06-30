@@ -163,8 +163,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     String[] inclusiveGenres = request.getParameterValues("incluGenres");
     String[] exclusiveGenres = request.getParameterValues("excluGenres");
 
-    // Clear existing genres for the game
-    GenreDAO.clearGenresForGame(gameId);
+    
 
     // Add inclusive genres
     if (inclusiveGenres != null) {
@@ -176,7 +175,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     // Add exclusive genres
     if (exclusiveGenres != null) {
         for (String genre : exclusiveGenres) {
-            GenreDAO.addExclusiveGenreToGame(gameId, genre);
+            GenreDAO.exclusiveGenreToGame(gameId, genre);
         }
     }
 
