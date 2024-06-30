@@ -1,5 +1,6 @@
 package Controller;
 
+import DAO.GameDAO;
 import Model.Users;
 import com.mongodb.BasicDBObject;
 import com.mongodb.ConnectionString;
@@ -60,13 +61,7 @@ public class JavaMongo {
 
     public static void main(String[] args) {
 
-//   ArrayList<Game> searchedGames = searchGames("", "", "2024", "", "", new String[]{"", ""});
-//
-//    // Print the results
-//    System.out.println("\nSearched Games:");
-//    for (Game game : searchedGames) {
-//        System.out.println(game.getName() + " Year: " + game.getPublishDay() + " | Price: " + game.getPrice());
-//    }
+ System.out.println(GameDAO.searchGames("i",null,null,null,null,null));
     }
 
     /*publisher*/

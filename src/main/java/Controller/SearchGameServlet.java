@@ -35,15 +35,29 @@ public class SearchGameServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-            String gameName = request.getParameter("searchKeyword");
-        String gamePublisher = request.getParameter("gamePublisher");
-        String year = request.getParameter("yearFilter");
-        String priceAmount = request.getParameter("priceAmount");
-        String priceCurrency = request.getParameter("priceCurrency");
-        String[] selectedGenres = request.getParameterValues("selectedGenres");
-             ArrayList<Game> games = GameDAO.searchGames(gameName, gamePublisher, year, priceAmount, priceCurrency, selectedGenres);
+          String gameName = request.getParameter("searchKeyword") != null
+        ? request.getParameter("searchKeyword")
+        : "";
+        String gamePublisher = request.getParameter("gamePublisher")!= null
+        ? request.getParameter("gamePublisher")
+        : "";
+        
+        String year = request.getParameter("yearFilter")!= null
+        ? request.getParameter("yearFilter")
+        : "";
+        String priceAmount = request.getParameter("priceAmount")!= null
+        ? request.getParameter("priceAmount")
+        : "";
+        String priceCurrency = request.getParameter("priceCurrency")!= null
+        ? request.getParameter("priceCurrency")
+        : "";
+      String[] selectedGenres = request.getParameter("selectedGenres") != null
+            ? request.getParameter("selectedGenres").split(",")
+            : null;
+        
+      ArrayList<Game> games = GameDAO.searchGames(gameName, gamePublisher, year, priceAmount, priceCurrency, selectedGenres);
         ArrayList<Genre> genres = GenreDAO.getAllGenres();
-
+        
         request.setAttribute("genres", genres);
         request.setAttribute("games", games);
         request.getRequestDispatcher("SearchResult.jsp").forward(request, response);
