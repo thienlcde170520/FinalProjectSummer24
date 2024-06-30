@@ -31,12 +31,14 @@ public class RefundServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+
 String gameId = request.getParameter("gameId");
         String billId = request.getParameter("billId");
         String gamerId = request.getParameter("gamerId");
         Double refundNumber = Double.valueOf(request.getParameter("refundnumber"));
             // Process the refund
             TransactionBillDAO.refundPurchase(billId, gamerId, gameId, refundNumber);
+
       request.getRequestDispatcher("Home.jsp");
     } 
 

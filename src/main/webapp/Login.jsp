@@ -58,7 +58,7 @@
                         <div class="form-link">
                             <label><input type="checkbox" ${(cookie.remember.value eq 'ON')? "checked":""} name="remember" value="ON"/>Remember</label>
                             
-                                <a href="ForgetPass.jsp" class="forgot-pass">Forgot password?</a>
+                            <a href="ForgetPass.jsp" class="forgot-pass">Forgot password?</a>
                             
                         </div>
 
