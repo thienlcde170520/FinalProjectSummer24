@@ -6,9 +6,11 @@
 package Controller;
 
 import DAO.GameDAO;
-import DAO.GenreDAO;
+import DAO.PublisherDAO;
+import DAO.ReviewDAO;
 import Model.Game;
-import Model.Genre;
+import Model.Publishers;
+import Model.Review;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,13 +19,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.concurrent.Flow.Publisher;
 
 /**
  *
  * @author LENOVO
  */
-@WebServlet(name="DisplayGenreServlet", urlPatterns={"/DisplayGenreServlet"})
-public class DisplayGenreServlet extends HttpServlet {
+@WebServlet(name="DisplayPublisherServlet", urlPatterns={"/DisplayPublisherServlet"})
+public class DisplayPublisherServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -34,10 +37,15 @@ public class DisplayGenreServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-       
-        ArrayList<Genre> Genres = (GenreDAO.getAllGenres());
-        request.setAttribute("genres", Genres);
-        request.getRequestDispatcher("Products.jsp").forward(request, response);
+       String publisherName = request.getParameter("publisherName");
+       Publishers publisher = PublisherDAO.getPublisherByName(publisherName);
+       ArrayList<Game> games = GameDAO.getGamesByPublisherName(publisherName);
+       ArrayList<Review> reviews = ReviewDAO.getReviewsByPublisherName(publisherName);
+       request.setAttribute("publisher", publisher);
+        request.setAttribute("games", games);
+         request.setAttribute("reviews", reviews);
+    // Forward the request to the single-game.jsp page
+    request.getRequestDispatcher("PublisherProfile.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -64,15 +72,7 @@ public class DisplayGenreServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String selectedGenre = request.getParameter("selectedGenre");
-        ArrayList<Genre> Genres = (GenreDAO.getAllGenres());
-           ArrayList<Game> games = (GameDAO.searchGames("","","","","",new String[]{selectedGenre}));
-        request.setAttribute("genres", Genres);
-          request.setAttribute("games", games);
-          Genre genre = GenreDAO.getGenreByType(selectedGenre);
-          request.setAttribute("selectedGenre", genre);
-         
-         request.getRequestDispatcher("Products.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /** 

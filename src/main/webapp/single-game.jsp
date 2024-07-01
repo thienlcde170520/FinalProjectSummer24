@@ -25,9 +25,23 @@
         <link rel="stylesheet" href="assets/css/Style.css">
         <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
         <!-- Custom CSS -->
-        <style>
-            /* Add your custom styles here */
-        </style>
+       <style>
+    .genre-button {
+        background: none;
+        border: none;
+        color: blue;
+        text-decoration: underline;
+        cursor: pointer;
+        padding: 0;
+        font: inherit;
+    }
+    .genre-button:hover {
+        text-decoration: none;
+    }
+    .genre-container {
+        display: inline;
+    }
+</style>
     </head>
 
     <body>
@@ -149,21 +163,26 @@
                                         <div class="left">
                                             <h4><%= game.getName()%></h4>
 
-                                            <%-- Display genres --%>
-                                            <p class="genre-p">Genres:
-                                                <%
-                                                    for (Genre genre : genres) {
-                                                        out.println(genre.getType());
-                                                        if (genres.indexOf(genre) < genres.size() - 1) {
-                                                            out.print(", ");
-                                                        }
-                                                    }
-                                                %>
-                                            </p>
+                                            <div class="genre-container">
+    Genres:
+    <%
+        for (Genre genre : genres) {
+    %>
+    <form action="DisplayGenreServlet" method="post" style="display:inline;">
+        <input type="hidden" name="selectedGenre" value="<%= genre.getType() %>">
+        <button type="submit" class="genre-button"><%= genre.getType() %></button>
+    </form>
+    <%
+        if (genres.indexOf(genre) < genres.size() - 1) {
+            out.print(", ");
+        }
+    }
+    %>
+    
+<a href="DisplayPublisherServlet?publisherName=<%= publisher.getName() %>" class="publisher-p">Game Publisher: <%= publisher.getName() %></a>
 
-                                            <%-- Display publisher --%>
-                                            <p class="publisher-p">Game Publisher: <%= publisher.getName()%></p>
-                                        </div>
+
+</div>
                                        <%
 // Check if logged-in user is the publisher
 Users loggedInUser = (Users) session.getAttribute("account");

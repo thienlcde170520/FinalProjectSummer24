@@ -1,4 +1,4 @@
-<%-- 
+    <%-- 
     Document   : Home
     Created on : May 28, 2024, 12:58:34 PM
     Author     : LENOVO
@@ -17,7 +17,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%><!DOCTYPE html>
 <html lang="en">
 
-    <head>
+     <head>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -31,6 +31,7 @@
 
 
         <!-- Additional CSS Files -->
+         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="assets/css/fontawesome.css">
         <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
         <link rel="stylesheet" href="assets/css/owl.css">
@@ -45,6 +46,7 @@
         
         -->
     </head>
+
 
     <body>
 

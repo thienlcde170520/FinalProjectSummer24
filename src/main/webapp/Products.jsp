@@ -4,6 +4,8 @@
     Author     : LENOVO
 --%>
 
+<%@page import="java.util.Random"%>
+<%@page import="Model.Game"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="Model.Genre"%>
 <%@page import="java.util.ArrayList"%>
@@ -12,7 +14,30 @@
 <html lang="en">
 
   <head>
-
+  <style>
+        .main-banner {
+            position: relative;
+            color: white; /* Default color */
+        }
+        .header-text {
+            position: relative;
+            z-index: 1;
+        }
+        .header-text h4, .header-text h6 {
+            margin: 0;
+            padding: 0;
+        }
+        .main-banner::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Default dark overlay */
+            z-index: 0;
+        }
+    </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -25,6 +50,7 @@
 
 
     <!-- Additional CSS Files -->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/fontawesome.css">
     <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
     <link rel="stylesheet" href="assets/css/owl.css">
@@ -92,246 +118,115 @@ https://templatemo.com/tm-579-cyborg-gaming
     </div>
   </header>
   <!-- ***** Header Area End ***** -->
-      
-    <div class="container">
+  <div class="container">
     <div class="row">
-      <div class="col-lg-12">
-        <div class="page-content">
-                   <% 
-                           Genre selectedgenre = (Genre) request.getAttribute("selectedGenre");
-                            if (selectedgenre != null) {
-                            
-                        %>
-          <!-- ***** Banner Start ***** -->
-          <div class="main-banner" style="background-image: url('assets/images/Ace-Attorney.webp'); background-size: cover; background-position: center;">
-            <div class="row">
-              <div class="col-lg-7">
-                <div class="header-text">
+        <div class="col-lg-12">
+            <div class="page-content">
+                <% 
+                Genre selectedgenre = (Genre) request.getAttribute("selectedGenre");
+                ArrayList<Game> games = (ArrayList<Game>) request.getAttribute("games");
                 
-                  <h4>   <%= selectedgenre.getType()%> </h4>
-                  <h6 >Detective fiction is a genre of writing where a detective works to solve a crime. The audience is challenged to solve the crime by the clues provided before the detective reveals the answer at the end of the novel</h6>
-                  
+                if (games != null && !games.isEmpty()) {
+                    Random rand = new Random();
+                    Game randomGame = games.get(rand.nextInt(games.size()));
+                %>
+                <div class="main-banner" style="background-image: url('<%= randomGame.getAvatarLink() %>'); background-size: cover; background-position: center;">
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div class="header-text">
+                                <h4><%=selectedgenre.getType() %></h4>
+                                <h6><%= selectedgenre.getDescription() %></h6>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <%}%>
-         <div class="form-group">
+                <%}%>
+
+                <form action="DisplayGenreServlet" method="post">
+                    <div class="form-group">
                         <label>Genres</label>
-                           <% 
-                            ArrayList<Genre> genres = (ArrayList<Genre>) request.getAttribute("genres");
-                            if (genres != null) {
-                                for (Genre genre : genres) {
+                        <% 
+                        ArrayList<Genre> genres = (ArrayList<Genre>) request.getAttribute("genres");
+                        if (genres != null) {
+                            for (Genre genre : genres) {
                         %>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="selectedGenre" value="<%= genre.getType()%>">
-                            <label  style="color: white" class="form-check-label"><%= genre.getType() %></label>
+                            <input class="form-check-input" type="radio" name="selectedGenre" value="<%= genre.getType() %>">
+                            <label style="color: white" class="form-check-label"><%= genre.getType() %></label>
                         </div>
                         <% 
-                                }
                             }
+                        }
                         %>
                     </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
         </div>
-      </div>
     </div>
-    </div>
-    <!-- ***** Banner End ***** -->
+</div>
+
+
     
-    
+   
               
-    <!-- ***** Games Area Starts ***** -->
-    <section class="section" id="games">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-heading">
-                        <h2>Our Latest Games</h2>
-                        <span>Check out all of our games.</span>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <!-- Game Item Start -->
-                <div class="col-lg-4 col-md-6 game-item">
-                    <div class="item">
-                        <div class="thumb">
-                            <div class="hover-content">
-                                <ul>
-                                    <li><a href="single-game.html"><i class="fa fa-eye"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                                </ul>
-                            </div>
-                            <!-- Add your image here -->
-                            <img src="assets/images/Dark_Souls_Games.jpg" alt="Epic Adventure" class="game-image">
-                        </div>
-                        <div class="down-content">
-                            <h4>Epic Adventure</h4>
-                            <span>Genre: Adventure</span>
-                            <div class="buttons">
-                                <button class="btn btn-success">Buy</button>
-                                <button class="btn btn-danger">Refund</button>
-                                <button class="btn btn-primary">Follow</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Game Item End -->
-
-                <!-- Game Item Start -->
-                <div class="col-lg-4 col-md-6 game-item">
-                    <div class="item">
-                        <div class="thumb">
-                            <div class="hover-content">
-                                <ul>
-                                    <li><a href="single-game.html"><i class="fa fa-eye"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                                </ul>
-                            </div>
-                            <!-- Add your image here -->
-                            <img src="assets/images/racing-pro.jpg" alt="Racing Pro" class="game-image">
-                        </div>
-                        <div class="down-content">
-                            <h4>Racing Pro</h4>
-                            <span>Genre: Racing</span>
-                            <div class="buttons">
-                                <button class="btn btn-success">Buy</button>
-                                <button class="btn btn-danger">Refund</button>
-                                <button class="btn btn-primary">Follow</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Game Item End -->
-
-                <!-- Game Item Start -->
-                <div class="col-lg-4 col-md-6 game-item">
-                    <div class="item">
-                        <div class="thumb">
-                            <div class="hover-content">
-                                <ul>
-                                    <li><a href="single-game.html"><i class="fa fa-eye"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                                </ul>
-                            </div>
-                            <!-- Add your image here -->
-                            <img src="assets/images/fivenights.jpg" alt="Five nights at Freddy's" class="game-image">
-                        </div>
-                        <div class="down-content">
-                            <h4>Five nights at Freddy's</h4>
-                            <span>Genre: Horror</span>
-                            <div class="buttons">
-                                <button class="btn btn-success">Buy</button>
-                                <button class="btn btn-danger">Refund</button>
-                                <button class="btn btn-primary">Follow</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Game Item End -->
-
-                <!-- Game Item Start -->
-                <div class="col-lg-4 col-md-6 game-item">
-                    <div class="item">
-                        <div class="thumb">
-                            <div class="hover-content">
-                                <ul>
-                                    <li><a href="single-game.html"><i class="fa fa-eye"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                                </ul>
-                            </div>
-                            <!-- Add your image here -->
-                            <img src="assets/images/csgo.png" alt="CSGO" class="game-image">
-                        </div>
-                        <div class="down-content">
-                            <h4>CSGO</h4>
-                            <span>Genre: Action</span>
-                            <div class="buttons">
-                                <button class="btn btn-success">Buy</button>
-                                <button class="btn btn-danger">Refund</button>
-                                <button class="btn btn-primary">Follow</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Game Item End -->
-                <!-- Additional game items can be added in a similar manner -->
-
-                <div class="col-lg-12">
-                    <div class="pagination">
-                        <ul>
-                            <li>
-                                <a href="#">1</a>
-                            </li>
-                            <li >
-                                <a href="#">2</a>
-                            </li>
-                            <li>
-                                <a href="#">3</a>
-                            </li>
-                            <li>
-                                <a href="#">4</a>
-                            </li>
-                            <li>
-                                <a href="#">></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- ***** Games Area Ends ***** -->
-
-   <!-- ***** Game Presentation Start ***** -->
-<section class="game-presentation " >
+ <!-- ***** Games Area Starts ***** -->
+<section class="section" id="games">
     <div class="container">
         <div class="row">
-            <div class="col-12">
+            <div class="col-lg-12">
                 <div class="section-heading">
-               
-                    <h2>Our BestSeller Games</h2>
-                    <span>Top 3 bestseller games</span>
-                            <div class="form-group col-md-12">
-            <label for="categoryFilter">By time</label>
-            <select class="form-control" id="categoryFilter">
-                <option value="">Day</option>
-                <option value="action">Week</option>
-                <option value="adventure">Month</option>
-                <!-- Add more categories as needed -->
-            </select>
+                    <h2>Our Latest Games</h2>
+                    <span>Check out all of our games.</span>
+                </div>
+            </div>
         </div>
-                </div>
-                <div class="game-box  "  >
-                    <img src="assets/images/24252.jpg" alt="Game Avatar" class="game-avatar">
-                    <div class="game-description">
-                        <h2>Clannad</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <div class="row">
+            <!-- Game Item Start -->
+            <% 
+         
+                if (games != null) {
+                    for (Game game : games) {
+            %>
+            <div class="col-lg-4 col-md-6 game-item">
+                <div class="item">
+                    <div class="thumb">
+                        <div class="hover-content">
+                            <ul>
+                                <li><a href="GameDetailServlet?gameid=<%= game.getId() %>"><i class="fa fa-eye"></i></a></li>
+                            </ul>
+                        </div>
+                        <!-- Add your image here -->
+                        <img src="<%= game.getAvatarLink() %>" alt="<%= game.getName() %>" class="game-image">
+                    </div>
+                    <div class="down-content">
+                        <h4><%= game.getName() %></h4>
+                       
                     </div>
                 </div>
-                <div class="game-box">
-                    <img src="assets/images/68753.jpg" alt="Game Avatar" class="game-avatar">
-                    <div class="game-description">
-                        <h2>Game Title 2</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                    </div>
-                </div>
-                <div class="game-box">
-                    <img src="assets/images/46806.jpg" alt="Game Avatar" class="game-avatar">
-                    <div class="game-description">
-                        <h2>Game Title 3</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                    </div>
-                </div>
+            </div>
+            <% 
+                    }
+                }
+            %>
+            <!-- Game Item End -->
+
+            <!-- Additional game items can be added in a similar manner -->
+
+            <div class="col-lg-12">
+            <div class="pagination">
+                <ul id="pagination-controls">
+                    <!-- Pagination controls will be dynamically inserted here by JavaScript -->
+                </ul>
             </div>
         </div>
     </div>
 </section>
+
+
+
 <!-- ***** Game Presentation End ***** -->
+<canvas id="imageCanvas" style="display: none;"></canvas>
 
     <footer>
     <div class="container">
@@ -344,7 +239,114 @@ https://templatemo.com/tm-579-cyborg-gaming
       </div>
     </div>
   </footer>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const banner = document.querySelector('.main-banner');
+        const headerText = document.querySelector('.header-text');
+        const imgSrc = banner.style.backgroundImage.slice(5, -2); // Extract URL
 
+        const img = new Image();
+        img.src = imgSrc;
+        img.crossOrigin = "Anonymous";
+        img.onload = function () {
+            const canvas = document.getElementById('imageCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+
+            const imageData = ctx.getImageData(0, 0, img.width, img.height);
+            const data = imageData.data;
+
+            let r, g, b, avg;
+            let colorSum = 0;
+
+            for (let x = 0, len = data.length; x < len; x += 4) {
+                r = data[x];
+                g = data[x + 1];
+                b = data[x + 2];
+                avg = Math.floor((r + g + b) / 3);
+                colorSum += avg;
+            }
+
+            const brightness = Math.floor(colorSum / (img.width * img.height));
+
+            if (brightness > 127) { // Bright background
+                headerText.style.color = "black";
+                banner.querySelector('::after').style.background = "rgba(255, 255, 255, 0.5)";
+            } else { // Dark background
+                headerText.style.color = "white";
+                banner.querySelector('::after').style.background = "rgba(0, 0, 0, 0.5)";
+            }
+        };
+    });
+</script>
+<script>
+    
+        <% if (games != null) {
+            for (Game game : games) { %>
+                
+                    id: "<%= game.getId() %>";
+                    name: "<%= game.getName() %>";
+                    avatarLink: "<%= game.getAvatarLink() %>"
+                ,
+        <% } } %>
+    ;
+
+    const GAMES_PER_PAGE = 12;
+    let currentPage = 1;
+
+    function displayGames(page) {
+        const start = (page - 1) * GAMES_PER_PAGE;
+        const end = start + GAMES_PER_PAGE;
+        const paginatedGames = games.slice(start, end);
+
+        const gamesList = document.getElementById('games-list');
+        gamesList.innerHTML = '';
+        paginatedGames.forEach(game => {
+            const gameItem = document.createElement('div');
+            gameItem.classList.add('col-lg-4', 'col-md-6', 'game-item');
+            gameItem.innerHTML = `
+                <div class="item">
+                    <div class="thumb">
+                        <div class="hover-content">
+                            <ul>
+                                <li><a href="GameDetailServlet?gameid=${game.id}"><i class="fa fa-eye"></i></a></li>
+                            </ul>
+                        </div>
+                        <img src="${game.avatarLink}" alt="${game.name}" class="game-image">
+                    </div>
+                    <div class="down-content">
+                        <h4>${game.name}</h4>
+                    </div>
+                </div>
+            `;
+            gamesList.appendChild(gameItem);
+        });
+    }
+
+    function setupPagination(totalGames) {
+        const totalPages = Math.ceil(totalGames / GAMES_PER_PAGE);
+        const paginationControls = document.getElementById('pagination-controls');
+        paginationControls.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageItem = document.createElement('li');
+            pageItem.innerHTML = `<a href="javascript:void(0)" onclick="goToPage(${i})">${i}</a>`;
+            paginationControls.appendChild(pageItem);
+        }
+    }
+
+    function goToPage(page) {
+        currentPage = page;
+        displayGames(page);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setupPagination(games.length);
+        displayGames(currentPage);
+    });
+</script>
     <!-- jQuery -->
     <script src="assets/js/jquery-2.1.0.min.js"></script>
 
