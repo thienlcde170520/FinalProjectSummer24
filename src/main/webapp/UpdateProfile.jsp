@@ -100,7 +100,7 @@ https://templatemo.com/tm-579-cyborg-gaming
         <div class="row">
             <!-- Form Section -->
             <div class="col-12">
-                <form action="UpdateProfileServlet" method="POST"   >
+                <form action="UpdateProfileServlet" method="POST"   enctype="multipart/form-data">
                     <%
         String error = (String) request.getAttribute("error");
         Boolean red = (Boolean) request.getAttribute("red");
@@ -111,9 +111,10 @@ https://templatemo.com/tm-579-cyborg-gaming
         }
     %>
                    
+                   
                     <div class="form-group">
-                        <label for="gameAvatar">Your Avatar</label>
-                    <input type="file" class="form-control-file" id="gameAvatar" name="gameAvatar" multiple>
+                        <label for="gamerAvatar">Gamer Avatar</label>
+                        <input type="file" class="form-control-file" id="gamerAvatar" name="gamerAvatar" multiple>
 
                     </div>
 

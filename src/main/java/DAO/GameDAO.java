@@ -42,8 +42,10 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.bson.conversions.Bson;
 /**
@@ -51,6 +53,7 @@ import org.bson.conversions.Bson;
  * @author LENOVO
  */
 public class GameDAO {
+  
         public static void addGame(Game game) {
               try (MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
             MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
@@ -412,72 +415,119 @@ public class GameDAO {
         return games;
     }
 
-    public static ArrayList<Game> getGamesByGenres(String[] selectedGenres) {
-        ArrayList<Game> games = new ArrayList<>();
+  public static ArrayList<Game> getGamesByGenres(String[] selectedGenres) {
+    ArrayList<Game> games = new ArrayList<>();
 
-        try {
-            MongoClientSettings settings = getConnectionLocal();
-            MongoClient mongoClient = MongoClients.create(settings);
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+    try {
+        MongoClientSettings settings = getConnectionLocal();
+        MongoClient mongoClient = MongoClients.create(settings);
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
-            // Access the "Game_Has_Genre" collection
-            MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
+        // Access the "Game_Has_Genre" collection
+        MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
 
-            // Find games that have exactly the selected genres
-            Bson filter = Filters.all("Type_of_genres", Arrays.asList(selectedGenres));
+        // Check if the selectedGenres array is valid
+        if (selectedGenres != null && selectedGenres.length > 0) {
+            // Create a list from the selected genres
+            List<String> genreList = Arrays.asList(selectedGenres);
+
+            // Find games that have any of the selected genres
+            Bson filter = Filters.in("Type_of_genres", genreList);
             FindIterable<Document> gameDocs = gameGenresCollection.find(filter);
 
+            // Create a Set to store unique game IDs to avoid adding the same game multiple times
+            Set<String> gameIDs = new HashSet<>();
             for (Document gameDoc : gameDocs) {
                 String gameID = gameDoc.getString("ID_Game");
-                Game game = getGameByGameID(gameID); // Implement this method to retrieve a Game by ID
-                if (game != null) {
-                    games.add(game);
+                if (!gameIDs.contains(gameID)) {
+                    gameIDs.add(gameID);
+                    Game game = getGameByGameID(gameID); // Implement this method to retrieve a Game by ID
+                    if (game != null) {
+                        games.add(game);
+                    }
                 }
             }
-        } catch (MongoException e) {
-            e.printStackTrace();
+        } else {
+            System.out.println("No genres provided for filtering.");
         }
-
-        return games;
+    } catch (MongoException e) {
+        e.printStackTrace();
     }
-      public static ArrayList<Game> searchGames(String gameName, String gamePublisher, String year, String priceAmount, String priceCurrency, String[] selectedGenres) {
-        ArrayList<Game> games = new ArrayList<>();
 
-        // Retrieve games by game name
-        if (gameName != null && !gameName.isEmpty()) {
-            ArrayList<Game> gamesByGameName = getGamesByGameName(gameName);
-            games.addAll(gamesByGameName);
-        }
+    return games;
+}
 
-        // Retrieve games by publisher name
-        if (gamePublisher != null && !gamePublisher.isEmpty()) {
-            ArrayList<Game> gamesByPublisherName = getGamesByPublisherName(gamePublisher);
-            games.addAll(gamesByPublisherName);
-        }
+public static ArrayList<Game> searchGames(String gameName, String gamePublisher, String year, String priceAmount, String priceCurrency, String[] selectedGenres) {
+    ArrayList<Game> filteredGames = new ArrayList<>();
+    ArrayList<Game> gamesByPublisherName = new ArrayList<>();
+    ArrayList<Game> gamesByGameName = new ArrayList<>();
+    ArrayList<Game> gamesByGenres = new ArrayList<>();
 
-        // Retrieve games by selected genres
-        if (selectedGenres != null && selectedGenres.length > 0) {
-            ArrayList<Game> gamesByGenres = getGamesByGenres(selectedGenres);
-            games.addAll(gamesByGenres);
-        }
+    // Retrieve games by game name if provided
 
-        // Filter games by year of publication (Publish_day), price amount, and price currency
-        ArrayList<Game> filteredGames = new ArrayList<>();
-        for (Game game : games) {
-            boolean matchYear = year == null || year.isEmpty() || matchYear(game.getPublishDay(), year); // Match by year
+        gamesByGameName = getGamesByGameName(gameName);
+        System.out.println("Games by Game Name: " + gamesByGameName); // Debugging statement
+    
 
-            boolean matchPrice = priceAmount == null || priceAmount.isEmpty() || matchPrice(game.getPrice(), priceAmount, priceCurrency); // Match by price range
+    // Retrieve games by publisher name if provided
+   
+        gamesByPublisherName = getGamesByPublisherName(gamePublisher);
+        System.out.println("Games by Publisher Name: " + gamesByPublisherName); // Debugging statement
 
-            if (matchYear && matchPrice) {
-                filteredGames.add(game);
+
+    // Combine the games by game name and publisher name
+ 
+        // Find common games by ID from both lists
+        for (Game gameP : gamesByPublisherName) {
+            for (Game gameN : gamesByGameName) {
+                if (gameP.getId() != null && gameN.getId() != null && gameP.getId().equals(gameN.getId())) {
+                    filteredGames.add(gameN);
+                }
             }
         }
 
+    // If no games are found after the initial filtering, return an empty list
+    if (filteredGames.isEmpty()) {
+        System.out.println("No games found after initial filters.");
         return filteredGames;
     }
 
+    System.out.println("Games after Publisher Filter: " + filteredGames); // Debugging statement
+
+    // Apply genre filter if provided
+      if (selectedGenres != null && selectedGenres.length > 0 && !Arrays.stream(selectedGenres).allMatch(String::isEmpty)) {
+        gamesByGenres = getGamesByGenres(selectedGenres);
+        System.out.println("Games by Genres: " + gamesByGenres); // Debugging statement   
+        ArrayList<Game> tempFilteredGames = new ArrayList<>();
+        for (Game gameG : gamesByGenres) {
+            for (Game gameN : filteredGames) {
+                if (gameG.getId() != null && gameN.getId() != null && gameG.getId().equals(gameN.getId())) {
+                    tempFilteredGames.add(gameN);
+                }
+            }
+        }
+        filteredGames = tempFilteredGames;
+    }
+
+    System.out.println("Games after Genre Filter: " + filteredGames); // Debugging statement
+    
+    // Apply year filter if provided
+    if (year != null && !year.isEmpty()) {
+        filteredGames.removeIf(game -> !matchYear(game.getPublishDay(), year));
+        System.out.println("Games after Year Filter: " + filteredGames); // Debugging statement
+    }
+
+    // Apply price filter if provided
+    if (priceAmount != null && !priceAmount.isEmpty()) {
+        filteredGames.removeIf(game -> !matchPrice(game.getPrice(), priceAmount, priceCurrency));
+        System.out.println("Games after Price Filter: " + filteredGames); // Debugging statement
+    }
+
+    return filteredGames;
+}
+
 // Helper method to match game publish year based on publishDay and year
-    private static boolean matchYear(String publishDay, String year) {
+    public static boolean matchYear(String publishDay, String year) {
         try {
             // Parse publishDay to LocalDate
             LocalDate publishDate = LocalDate.parse(publishDay, DateTimeFormatter.ofPattern("dd-MM-yyyy"));

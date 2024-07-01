@@ -6,20 +6,34 @@
 package Controller;
 
 import static Common.CheckValid.CheckEmail;
+import static Controller.DriveQuickstart.APPLICATION_NAME;
+import static Controller.DriveQuickstart.JSON_FACTORY;
 import static Controller.JavaMongo.updateProfile;
 import DAO.GamerDAO;
 import DAO.PublisherDAO;
 import Model.Gamers;
 import Model.Publishers;
 import Model.Users;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.FileContent;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.Permission;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +43,11 @@ import java.util.logging.Logger;
  * @author ASUS
  */
 @WebServlet(name="UpdateProfileServlet", urlPatterns={"/UpdateProfileServlet"})
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 500, // 500MB
+        maxRequestSize = 1024 * 1024 * 500 // 500MB
+)
 public class UpdateProfileServlet extends HttpServlet {
    
     /** 
@@ -80,12 +99,25 @@ public class UpdateProfileServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         
-        String newA = request.getParameter("gameAvatar");
         String newN = request.getParameter("newName");
         String newEM = request.getParameter("newEmail");
         String newP = request.getParameter("newPassWord");
         String conP = request.getParameter("confirmPass");
-       
+        String gamerAvatarUrl = null;
+        
+   
+        // Upload game file to Google Drive if provided
+         Part gamerAvatarPart = request.getPart("gamerAvatar"); // Assuming "gameAvatar" is the name of the file input field
+        if (  gamerAvatarPart != null && gamerAvatarPart.getSize() > 0) {
+            String mimeType = gamerAvatarPart.getContentType();
+            String fileName = newN + "_avatar.jpg"; // Example: "MyGame_avatar.jpg"
+            java.io.File uploadedAvatar = saveFileFromPart(gamerAvatarPart, fileName);
+            try {
+                gamerAvatarUrl = uploadImageToDrive(fileName, uploadedAvatar, mimeType);
+            } catch (GeneralSecurityException ex) {
+                Logger.getLogger(UpdateProfileServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         String emailCheck = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@gmail\\.com$";
         if(!newEM.matches(emailCheck) || !newP.equals(conP)){
             request.setAttribute("mess", "Invalid email or password!!!!");
@@ -102,7 +134,7 @@ public class UpdateProfileServlet extends HttpServlet {
                    
                         if( u.getRole() == 3){
                            
-                        updateProfile(u.getId(),newN,newEM,newP,newA,u.getRole());
+                        updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,u.getRole());
                         Gamers gamer = GamerDAO.getGamerByEmail(newEM);
                             if(gamer != null){
                                 request.setAttribute("gamer", gamer);
@@ -122,7 +154,7 @@ public class UpdateProfileServlet extends HttpServlet {
                                 }                 
                             }
                         }else if( u.getRole() ==2){
-                             updateProfile(u.getId(),newN,newEM,newP,newA,u.getRole());
+                             updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,u.getRole());
                              Publishers pub = PublisherDAO.getPublisherByEmail(newEM);
                              if(pub != null){
                                  request.setAttribute("pub", pub);
@@ -148,18 +180,7 @@ public class UpdateProfileServlet extends HttpServlet {
                 
             
             }catch (Exception e) {
-                        try (PrintWriter out = response.getWriter()) {
-                            /* TODO output your page here. You may use following sample code. */
-                            out.println("<!DOCTYPE html>");
-                            out.println("<html>");
-                            out.println("<head>");
-                            out.println("<title>Servlet SignUpServlet</title>");
-                            out.println("</head>");
-                            out.println("<body>");
-                            out.println("<h1>Servlet SignUpServlet at " + e.getMessage() + "</h1>");
-                            out.println("</body>");
-                            out.println("</html>");
-                        }
+
                     }
             }else{
                 request.setAttribute("mess", "An Account is Exist!!!");
@@ -180,6 +201,68 @@ public class UpdateProfileServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+  private java.io.File saveFileFromPart(Part part, String fileName) throws IOException {
+        // Determine the directory to save the file (temp directory)
+        String tempDir = System.getProperty("java.io.tmpdir");
 
+        // Construct the file path
+        java.io.File file = new java.io.File(tempDir, fileName);
+
+        // Create parent directories if they don't exist
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+
+        // Write the input stream of the Part to the file
+        try (InputStream input = part.getInputStream(); FileOutputStream output = new FileOutputStream(file)) {
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = input.read(buffer)) != -1) {
+                output.write(buffer, 0, bytesRead);
+            }
+
+        } catch (IOException e) {
+            // Handle or log the exception as needed
+            throw e;
+        }
+
+        return file;
+    }
+
+    // Method to upload a file to Google Drive
+   public String uploadImageToDrive(String fileName, java.io.File file, String mimeType)
+        throws IOException, GeneralSecurityException {
+
+    final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+    GoogleCredential credential = DriveQuickstart.getCredentials(HTTP_TRANSPORT);
+
+    Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+            .setApplicationName(APPLICATION_NAME)
+            .build();
+
+    // Create file metadata
+    File fileMetadata = new File();
+    fileMetadata.setName(fileName);
+
+    // Create file content
+    FileContent mediaContent = new FileContent(mimeType, file);
+
+    // Upload file to Google Drive
+    File uploadedFile = service.files().create(fileMetadata, mediaContent)
+            .setFields("id")
+            .execute();
+
+    // Create permission for anyone to read
+    Permission permission = new Permission()
+            .setType("anyone")
+            .setRole("reader");
+
+    // Apply the permission to the uploaded file
+    service.permissions().create(uploadedFile.getId(), permission).execute();
+
+    // Return the thumbnail URL
+    return "https://drive.google.com/thumbnail?id=" + uploadedFile.getId() + "&sz=w1000";
+}
 
 }
