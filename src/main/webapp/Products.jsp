@@ -4,6 +4,10 @@
     Author     : LENOVO
 --%>
 
+<%@page import="java.util.ArrayList"%>
+<%@page import="Model.Genre"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%><!DOCTYPE html>
 <html lang="en">
 
@@ -88,33 +92,54 @@ https://templatemo.com/tm-579-cyborg-gaming
     </div>
   </header>
   <!-- ***** Header Area End ***** -->
-
+      
     <div class="container">
     <div class="row">
       <div class="col-lg-12">
         <div class="page-content">
-
+                   <% 
+                           Genre selectedgenre = (Genre) request.getAttribute("selectedGenre");
+                            if (selectedgenre != null) {
+                            
+                        %>
           <!-- ***** Banner Start ***** -->
           <div class="main-banner" style="background-image: url('assets/images/Ace-Attorney.webp'); background-size: cover; background-position: center;">
             <div class="row">
               <div class="col-lg-7">
                 <div class="header-text">
                 
-                  <h4>   Detective Genre</h4>
+                  <h4>   <%= selectedgenre.getType()%> </h4>
                   <h6 >Detective fiction is a genre of writing where a detective works to solve a crime. The audience is challenged to solve the crime by the clues provided before the detective reveals the answer at the end of the novel</h6>
-                  <div class="main-button">
-                    <a href="browse.html">About us </a>
-                  </div>
+                  
                 </div>
               </div>
             </div>
           </div>
-        
+          <%}%>
+         <div class="form-group">
+                        <label>Genres</label>
+                           <% 
+                            ArrayList<Genre> genres = (ArrayList<Genre>) request.getAttribute("genres");
+                            if (genres != null) {
+                                for (Genre genre : genres) {
+                        %>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="selectedGenre" value="<%= genre.getType()%>">
+                            <label  style="color: white" class="form-check-label"><%= genre.getType() %></label>
+                        </div>
+                        <% 
+                                }
+                            }
+                        %>
+                    </div>
         </div>
       </div>
     </div>
     </div>
     <!-- ***** Banner End ***** -->
+    
+    
+              
     <!-- ***** Games Area Starts ***** -->
     <section class="section" id="games">
         <div class="container">
@@ -242,7 +267,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                             <li>
                                 <a href="#">1</a>
                             </li>
-                            <li class="active">
+                            <li >
                                 <a href="#">2</a>
                             </li>
                             <li>
