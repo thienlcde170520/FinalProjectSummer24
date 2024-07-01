@@ -42,7 +42,7 @@ public class ForgetPassServlet extends HttpServlet {
                 
                 String emailPattern = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
                 if (email.isEmpty() || !email.matches(emailPattern)) {
-                    request.setAttribute("mess", "Invalid information!!!!");                 
+                    request.setAttribute("message", "Invalid information!!!!");                 
                     //response.sendRedirect("SignUp.jsp");
                     request.getRequestDispatcher("ForgetPass.jsp").forward(request, response);
                 }
@@ -53,7 +53,7 @@ public class ForgetPassServlet extends HttpServlet {
                         int codeValue = 0;
                         HttpSession mySession = request.getSession();
                         if(a == null) {
-                            request.setAttribute("mess", "email khong ton tai");
+                            request.setAttribute("message", "email khong ton tai");
                             request.getRequestDispatcher("ForgetPass.jsp").forward(request, response);                   
                         }               		
                         else{
@@ -85,7 +85,7 @@ public class ForgetPassServlet extends HttpServlet {
                                     message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to,false));
                                     message.setSubject("Hello");
                                     message.setSentDate(new Date());
-                                    message.setText("your OTP is: " + codeValue);
+                                    message.setText("Your OTP is: " + codeValue);
                                     // send message
                                     Transport.send(message);
                                     System.out.println("message sent successfully");
@@ -106,7 +106,7 @@ public class ForgetPassServlet extends HttpServlet {
                             }        
                             
                 
-                            request.setAttribute("message","Code is sent to your email id");
+                            request.setAttribute("message","Code is sent to your email");
                             //request.setAttribute("connection", con);
                             mySession.setAttribute("code",codeValue); 
                             mySession.setAttribute("email",email); 

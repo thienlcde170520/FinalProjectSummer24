@@ -12,16 +12,12 @@
         <title>Login Page</title>
         <link rel="stylesheet" type="text/css" href="assets/css/login_design.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
-        <style>
-            .error{
-                color: red;
-                font-weight: bold;
-            }
-
-        </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+        
     </head>
         <body>
-        <section class="container forms">
+            
+        <div class="container forms">
             <div class="form login">
                 <div class="form-content">
                     <header>Login</header>
@@ -52,7 +48,7 @@
                         <div class="field input-field">
                             <label for="password">Password</label>
                             <input type="password" placeholder="Password" name="pass" class="password">
-                            <i class='bx bx-hide eye-icon'></i>
+                            <i id="pass-toggle-btn" class="fa-solid fa-eye"></i>
                         </div>
                         
                         <div class="form-link">
@@ -85,33 +81,16 @@
             
             
             
-        </section>
+        </div>
         <!-- JavaScript -->
    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const forms = document.querySelector(".forms");
-        const pwShowHide = document.querySelectorAll(".eye-icon");
-
-        pwShowHide.forEach(eyeIcon => {
-            eyeIcon.addEventListener("click", () => {
-                console.log("Eye icon clicked:", eyeIcon); // Debugging log
-                let pwFields = eyeIcon.parentElement.parentElement.querySelectorAll(".password");
-                console.log("Password fields found:", pwFields); // Debugging log
-
-                pwFields.forEach(password => {
-                    if (password.type === "password") {
-                        password.type = "text";
-                        eyeIcon.classList.replace("bx-hide", "bx-show");
-                    } else {
-                        password.type = "password";
-                        eyeIcon.classList.replace("bx-show", "bx-hide");
-                    }
-                    console.log("Password field type changed to:", password.type); // Debugging log
-                });
+            const passwordInput = document.getElementById("password");
+            const passToggleBtn = document.getElementById("pass-toggle-btn");
+            passToggleBtn.addEventListener('click', () => {
+                passToggleBtn.className = passwordInput.type === "password" ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+                passwordInput.type = passwordInput.type === "password" ? "text" : "password";
             });
-        });
-    });
-</script>
+        </script>
 
     </body>
 

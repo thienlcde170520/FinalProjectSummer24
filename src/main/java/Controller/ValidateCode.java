@@ -45,7 +45,7 @@ public class ValidateCode extends HttpServlet {
                     long currentTime = new Date().getTime();
                     if(currentTime - otpTimestamp <= 60000){
                         if(value == code){
-                            request.setAttribute("mess", "OTP is Valid");
+                            request.setAttribute("message", "OTP is Valid");
                             request.getRequestDispatcher("resetPass.jsp").forward(request, response);
                         }else{
                             request.setAttribute("message", "Invalid OTP");
@@ -53,11 +53,11 @@ public class ValidateCode extends HttpServlet {
                         }
                     }else {
                         request.setAttribute("message", "OTP has expired.");
-                        request.getRequestDispatcher("EnterCode.jsp").forward(request, response);
+                        request.getRequestDispatcher("ForgetPass.jsp").forward(request, response);
                     }
                 }else{
                     request.setAttribute("message", "No OTP generated.");
-                    request.getRequestDispatcher("EnterCode.jsp").forward(request, response);
+                    request.getRequestDispatcher("ForgetPass.jsp").forward(request, response);
                 }
                 
                 

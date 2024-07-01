@@ -52,6 +52,7 @@ body {
 .text-danger{
     color: red;
     font-weight: bold;
+    text-align: center;
 }
 </style>
 </head>
@@ -73,7 +74,13 @@ body {
 					</ol>
 				</div>
 				<form class="card mt-4" action="ForgetPassServlet" method="POST">
-                                    <p class="text-danger">${mess}</p>
+                                    <%
+                                            if(request.getAttribute("message")!=null)
+                                            {
+                                               out.print("<p class='text-danger ml-1'>"+request.getAttribute("message")+"</p>");
+                                            }
+
+                                    %>
 					<div class="card-body">
 						<div class="form-group">
 							<label for="email-for-pass">Enter your email address</label> <input
