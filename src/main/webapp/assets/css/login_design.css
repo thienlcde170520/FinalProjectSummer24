@@ -127,22 +127,7 @@ form{
     align-items: center;
     justify-content: center;
 }
-a.facebook{
-    color: #fff;
-    background-color: #4267b2;
-}
-a.facebook .facebook-icon{
-    height: 28px;
-    width: 28px;
-    color: #0171d3;
-    font-size: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff;
-}
-.facebook-icon,
+
 img.google-img{
     position: absolute;
     top: 50%;
@@ -166,7 +151,26 @@ a.google span{
 .role-selection{
     display: flex;
 }
-
+.input-field i {
+    position: absolute;
+    right: 0px;
+    height: 45px;
+    top: 28px;
+    font-size: 13px;
+    line-height: 45px;
+    width: 45px;
+    cursor: pointer;
+    color: #939393;
+    text-align: center;
+  }
+.media-options:hover{
+    background-color: #0171d3;
+    border-radius: 6px;
+}
+.error{
+                color: red;
+                font-weight: bold;
+            }
 
 @media screen and (max-width: 400px) {
     .form{

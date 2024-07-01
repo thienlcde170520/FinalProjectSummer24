@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Login page</title>
+        <title>Reset Password page</title>
         <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
          <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.4/components/logins/login-6/assets/css/login-6.css">
     </head>
@@ -31,7 +31,13 @@
               </div>
             </div>
             <form action="newPassword" method="POST">
-                <p class="text-danger">${mess}</p>
+                <%
+                        if(request.getAttribute("message")!=null)
+                        {
+                           out.print("<p class='text-danger ml-1'>"+request.getAttribute("message")+"</p>");
+                        }
+
+                %>
               <div class="row gy-3 overflow-hidden">               
                 <div class="col-12">
                   <div class="form-floating mb-3">
