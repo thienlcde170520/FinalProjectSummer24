@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Get the wallet balance element and parse its value
     const walletBalanceElement = document.getElementById('wallet-balance');
     let walletBalance = parseFloat(walletBalanceElement.textContent);
 
@@ -248,36 +247,20 @@ document.addEventListener('DOMContentLoaded', function() {
 	    });
 	});
 
-$(document).ready(function () {
-    $(document).on('scroll', onScroll);
-});
-
-function onScroll(event) {
-    var scrollPos = $(document).scrollTop();
-    $('.nav a').each(function () {
-        var currLink = $(this);
-        var href = currLink.attr("href");
-        var refElement = $(href); // Get the element referenced by the link's href attribute
-
-        // Check if refElement exists
-        if (refElement.length) {
-            // Ensure refElement.position() does not return undefined
-            var refElementTop = refElement.position() ? refElement.position().top : 0;
-            var refElementHeight = refElement.height();
-
-            // Check if the scroll position is within the range of the reference element
-            if (refElementTop <= scrollPos && refElementTop + refElementHeight > scrollPos) {
-                $('.nav ul li a').removeClass("active");
-                currLink.addClass("active");
-            } else {
-                currLink.removeClass("active");
-            }
-        } else {
-            console.error(`Element ${href} not found`);
-        }
-    });
-}
-
+	function onScroll(event){
+	    var scrollPos = $(document).scrollTop();
+	    $('.nav a').each(function () {
+	        var currLink = $(this);
+	        var refElement = $(currLink.attr("href"));
+	        if (refElement.position().top <= scrollPos && refElement.position().top + refElement.height() > scrollPos) {
+	            $('.nav ul li a').removeClass("active");
+	            currLink.addClass("active");
+	        }
+	        else{
+	            currLink.removeClass("active");
+	        }
+	    });
+	}
 
 
 	// Page loading animation

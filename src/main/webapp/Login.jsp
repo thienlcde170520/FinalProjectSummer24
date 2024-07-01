@@ -13,7 +13,7 @@
         <link rel="stylesheet" type="text/css" href="assets/css/login_design.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
-        
+          <link rel="stylesheet" type="text/css" href="assets/css/fontawesome.css">
     </head>
         <body>
             
@@ -48,7 +48,7 @@
                         <div class="field input-field">
                             <label for="password">Password</label>
                             <input type="password" placeholder="Password" name="pass" class="password">
-                            <i id="pass-toggle-btn" class="fa-solid fa-eye"></i>
+                            <i id="pass-toggle-btn" ></i>
                         </div>
                         
                         <div class="form-link">
