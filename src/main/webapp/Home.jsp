@@ -84,7 +84,7 @@
                             <ul class="nav">
                                 <li><a href="Home.jsp" class="active">Home</a></li>
                                 <li><a href="browse.html">Browse</a></li>
-                                <li><a href="details.html">Genre</a></li>
+                                <li><a href="DisplayGenreServlet">Genre</a></li>
                                 
                                 <%
     Users user = (Users) session.getAttribute("account");
