@@ -53,7 +53,46 @@ import org.bson.conversions.Bson;
  * @author LENOVO
  */
 public class GameDAO {
-  
+   public static Game getGameByReview(Review review) {
+        Game game = null;
+
+        try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+
+            // Create a filter to find the game document based on the ID_Game from the review
+            Bson gameFilter = Filters.eq("ID", review.getIdGame());
+
+            // Find the game document in the Games collection
+            Document gameDoc = gamesCollection.find(gameFilter).first();
+
+            if (gameDoc != null) {
+                // Extract game attributes from the document
+                String id = gameDoc.getString("ID");
+                String name = gameDoc.getString("Name");
+                double price = gameDoc.getDouble("Price");
+                String publishDay = gameDoc.getString("Publish_day");
+                int numberOfBuyers = gameDoc.getInteger("Number_of_buyers");
+                String linkTrailer = gameDoc.getString("LinkTrailer");
+                String avatarLink = gameDoc.getString("AvatarLink");
+                String gameLink = gameDoc.getString("GameLink");
+                String description = gameDoc.getString("Description");
+                String minimumCPU = gameDoc.getString("Minimum_CPU");
+                String minimumRAM = gameDoc.getString("Minimum_RAM");
+                String minimumGPU = gameDoc.getString("Minimum_GPU");
+                String maximumCPU = gameDoc.getString("Maximum_CPU");
+                String maximumRAM = gameDoc.getString("Maximum_RAM");
+                String maximumGPU = gameDoc.getString("Maximum_GPU");
+
+                // Create a Game object
+                game = new Game(id, name, price, publishDay, numberOfBuyers, linkTrailer, avatarLink, gameLink, description, minimumCPU, minimumRAM, minimumGPU, maximumCPU, maximumRAM, maximumGPU);
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        return game;
+    }
         public static void addGame(Game game) {
               try (MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
             MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");

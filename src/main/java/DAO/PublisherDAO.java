@@ -83,6 +83,40 @@ public class PublisherDAO {
 
         return publisher;
     }
+      public static Publishers getPublisherByName(String name) {
+        MongoClientSettings settings = getConnectionLocal();
+        Publishers publisher = null;
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            try {
+                MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+                MongoCollection<Document> gamePublishersCollection = fpteamDB.getCollection("GamePublishers");
+
+                Document doc = gamePublishersCollection.find(Filters.eq("Name", name)).first();
+
+                if (doc != null) {
+                    publisher = new Publishers(
+                            doc.getString("ID"),
+                            doc.getString("Name"),
+                            doc.getString("Password"),
+                            doc.getString("Email"),
+                            doc.getString("Bank_account"),
+                            doc.getDouble("Profit"),
+                            doc.getString("Description"),
+                            doc.getString("AvatarLink"),
+                            doc.getDouble("Money"),
+                            doc.getInteger("Role", 2),
+                            doc.getString("RegistrationDate")
+                    );
+                }
+            } catch (MongoException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return publisher;
+    }
+     
  public static ArrayList<Publishers> getAllPublishers() {
 
         MongoClientSettings settings = getConnectionLocal();

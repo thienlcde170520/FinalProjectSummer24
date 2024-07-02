@@ -103,6 +103,32 @@ public static void exclusiveGenreToGame(String gameId, String genreType) {
 
         return genresList;
     }
+    public static Genre getGenreByType(String genreType) {
+    MongoClientSettings settings = getConnectionLocal();
+    Genre genre = null;
+
+    try (MongoClient mongoClient = MongoClients.create(settings)) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+        MongoCollection<Document> collection = fpteamDB.getCollection("Genres");
+
+        // Create a filter to find the genre by its type
+        Bson filter = Filters.eq("Type_of_Genre", genreType);
+        Document doc = collection.find(filter).first();
+
+        // Check if the document is found
+        if (doc != null) {
+            genre = new Genre(
+                doc.getString("Type_of_Genre"),
+                doc.getString("Description")
+            );
+        }
+    } catch (MongoException e) {
+        e.printStackTrace();
+    }
+
+    return genre;
+}
+
 
     private static ArrayList<String> getGenreTypesByGameID(String gameID) {
         MongoClientSettings settings = getConnectionLocal();

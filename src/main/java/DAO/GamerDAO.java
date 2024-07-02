@@ -6,6 +6,7 @@ package DAO;
 import static Controller.JavaMongo.getConnection;
 import static Controller.JavaMongo.getConnectionLocal;
 import Model.Gamers;
+import Model.Review;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
@@ -14,6 +15,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import org.bson.Document;
@@ -24,7 +26,39 @@ import org.bson.conversions.Bson;
  * @author LENOVO
  */
 public class GamerDAO {
-    
+     public static Gamers getGamerByReview(Review review) {
+        Gamers gamer = null;
+        
+        try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+
+            // Create a filter to find the gamer document based on the ID_Gamer from the review
+            Bson gamerFilter = Filters.eq("ID", review.getIdGamer());
+
+            // Find the gamer document in the Gamers collection
+            Document gamerDoc = gamersCollection.find(gamerFilter).first();
+
+            if (gamerDoc != null) {
+                // Extract gamer attributes from the document
+                String id = gamerDoc.getString("ID");
+                String name = gamerDoc.getString("Name");
+                String gmail = gamerDoc.getString("Gmail");
+                String password = gamerDoc.getString("Password");
+                int role = gamerDoc.getInteger("Role");
+                Double money = gamerDoc.getDouble("Money");
+                String avatarLink = gamerDoc.getString("AvatarLink");
+                String registrationDate = gamerDoc.getString("RegistrationDate");
+
+                // Create a Gamer object
+                gamer = new Gamers(id, name, gmail, password, role, money, avatarLink, registrationDate);
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        return gamer;
+    }
      public static boolean hasGamerBoughtGame(String gamerId, String gameId) {
         MongoClientSettings settings = getConnectionLocal();
         try (MongoClient mongoClient = MongoClients.create(settings)) {

@@ -61,7 +61,7 @@ public class JavaMongo {
 
     public static void main(String[] args) {
 
- System.out.println(GameDAO.searchGames("i",null,null,null,null,null));
+ System.out.println(GameDAO.searchGames("","","","","",new String[]{"Detective"}));
     }
 
     /*publisher*/
