@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,13 +32,7 @@
               </div>
             </div>
             <form action="newPassword" method="POST">
-                <%
-                        if(request.getAttribute("message")!=null)
-                        {
-                           out.print("<p class='text-danger ml-1'>"+request.getAttribute("message")+"</p>");
-                        }
-
-                %>
+                
               <div class="row gy-3 overflow-hidden">               
                 <div class="col-12">
                   <div class="form-floating mb-3">
@@ -69,3 +64,4 @@
               
     </body>
 </html>
+

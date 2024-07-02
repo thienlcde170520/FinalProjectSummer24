@@ -30,7 +30,7 @@
         <!-- Custom CSS -->
        <style>
     .genre-button {
-        background: none;
+        background: White ;
         border: none;
         color: blue;
         text-decoration: underline;
@@ -166,7 +166,7 @@
                                         <div class="left">
                                             <h4><%= game.getName()%></h4>
 
-                                            <div class="genre-container">
+                                            <div class="genre-container" style="color : white">
     Genres:
     <%
         for (Genre genre : genres) {
@@ -183,7 +183,7 @@
     %>
     
 <a href="DisplayPublisherServlet?publisherName=<%= publisher.getName() %>" class="publisher-p">Game Publisher: <%= publisher.getName() %></a>
-
+ 
 
 </div>
                                        <%
