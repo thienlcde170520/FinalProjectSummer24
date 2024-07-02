@@ -17,17 +17,18 @@
 
     <title>Cyborg - Awesome HTML5 Template</title>
 
-    <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
-    <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
-    <link rel="stylesheet" href="assets/css/owl.css">
-    <link rel="stylesheet" href="assets/css/animate.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
-  <link rel="stylesheet" href="assets/css/Style.css">
+        <!-- Additional CSS Files -->
+         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/fontawesome.css">
+        <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
+        <link rel="stylesheet" href="assets/css/owl.css">
+        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+        <link rel="stylesheet" href="assets/css/Style.css">
+    
 <!--
 
 TemplateMo 579 Cyborg Gaming
@@ -167,15 +168,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <div class="col-lg-4">
                     <div class="team-item">
                         <div class="thumb">
-                            <div class="hover-effect">
-                                  <div class="hover-content">
-                                        <ul>
-                                            <li><a href="single-product.html"><i class="fa fa-eye"></i></a></li>
-                                            <li><a href="single-product.html"><i class="fa fa-star"></i></a></li>
-                                            <li><a href="single-product.html"><i class="fa fa-shopping-cart"></i></a></li>
-                                        </ul>
-                                    </div>
-                            </div>
+                          
                             <img src="assets/images/genshin.jpg">
                         </div>
                         <div class="down-content">
@@ -187,15 +180,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <div class="col-lg-4">
                     <div class="team-item">
                         <div class="thumb">
-                            <div class="hover-effect">
-                                 <div class="hover-content">
-                                        <ul>
-                                            <li><a href="single-product.html"><i class="fa fa-eye"></i></a></li>
-                                            <li><a href="single-product.html"><i class="fa fa-star"></i></a></li>
-                                            <li><a href="single-product.html"><i class="fa fa-shopping-cart"></i></a></li>
-                                        </ul>
-                                    </div>
-                            </div>
+                            
                             <img src="assets/images/Honai.jpg">
                         </div>
                         <div class="down-content">
@@ -207,13 +192,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <div class="col-lg-4">
                     <div class="team-item">
                         <div class="thumb">
-                          <div class="hover-content">
-                                        <ul>
-                                            <li><a href="single-product.html"><i class="fa fa-eye"></i></a></li>
-                                            <li><a href="single-product.html"><i class="fa fa-star"></i></a></li>
-                                            <li><a href="single-product.html"><i class="fa fa-shopping-cart"></i></a></li>
-                                        </ul>
-                                    </div>
+                         
                             <img src="assets/images/unnamed.png">
                         </div>
                         <div class="down-content">

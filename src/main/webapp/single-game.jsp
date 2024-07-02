@@ -15,19 +15,22 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Fortnite - Game Details</title>
-        <!-- Bootstrap core CSS -->
-        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+       <!-- Bootstrap core CSS -->
+      <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
         <!-- Additional CSS Files -->
+         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="assets/css/fontawesome.css">
         <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
         <link rel="stylesheet" href="assets/css/owl.css">
         <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
         <link rel="stylesheet" href="assets/css/Style.css">
-        <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
         <!-- Custom CSS -->
        <style>
     .genre-button {
-        background: none;
+        background: White ;
         border: none;
         color: blue;
         text-decoration: underline;
@@ -163,7 +166,7 @@
                                         <div class="left">
                                             <h4><%= game.getName()%></h4>
 
-                                            <div class="genre-container">
+                                            <div class="genre-container" style="color : white">
     Genres:
     <%
         for (Genre genre : genres) {
@@ -180,7 +183,7 @@
     %>
     
 <a href="DisplayPublisherServlet?publisherName=<%= publisher.getName() %>" class="publisher-p">Game Publisher: <%= publisher.getName() %></a>
-
+ 
 
 </div>
                                        <%

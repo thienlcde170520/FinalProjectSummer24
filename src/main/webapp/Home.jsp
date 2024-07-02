@@ -38,13 +38,7 @@
         <link rel="stylesheet" href="assets/css/animate.css">
         <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
         <link rel="stylesheet" href="assets/css/Style.css">
-        <!--
-        
-        TemplateMo 579 Cyborg Gaming
-        
-        https://templatemo.com/tm-579-cyborg-gaming
-        
-        -->
+    
     </head>
 
 
@@ -126,7 +120,7 @@
                                         <h6>Welcome To FPTeam</h6>
                                         <h4><em>Welcome</em>  to the  best trading platform to for gamer</h4>
                                         <div class="main-button">
-                                            <a href="browse.html">About us </a>
+                                            <a href="AboutUs.jsp">About us </a>
                                         </div>
                                     </div>
                                 </div>
