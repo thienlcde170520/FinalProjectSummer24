@@ -83,6 +83,7 @@ public class profileServlet extends HttpServlet {
           ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
 
                         request.setAttribute("gamer", gamer);
+                            request.setAttribute("games", games);
                          //request.setAttribute("games", games);
                         request.setAttribute("transactionHistory", transactionHistory)
                                 ;

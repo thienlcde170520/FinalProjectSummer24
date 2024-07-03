@@ -22,16 +22,18 @@
         }
 </style>
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+       <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
-    <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
-    <link rel="stylesheet" href="assets/css/owl.css">
-    <link rel="stylesheet" href="assets/css/animate.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
-  <link rel="stylesheet" href="assets/css/Style.css">
+        <!-- Additional CSS Files -->
+         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/fontawesome.css">
+        <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
+        <link rel="stylesheet" href="assets/css/owl.css">
+        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+       
+          <link rel="stylesheet" href="assets/css/style.css">
 <!--
 
 TemplateMo 579 Cyborg Gaming
@@ -100,7 +102,7 @@ https://templatemo.com/tm-579-cyborg-gaming
         <div class="row">
             <!-- Form Section -->
             <div class="col-12">
-                <form action="UpdateProfileServlet" method="POST"   >
+                <form action="UpdateProfileServlet" method="POST"   enctype="multipart/form-data">
                     <%
         String error = (String) request.getAttribute("error");
         Boolean red = (Boolean) request.getAttribute("red");
@@ -111,9 +113,10 @@ https://templatemo.com/tm-579-cyborg-gaming
         }
     %>
                    
+                   
                     <div class="form-group">
-                        <label for="gameAvatar">Your Avatar</label>
-                    <input type="file" class="form-control-file" id="gameAvatar" name="gameAvatar" multiple>
+                        <label for="gamerAvatar">Gamer Avatar</label>
+                        <input type="file" class="form-control-file" id="gamerAvatar" name="gamerAvatar" multiple>
 
                     </div>
 
