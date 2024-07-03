@@ -7,9 +7,14 @@ package DAO;
 import static Controller.JavaMongo.getConnection;
 import static Controller.JavaMongo.getConnectionLocal;
 import Model.Game;
+import Model.Gamers;
+
+import Model.Publishers;
 import Model.Review;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -53,7 +58,59 @@ public class ReviewDAO {
 
         return reviews;
     }
+  public static ArrayList<Review> getReviewsByPublisherName(String publisherName) {
+        MongoClientSettings settings = getConnectionLocal();
+        ArrayList<Review> reviews = new ArrayList<>();
+        
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
+            // Access the necessary collections
+            MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+            MongoCollection<Document> publishCollection = fpteamDB.getCollection("Publish");
+            MongoCollection<Document> gamePublishersCollection = fpteamDB.getCollection("GamePublishers");
+            MongoCollection<Document> reviewsCollection = fpteamDB.getCollection("Reviews");
+
+            // Find the publisher document based on the provided publisher name
+            Document publisherDoc = gamePublishersCollection.find(Filters.regex("Name", ".*" + publisherName + ".*", "i")).first();
+
+            if (publisherDoc != null) {
+                String publisherId = publisherDoc.getString("ID");
+
+                // Create a filter to search for game documents with the matching publisher ID in the Publish collection
+                Bson filter = Filters.eq("ID_Game_Publisher", publisherId);
+
+                // Find all documents in the Publish collection that match the filter
+                FindIterable<Document> publishDocs = publishCollection.find(filter);
+
+                for (Document publishDoc : publishDocs) {
+                    String gameId = publishDoc.getString("ID_Game");
+
+                    // Create a filter to find the review documents in the Reviews collection based on gameId
+                    Bson reviewFilter = Filters.eq("ID_Game", gameId);
+
+                    // Find all reviews associated with the gameId
+                    FindIterable<Document> reviewDocs = reviewsCollection.find(reviewFilter);
+
+                    for (Document reviewDoc : reviewDocs) {
+                        Review review = new Review(
+                                reviewDoc.getString("ID_Gamer"),
+                                reviewDoc.getString("ID_Game"),
+                                reviewDoc.getDouble("Rating"),
+                                reviewDoc.getString("Description")
+                        );
+                        reviews.add(review);
+                    }
+                }
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        return reviews;
+    }
+
+      
     public static void deleteReview(String gamerId, String gameId) {
         try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");

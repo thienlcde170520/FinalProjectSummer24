@@ -15,6 +15,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
 import java.util.ArrayList;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -24,35 +25,26 @@ import org.bson.conversions.Bson;
  * @author LENOVO
  */
 public class GenreDAO {
-      public static void clearGenresForGame(String gameId) {
-        try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
-            MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
+ 
 
-            // Delete all documents where "ID_Game" matches gameId
-            gameGenresCollection.deleteMany(new Document("ID_Game", gameId));
+public static void exclusiveGenreToGame(String gameId, String genreType) {
+    try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+        MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
 
-            System.out.println("Cleared genres for game ID: " + gameId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Define the filter to find the document with the specified gameId and genreType
+        Document filter = new Document()
+                .append("ID_Game", gameId)
+                .append("Type_of_genres", genreType);
+
+        // Delete the document matching the filter
+     gameGenresCollection.deleteOne(filter);
+
+      
+    } catch (Exception e) {
+        e.printStackTrace();
     }
-
-    public static void addExclusiveGenreToGame(String gameId, String genreType) {
-        try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
-            MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
-
-            Document gameGenreDoc = new Document()
-                    .append("ID_Game", gameId)
-                    .append("Type_of_genres", genreType);
-
-            gameGenresCollection.insertOne(gameGenreDoc);
-            System.out.println("Exclusive Genre '" + genreType + "' added to game ID: " + gameId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+}
 
     public static void addGenreToGame(String gameId, String genreType) {
         try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
@@ -111,6 +103,32 @@ public class GenreDAO {
 
         return genresList;
     }
+    public static Genre getGenreByType(String genreType) {
+    MongoClientSettings settings = getConnectionLocal();
+    Genre genre = null;
+
+    try (MongoClient mongoClient = MongoClients.create(settings)) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+        MongoCollection<Document> collection = fpteamDB.getCollection("Genres");
+
+        // Create a filter to find the genre by its type
+        Bson filter = Filters.eq("Type_of_Genre", genreType);
+        Document doc = collection.find(filter).first();
+
+        // Check if the document is found
+        if (doc != null) {
+            genre = new Genre(
+                doc.getString("Type_of_Genre"),
+                doc.getString("Description")
+            );
+        }
+    } catch (MongoException e) {
+        e.printStackTrace();
+    }
+
+    return genre;
+}
+
 
     private static ArrayList<String> getGenreTypesByGameID(String gameID) {
         MongoClientSettings settings = getConnectionLocal();
