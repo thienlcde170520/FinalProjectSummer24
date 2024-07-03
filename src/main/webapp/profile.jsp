@@ -149,7 +149,8 @@ https://templatemo.com/tm-579-cyborg-gaming
 
                       <li>Review History <span>None</span></li>
 
-                      <li>Wish Lists <span>2</span></li>
+                <li><a href="FollowServlet?gamerid=<%=gamer.getId()%>">Wish Lists</a></li>
+
                     </ul>
                         <div class="d-flex justify-content-start align-items-center">
                       <a href="UpdateProfile.jsp" class="btn btn-primary ">Update</a>

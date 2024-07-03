@@ -16,6 +16,8 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
@@ -23,7 +25,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -73,6 +77,81 @@ public class TransactionBillDAO {
 
         return bill;
     }
+     public static List<Bill> getBillsByGameID(String gameId) {
+    MongoClientSettings settings = getConnectionLocal();
+    List<Bill> billsList = new ArrayList<>();
+
+    try (MongoClient mongoClient = MongoClients.create(settings)) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+
+        // Access the "Buy" collection
+        MongoCollection<Document> buyCollection = fpteamDB.getCollection("Buy");
+
+        // Create a filter to search for all bills by gamerId
+        Bson filter = Filters.eq("ID_Game", gameId);
+
+        // Find all documents that match the filter
+        try (MongoCursor<Document> cursor = buyCollection.find(filter).iterator()) {
+            while (cursor.hasNext()) {
+                Document billDoc = cursor.next();
+                
+                // Extract bill attributes from the document
+                String id = billDoc.getString("ID_Bill");
+                String gamerID = billDoc.getString("ID_Gamer");
+                String buyTime = billDoc.getString("Buy_time");
+                Double buyPrice = billDoc.getDouble("Buy_price");
+
+                // Create a Bill object
+                Bill bill = new Bill();
+                bill.setId(id);
+                bill.setGamerId(gamerID);  // Set gamerId for the Bill
+                bill.setGameId(gameId);
+                bill.setBuyTime(buyTime);
+                bill.setBuyPrice(buyPrice);
+
+                // Add Bill to the list
+                billsList.add(bill);
+            }
+        }
+    } catch (MongoException e) {
+        e.printStackTrace();
+    }
+
+    return billsList;
+}
+
+     public static Double getProfitByGameId(String gameId) {
+    MongoClientSettings settings = getConnectionLocal();
+    double totalProfit = 0.0;
+
+    try (MongoClient mongoClient = MongoClients.create(settings)) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+
+        // Access the "Buy" collection
+        MongoCollection<Document> buyCollection = fpteamDB.getCollection("Buy");
+
+        // Create a filter to search for the bills by gameId
+        Bson filter = Filters.eq("ID_Game", gameId);
+
+        // Use aggregation to calculate the total profit
+        List<Bson> pipeline = Arrays.asList(
+            Aggregates.match(filter),
+            Aggregates.group(null, Accumulators.sum("totalProfit", "$Buy_price"))
+        );
+
+        // Execute the aggregation pipeline
+        Document result = buyCollection.aggregate(pipeline).first();
+
+        if (result != null && result.containsKey("totalProfit")) {
+            totalProfit = result.getDouble("totalProfit");
+        }
+    } catch (MongoException e) {
+        e.printStackTrace();
+    }
+
+    return totalProfit;
+}
+
 
     public static boolean isRefundable(Bill bill) {
         if (bill == null) {
