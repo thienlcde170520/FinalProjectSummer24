@@ -141,8 +141,10 @@ public class PublisherDAO {
                     publisher = new Publishers(
                             doc.getString("ID"),
                             doc.getString("Name"),
+
                             doc.getString("Email"),
                             doc.getString("Password"),
+
                             doc.getString("Bank_account"),
                             doc.getDouble("Profit"),
                             doc.getString("Description"),

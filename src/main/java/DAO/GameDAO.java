@@ -37,9 +37,14 @@ import java.time.format.DateTimeFormatter;
 import org.bson.Document;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 import org.bson.conversions.Bson;
 import com.mongodb.client.model.Sorts;
 import static com.mongodb.client.model.Sorts.descending;
@@ -515,6 +520,7 @@ public class GameDAO {
         MongoClient mongoClient = MongoClients.create(settings);
         MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
+
         // Access the "Game_Has_Genre" collection
         MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
 
@@ -522,6 +528,7 @@ public class GameDAO {
         if (selectedGenres != null && selectedGenres.length > 0) {
             // Create a list from the selected genres
             List<String> genreList = Arrays.asList(selectedGenres);
+
 
             // Find games that have any of the selected genres
             Bson filter = Filters.in("Type_of_genres", genreList);
@@ -557,6 +564,7 @@ public static ArrayList<Game> searchGames(String gameName, String gamePublisher,
 
     // Retrieve games by game name if provided
 
+
         gamesByGameName = getGamesByGameName(gameName);
         System.out.println("Games by Game Name: " + gamesByGameName); // Debugging statement
     
@@ -565,6 +573,7 @@ public static ArrayList<Game> searchGames(String gameName, String gamePublisher,
    
         gamesByPublisherName = getGamesByPublisherName(gamePublisher);
         System.out.println("Games by Publisher Name: " + gamesByPublisherName); // Debugging statement
+
 
 
     // Combine the games by game name and publisher name

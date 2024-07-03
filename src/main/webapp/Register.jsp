@@ -7,9 +7,11 @@
         <link rel="stylesheet" type="text/css" href="assets/css/stylelist.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
 
-        <!--banner-->
+        
+        <!--bonus-->
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-        <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
 
 
         <!-- Additional CSS Files -->
@@ -20,44 +22,27 @@
         <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
         <link rel="stylesheet" href="assets/css/Style.css">
 
-        <link rel="stylesheet" href="assets/css/email.css">
+        
+        <link rel="stylesheet" href="assets/css/alertInput.css">
+
         <style>
             .mess{
                 color: red;
-                font-weight: bold;
+                background-color: #ffcccc;
+                margin: 17px 0;
             }
-            .message {
-            display: none;
-            color: red;
-            margin-top: 1px;
-            font-size: small;
-            }
-            .input-error {
-                border: 2px solid red;
-            }
-            .input-success {
-                border: 2px solid green;
-            }
-            .input-success-icon {
-                position: relative;
-            }
-            .input-success-icon::after {
-                content: '\f00c'; /* Font Awesome check icon */
-                font-family: 'Font Awesome 5 Free';
-                font-weight: 900;
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: green;
-            }
+
+            
+
         </style>
 
         
     </head>
         <body>
             <div class="Main">
-                <header class="header-area header-sticky">
+
+            <header class="header-area header-sticky">
+
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
@@ -73,7 +58,9 @@
                                     <!-- ***** Menu Start ***** -->
                                     <ul class="nav" id="listPage">
                                         <li><a href="Home.jsp">Home</a></li>
-                                        <li><a href="browse.html">Browse</a></li>
+
+                                        <li><a href="browse.html">Best Seller</a></li>
+
                                         <li><a href="details.html">Genre</a></li>                                                                                                             
                                         <li><a href="Login.jsp" >Login</a></li>
         
@@ -87,19 +74,31 @@
                         </div>
                     </div>
                 </header>
-                
-                
-            <div class="register forms">
-            <!-- Signup Form -->
-                <div class="form signup">
-                    <div class="form-content">
-                        <p>Register</p>
+
+            
+        <div class="register forms">
+        <!-- Signup Form -->
+            <div class="form signup">
+                <div class="form-content">
+                    <p>Register</p>
+                    <%
+                        String mess = (String) request.getAttribute("mess");
                         
-    
-                        <form action="SignUpServlet" method="POST">
+                        if (mess != null) {
+                    %>
+                        <div class="mess"><%= mess %></div>
+                    <%
+                        }
+                    %>
+
+                    <form action="SignUpServlet" method="POST">
                             <div class="field input-field">
+                                <div class="input-container">
                                 <label for="name">Username</label>
-                                <input type="text" placeholder="Name" name="name" class="input">
+                                <input type="text" id="namespace" placeholder="Name" name="name" class="input">
+                            </div>
+                                <div id="messageName"></div>
+
                             </div>
                             <div class="field input-field">
                                 <div class="input-container">
@@ -109,15 +108,22 @@
                                 <div id="message"></div>
                             </div>
                             <div class="field input-field">
+
+                                <div class="input-container pass">
                                 <label for="password">Password</label>
                                 <input type="password" id="password" placeholder="Create password" name="password" >
                                 <i id="pass-toggle-btn" class="fa-solid fa-eye"></i>
-                                <div id="passwordMessage" class="message">Mật khẩu phải có độ dài 5 chữ số và có ít nhất 1 số 1 chữ.</div> 
+                            </div>
+                                <div id="passwordMessage"></div> 
                             </div>
                             <div class="field input-field">
+                                <div class="input-container pass">
                                 <label for="password">Confirm Password</label>
                                 <input type="password" id="con_password" placeholder="Confirm password" name="confirm_password" >
                                 <i id="con_pass-toggle-btn" class="fa-solid fa-eye"></i> 
+                                </div>
+                                <div id="conPasswordMessage"></div>
+
                             </div>
                             <div class="role-selection">
                                 <label for="role" style="font-weight: bold;">Choose your role:</label>
@@ -134,20 +140,27 @@
                                 <span>Turn back to <a href="Login.jsp" class="link signup-link">Login</a></span>
                             </div>
                         </form>
-                        
-                    </div>
+
+
                     
                 </div>
             </div>
-            </div>
+
+        </div>
+                    </div>
         <!-- JavaScript -->
-         <script src="js/email.js"></script>
+        <script src="assets/js/emailAlert.js"></script>
+        <script src="assets/js/passwordAlert.js"></script>
+        <script src="assets/js/nameAlert.js"></script>
+
         <script>
         const passwordInput = document.getElementById("password");
         const passToggleBtn = document.getElementById("pass-toggle-btn");
         const conpassToggleBtn = document.getElementById("con_pass-toggle-btn");
         const passconInput = document.getElementById("con_password");
-        const passwordMessage = document.getElementById("passwordMessage");
+
+       
+
 
         passToggleBtn.addEventListener('click', () => {
             passToggleBtn.className = passwordInput.type === "password" ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
