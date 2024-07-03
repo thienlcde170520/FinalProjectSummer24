@@ -6,6 +6,7 @@
 package Controller;
 
 
+import DAO.FollowDAO;
 import DAO.GameDAO;
 import DAO.GamerDAO;
 import DAO.GenreDAO;
@@ -80,7 +81,7 @@ public class GameDetailServlet extends HttpServlet {
     
     // Check user role
     int role = user.getRole();
-    
+    boolean isFollow = false;
     boolean hasBuy = false;
     boolean isRefundable = false;
     Bill bill = null;
@@ -90,7 +91,7 @@ public class GameDetailServlet extends HttpServlet {
         
         // Check if gamer has bought the game
         hasBuy = GamerDAO.hasGamerBoughtGame(gamer.getId(), gameid);
-        
+        isFollow = FollowDAO.isFollow(gamer, game);
         if (hasBuy) {
             // Retrieve bill details
             bill = TransactionBillDAO.getBillByGameIDAndGamerID(gameid, gamer.getId());
@@ -103,6 +104,7 @@ public class GameDetailServlet extends HttpServlet {
     // Set attributes to be forwarded to the JSP
     request.setAttribute("bill", bill);
     request.setAttribute("isRefundable", isRefundable);
+       request.setAttribute("isFollow", isFollow);
     request.setAttribute("hasBuy", hasBuy);
     request.setAttribute("game", game);
     request.setAttribute("genres", genres);

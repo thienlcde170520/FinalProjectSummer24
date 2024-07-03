@@ -79,7 +79,7 @@
                             <!-- ***** Menu Start ***** -->
                             <ul class="nav">
                                 <li><a href="Home.jsp" class="active">Home</a></li>
-                                <li><a href="browse.html">Browse</a></li>
+                                <li><a href="BestSellerServlet">Game</a></li>
                                 <li><a href="DisplayGenreServlet">Genre</a></li>
                                 
                                 <%

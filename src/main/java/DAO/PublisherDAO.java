@@ -15,8 +15,15 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Accumulators.sum;
+import static com.mongodb.client.model.Aggregates.count;
+import static com.mongodb.client.model.Aggregates.group;
+import static com.mongodb.client.model.Aggregates.match;
 import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.in;
 import java.util.ArrayList;
+import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -41,6 +48,42 @@ public class PublisherDAO {
             e.printStackTrace();
         }
     }
+     public static Integer getNumberOfGameSoughtByPublisher(String publisherId) {
+        MongoClientSettings settings = getConnectionLocal();
+        int numberOfGamesBought = 0;
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            try {
+                MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+                MongoCollection<Document> billCollection = fpteamDB.getCollection("Buy");
+                MongoCollection<Document> publishCollection = fpteamDB.getCollection("Publish");
+
+                // Get all game IDs published by the publisher
+                List<String> gameIds = new ArrayList<>();
+                for (Document gameDoc : publishCollection.find(eq("ID_Game_Publisher", publisherId))) {
+                    gameIds.add(gameDoc.getString("ID_Game"));
+                }
+
+                // Sum the number of purchases for these games
+                if (!gameIds.isEmpty()) {
+                    List<Bson> pipeline = List.of(
+                        match(in("ID_Game", gameIds)),
+                        group(null, sum("totalPurchases", 1))
+                    );
+
+                    List<Document> results = billCollection.aggregate(pipeline).into(new ArrayList<>());
+                    if (!results.isEmpty()) {
+                        numberOfGamesBought = results.get(0).getInteger("totalPurchases");
+                    }
+                }
+            } catch (MongoException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return numberOfGamesBought;
+    }
+
      public static Publishers getPublisherByGameId(String gameId) {
         MongoClientSettings settings = getConnectionLocal();
         Publishers publisher = null;

@@ -1,6 +1,7 @@
 package Controller;
 
 import DAO.GameDAO;
+import DAO.PublisherDAO;
 import Model.Users;
 import com.mongodb.BasicDBObject;
 import com.mongodb.ConnectionString;
@@ -61,7 +62,7 @@ public class JavaMongo {
 
     public static void main(String[] args) {
 
- System.out.println(GameDAO.searchGames("","","","","",new String[]{"Detective"}));
+ System.out.println(GameDAO.getMostProfitableGamesByPeriod("Month"));
     }
 
     /*publisher*/

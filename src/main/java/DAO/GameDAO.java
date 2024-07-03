@@ -5,20 +5,13 @@
 package DAO;
 import static Controller.JavaMongo.getConnection;
 import static Controller.JavaMongo.getConnectionLocal;
-import Model.BankTransactions;
+import static DAO.TransactionBillDAO.getBillsByGameID;
 import Model.Bill;
+import Model.Follow;
 import Model.Game;
-import Model.Gamers;
-import Model.Publishers;
-import Model.Genre;
 import Model.Review;
-import Model.Users;
-import com.mongodb.BasicDBObject;
-import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
-import com.mongodb.ServerApi;
-import com.mongodb.ServerApiVersion;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
@@ -26,28 +19,51 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Accumulators;
+import static com.mongodb.client.model.Aggregates.group;
+import static com.mongodb.client.model.Aggregates.limit;
+import static com.mongodb.client.model.Aggregates.lookup;
+import static com.mongodb.client.model.Aggregates.match;
+import static com.mongodb.client.model.Aggregates.project;
+import static com.mongodb.client.model.Aggregates.sort;
+import static com.mongodb.client.model.Aggregates.unwind;
 import com.mongodb.client.model.Filters;
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.model.Updates;
-import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import org.bson.Document;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.bson.conversions.Bson;
+import com.mongodb.client.model.Sorts;
+import static com.mongodb.client.model.Sorts.descending;
+import static com.mongodb.client.model.Sorts.ascending;
+import java.time.ZoneId;
+import java.util.Date;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
+import java.time.DayOfWeek;
+import org.bson.Document;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  *
  * @author LENOVO
@@ -267,6 +283,43 @@ public class GameDAO {
         }
 
         return gamesList;
+    }
+            public static Game getGameByFollow(Follow follow) {
+        MongoClientSettings settings = getConnectionLocal();
+        Game game = null;
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            try {
+                MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+                MongoCollection<Document> gameCollection = fpteamDB.getCollection("Games");
+
+                Document doc = gameCollection.find(Filters.eq("ID", follow.getIdGame())).first();
+
+                if (doc != null) {
+                    game = new Game(
+                            doc.getString("ID"),
+                            doc.getString("Name"),
+                            doc.getDouble("Price"),
+                            doc.getString("Publish_day"),
+                            doc.getInteger("Number_of_buyers"),
+                            doc.getString("LinkTrailer"),
+                            doc.getString("AvatarLink"),
+                            doc.getString("GameLink"),
+                            doc.getString("Description"),
+                            doc.getString("Minimum_CPU"),
+                            doc.getString("Minimum_RAM"),
+                            doc.getString("Minimum_GPU"),
+                            doc.getString("Maximum_CPU"),
+                            doc.getString("Maximum_RAM"),
+                            doc.getString("Maximum_GPU")
+                    );
+                }
+            } catch (MongoException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return game;
     }
            public static ArrayList<Game> getGamesByGamerId(String gamerId) {
         ArrayList<Game> games = new ArrayList<>();
@@ -592,5 +645,188 @@ public static ArrayList<Game> searchGames(String gameName, String gamePublisher,
         }
         return false;
     }
+    public static List<Game> getMostPopularGamesByPeriod(String period) {
+        // Map to store game ID and the number of buyers in the specified period
+        Map<String, Integer> gameBuyersCount = new HashMap<>();
+        // Map to store game ID and the list of bills for that game
+        Map<String, List<Bill>> gameBillsMap = new HashMap<>();
 
+        // Fetch all games
+        List<Game> games = getAllGames();
+
+        // Initialize lists for storing bills
+        List<Bill> allBills = new ArrayList<>();
+
+        // Fetch bills for all games and populate the map
+        for (Game g : games) {
+            List<Bill> bills = TransactionBillDAO.getBillsByGameID(g.getId());  // Fetch bills for each game
+            gameBillsMap.put(g.getId(), bills);  // Store bills in the map
+            allBills.addAll(bills);  // Add all bills to a single list for filtering
+        }
+
+        // Get today's date in the required format (assuming "yyyy-MM-dd" format for simplicity)
+        LocalDate today = LocalDate.now();
+        LocalDate startDate;
+        LocalDate endDate;
+
+        // Determine the start and end dates based on the period
+         switch (period.toLowerCase()) {
+        case "day":
+            startDate = today;
+            endDate = today;
+            break;
+        case "week":
+            startDate = today.with(DayOfWeek.MONDAY);  // Start of the week
+            endDate = today.with(DayOfWeek.SUNDAY);  // End of the week
+            break;
+        case "month":
+            startDate = today.with(TemporalAdjusters.firstDayOfMonth());  // Start of the month
+            endDate = today.with(TemporalAdjusters.lastDayOfMonth());  // End of the month
+            break;
+        case "year":
+            startDate = today.with(TemporalAdjusters.firstDayOfYear());  // Start of the year
+            endDate = today.with(TemporalAdjusters.lastDayOfYear());  // End of the year
+            break;
+        default:
+            throw new IllegalArgumentException("Invalid period specified. Valid periods are: day, week, month, year.");
+    }
+       // Convert dates to strings in the required format
+
+      
+
+        // Filter bills based on the period
+        for (Bill bill : allBills) {
+            String buyDate = bill.getBuyTime().split(" ")[0];
+            if (buyDate.compareTo(startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) >= 0 &&
+                buyDate.compareTo(endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) <= 0) {
+                gameBuyersCount.put(bill.getGameId(), gameBuyersCount.getOrDefault(bill.getGameId(), 0) + 1);
+            }
+        }
+
+        // Sort games based on the number of buyers in the specified period
+        games.sort((g1, g2) -> {
+            Integer buyersCountG1 = gameBuyersCount.getOrDefault(g1.getId(), 0);
+            Integer buyersCountG2 = gameBuyersCount.getOrDefault(g2.getId(), 0);
+            return Integer.compare(buyersCountG2, buyersCountG1);
+        });
+
+        // Optional: Print out each game's list of bills for debugging
+        for (Map.Entry<String, List<Bill>> entry : gameBillsMap.entrySet()) {
+            String gameId = entry.getKey();
+            List<Bill> bills = entry.getValue();
+            System.out.println("Game ID: " + gameId);
+            for (Bill bill : bills) {
+                System.out.println("  " + bill.getBuyTime() + " - " + bill.getBuyPrice());
+            }
+        }
+
+        // Return the sorted list of games
+        return games;
+    }
+
+ public static List<Game> getMostProfitableGamesByPeriod(String period) {
+        // Map to store game ID and the total profit in the specified period
+        Map<String, Double> gameProfitMap = new HashMap<>();
+        // Map to store game ID and the list of bills for that game
+        Map<String, List<Bill>> gameBillsMap = new HashMap<>();
+
+        // Fetch all games
+        List<Game> games = getAllGames();
+
+        // Initialize lists for storing bills
+        List<Bill> allBills = new ArrayList<>();
+
+        // Fetch bills for all games and populate the map
+        for (Game g : games) {
+            List<Bill> bills = TransactionBillDAO.getBillsByGameID(g.getId());  // Fetch bills for each game
+            gameBillsMap.put(g.getId(), bills);  // Store bills in the map
+            allBills.addAll(bills);  // Add all bills to a single list for filtering
+        }
+
+        // Get today's date in the required format (assuming "yyyy-MM-dd" format for simplicity)
+        LocalDate today = LocalDate.now();
+        LocalDate startDate;
+        LocalDate endDate;
+
+        // Determine the start and end dates based on the period
+         switch (period.toLowerCase()) {
+        case "day":
+            startDate = today;
+            endDate = today;
+            break;
+        case "week":
+            startDate = today.with(DayOfWeek.MONDAY);  // Start of the week
+            endDate = today.with(DayOfWeek.SUNDAY);  // End of the week
+            break;
+        case "month":
+            startDate = today.with(TemporalAdjusters.firstDayOfMonth());  // Start of the month
+            endDate = today.with(TemporalAdjusters.lastDayOfMonth());  // End of the month
+            break;
+        case "year":
+            startDate = today.with(TemporalAdjusters.firstDayOfYear());  // Start of the year
+            endDate = today.with(TemporalAdjusters.lastDayOfYear());  // End of the year
+            break;
+        default:
+            throw new IllegalArgumentException("Invalid period specified. Valid periods are: day, week, month, year.");
+    }
+
+        // Convert dates to strings in the required format
+      
+
+        // Filter bills based on the period and calculate the total profit
+        for (Bill bill : allBills) {
+            String buyDate = bill.getBuyTime().split(" ")[0];
+            if (buyDate.compareTo(startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) >= 0 &&
+                buyDate.compareTo(endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) <= 0) {
+                gameProfitMap.put(bill.getGameId(), gameProfitMap.getOrDefault(bill.getGameId(), 0.0) + bill.getBuyPrice());
+            }
+        }
+
+        // Sort games based on the total profit in the specified period
+        games.sort((g1, g2) -> {
+            Double profitG1 = gameProfitMap.getOrDefault(g1.getId(), 0.0);
+            Double profitG2 = gameProfitMap.getOrDefault(g2.getId(), 0.0);
+            return Double.compare(profitG2, profitG1);
+        });
+
+        // Optional: Print out each game's list of bills for debugging
+        for (Map.Entry<String, List<Bill>> entry : gameBillsMap.entrySet()) {
+            String gameId = entry.getKey();
+            List<Bill> bills = entry.getValue();
+            System.out.println("Game ID: " + gameId);
+            for (Bill bill : bills) {
+                System.out.println("  " + bill.getBuyTime() + " - " + bill.getBuyPrice());
+            }
+        }
+
+        // Return the sorted list of games
+        return games;
+    }
+   public static Bson createPeriodFilter(String period) {
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = today.minusDays(30);  // Default to a 30-day period
+
+        switch (period.toLowerCase()) {
+            case "day":
+                startDate = today.minusDays(1);
+                break;
+            case "week":
+                startDate = today.minusWeeks(1);
+                break;
+            case "month":
+                startDate = today.minusMonths(1);
+                break;
+            case "year":
+                startDate = today.minusYears(1);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid time period: " + period);
+        }
+
+        Date start = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date end = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        // Adjust the filter to match Buy date
+        return Filters.and(Filters.gte("Buy_time", start), Filters.lt("Buy_time", end));
+    }
 }
