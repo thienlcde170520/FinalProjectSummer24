@@ -9,9 +9,12 @@
         
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+
+        
         <!--banner-->
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-        <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
 
 
         <!-- Additional CSS Files -->
@@ -21,54 +24,71 @@
         <link rel="stylesheet" href="assets/css/animate.css">
         <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
         <link rel="stylesheet" href="assets/css/Style.css">
-        <style>
- 
 
-        </style>
-    
+        
+        <link rel="stylesheet" href="assets/css/alertInput.css">
     </head>
         <body>
             <div class="Main">
-          <header class="header-area header-sticky">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <nav class="main-nav">
-                    <!-- ***** Logo Start ***** -->
-                    <a href="Home.jsp" class="logo">
-                        <img src="assets/images/logo.png" alt="">
-                    </a>
-                    <!-- ***** Logo End ***** -->
-                    <!-- ***** Menu Start ***** -->
-                    <ul class="nav" id="listPage">
-                        <li><a href="Home.jsp">Home</a></li>
-                        <li><a href="browse.html">Browse</a></li>
-                        <li><a href="details.html">Genre</a></li>                                                                                                             
-                        <li><a href="Register.jsp">Register</a></li>
-                    </ul>
-                    <!-- ***** Menu End ***** -->
-                </nav>
-            </div>
-        </div>
-    </div>
-</header>
+        <header class="header-area header-sticky">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <nav class="main-nav">
+                                <!-- ***** Logo Start ***** -->
+                                <a href="Home.jsp" class="logo">
+                                    <img src="assets/images/logo.png" alt="">
+                                </a>
+                                <!-- ***** Logo End ***** -->
+                                <!-- ***** Search End ***** -->
+                                
+                                <!-- ***** Search End ***** -->
+                                <!-- ***** Menu Start ***** -->
+                                <ul class="nav" id="listPage">
+                                    <li><a href="Home.jsp">Home</a></li>
+                                    <li><a href="browse.html">Best seller</a></li>
+                                    <li><a href="details.html">Genre</a></li>                                                                                                             
+                                    <li><a href="Register.jsp" >Register</a></li>
+    
+                                </ul>   
+                                
+                                <!-- ***** Menu End ***** -->
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+        <div class="loginMain forms">
+            <div class="form login">
+                <div class="form-content">
+                    <p>Login</p>
+                    <%
+                        if(request.getAttribute("status")!=null)
+                            {
+                                out.print("<div class='text-danger'>"+request.getAttribute("status")+"</div>");
+                            }
 
+                    %>                 
 
-            <div class="loginMain forms">
-                <div class="form login">
-                    <div class="form-content">
-                        <p>Login</p>                           
-                        <form action="LoginServlet" method="POST">
+                    <form action="LoginServlet" method="POST">
 
                             <div class="field input-field">
+                                <div class="input-container">
                                 <label for="email">Email Address</label>
-                                <input type="email" placeholder="Email" name="email">
+                                <input type="email" id="emailInput" placeholder="Email" name="email">
+                                </div>
+                                <div id="message"></div>
                             </div>
 
-                            <div class="field input-field">                               
+                            <div class="field input-field">   
+                                <div class="input-container pass">                          
                                 <label for="password">Password</label>
                                 <input type="password" id="password" placeholder="Password" name="pass">
-                                <i id="pass-toggle-btn" class="fa-solid fa-eye"></i>                               
+                                <i id="pass-toggle-btn" class="fa-solid fa-eye"></i>   
+                                </div>   
+                                <div id="passwordMessage"></div>                               
+
                             </div>
                             
                             <div class="form-link">
@@ -84,9 +104,10 @@
                             </div>
 
                         </form>
-                        <div class="form-link">
-                            <span>Don't have an account? <a href="Register.jsp" class="link signup-link">Register</a></span>
-                        </div>
+
+                    <div class="form-link">
+                        <span>Don't have an account? <a href="Register.jsp" class="link signup-link">Register</a></span>
+
                     </div>
                     <div class="line"></div>
                    
@@ -105,9 +126,13 @@
             </div>
             
 
-        
+            
+            
+        </div>
+                            </div>
         <!-- JavaScript -->
-        
+        <script src="assets/js/emailAlert.js"></script>
+        <script src="assets/js/passwordAlert.js"></script>
 
         <script>
             const passwordInput = document.getElementById("password");

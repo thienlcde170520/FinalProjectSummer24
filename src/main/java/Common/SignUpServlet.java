@@ -102,7 +102,7 @@ public class SignUpServlet extends HttpServlet {
 
         if (em.isEmpty() || !em.matches(emailPattern) || p.isEmpty()|| !p.matches(regex)|| !p.matches(rp) || role.isEmpty() || role == null || n.isEmpty() || n == null) {           
                 request.setAttribute("mess", "Invalid information!!!!");
-                request.setAttribute("blue", true);
+                
                 
                 request.getRequestDispatcher("Register.jsp").forward(request, response);
             
