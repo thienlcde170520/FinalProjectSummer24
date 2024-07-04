@@ -18,14 +18,18 @@
         
         
         <form action ="ValidateCode" method="post">
-        <%
+        
+            <h3>Check Valid Email</h3>
+            <%
 		if(request.getAttribute("message")!=null)
 		{
-		   out.print("<p class='text-danger ml-1'>"+request.getAttribute("message")+"</p>");
+		   out.print("<p class='text-danger'>"+request.getAttribute("message")+"</p>");
 		}
-		  
+		if(request.getAttribute("messageCode")!=null)
+                {
+                    out.print("<p class='mess-success'>"+request.getAttribute("messageCode")+"</p>");
+                }
 	%>
-            <h3>Check Valid Email</h3>       
             <label for="Code">OTP</label>
             <div class="pass_time">
                 <input type="password" name="code" placeholder="Enter OTP" id="password">

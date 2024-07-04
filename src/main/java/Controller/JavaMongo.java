@@ -1,5 +1,7 @@
 package Controller;
 
+import static DAO.AdminDAO.getAdminByEmail;
+import Model.Admin;
 import Model.Users;
 import com.mongodb.BasicDBObject;
 import com.mongodb.ConnectionString;
@@ -59,7 +61,7 @@ public class JavaMongo {
     }
 
     public static void main(String[] args) {
-
+        
 //   ArrayList<Game> searchedGames = searchGames("", "", "2024", "", "", new String[]{"", ""});
 //
 //    // Print the results
@@ -149,7 +151,7 @@ public class JavaMongo {
 
     /*tao moi publisher*/
  /*---------------------*/
-    public Users getUserByEmail(String email) {
+    public static Users getUserByEmail(String email) {
         MongoClientSettings settings = getConnectionLocal();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {

@@ -13,7 +13,7 @@
 <style>
 body {
 	background-position: center;
-	background-color: #eee;
+	background-color: #1f2122;/*#eee*/
 	background-repeat: no-repeat;
 	background-size: cover;
 	color: #505050;
@@ -21,13 +21,15 @@ body {
 	font-size: 14px;
 	font-weight: normal;
 	line-height: 1.5;
-	text-transform: none
+	text-transform: none;
+    
 }
 
 .forgot {
 	background-color: #fff;
 	padding: 12px;
-	border: 1px solid #dfdfdf
+	border: 1px solid #dfdfdf;
+    border-radius: 3px;
 }
 
 .padding-bottom-3x {
@@ -52,11 +54,29 @@ body {
 .text-danger{
     color: red;
     font-weight: bold;
-    text-align: center;
+    background-color: #ffcccc;
+    margin: 10px;
+    border-radius: 2px;
+}
+.logo_container{
+    display: flex;
+    justify-content: center;
+}
+.logo{
+    margin: 20px 0;
+}
+#back{
+    color: white;
+    text-decoration: none;
 }
 </style>
 </head>
 <body oncontextmenu='return false' class='snippet-body'>
+     <div class="logo_container">
+        <a href="Home.jsp" class="logo">
+            <img src="assets/images/logo.png" alt="">
+        </a>
+    </div>
 	<div class="container padding-bottom-3x mb-2 mt-5">
 		<div class="row justify-content-center">
 			<div class="col-lg-8 col-md-10">
@@ -77,7 +97,7 @@ body {
                                     <%
                                             if(request.getAttribute("message")!=null)
                                             {
-                                               out.print("<p class='text-danger ml-1'>"+request.getAttribute("message")+"</p>");
+                                               out.print("<p class='text-danger'>"+request.getAttribute("message")+"</p>");
                                             }
 
                                     %>
@@ -91,8 +111,8 @@ body {
 					</div>
 					<div class="card-footer">
 						<button class="btn btn-success" type="submit">Get OTP</button>
-						<button class="btn btn-danger" type="submit">Back to
-							Login</button>
+                                                <button class="btn btn-danger" ><a href="Login.jsp" id="back">Back to Login</a>
+							</button>
 					</div>
 				</form>
 			</div>

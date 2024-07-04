@@ -9,64 +9,126 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Reset Password page</title>
-        <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-         <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.4/components/logins/login-6/assets/css/login-6.css">
+        <title>Reset Password Page</title>
+        <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
+
+        <!--banner-->
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+
+
+        
+
+        <link rel="stylesheet" href="assets/css/alertInput.css">
+        
+        <style>
+            .mess{
+                color: red;
+                background-color: #ffcccc;
+                margin: 17px 0;
+            }
+            .Inputerror{
+                color: red;
+                font-size: small;
+            }
+            #rolemess{
+                margin: -33px 0 0 0;
+            }
+            .text-danger{
+                font-size: 16px;
+                background-color: #ffcccc;
+                margin: 17px 0;
+            }
+        </style>
+              
     </head>
     
-    <body class="bg-dark">
-        
-                               
- <section class="p-3 p-md-4 p-xl-5">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5">
-          <div class="card border-0 shadow-sm rounded-4" style="margin-top: 170px">
-          <div class="card-body p-3 p-md-4 p-xl-5">
-            <div class="row">
-              <div class="col-12">
-                <div class="mb-5">
-                  <h3>Reset password</h3>
-                </div>
-              </div>
-            </div>
-            <form action="newPassword" method="POST">
-                <%
-                        if(request.getAttribute("message")!=null)
-                        {
-                           out.print("<p class='text-danger ml-1'>"+request.getAttribute("message")+"</p>");
-                        }
+    <body>
+          <div class="header">
+            <a href="Home.jsp" class="logo">
+              <img src="assets/images/logo.png" alt="">
+          </a>
+          </div>     
+            <div class="register forms">
+            <!-- Signup Form -->
+                <div class="form signup">
+                    <div class="form-content">
+                        <p>Reset Password</p>
+                            <form action="newPassword" method="POST">
+                                <%
+                                        if(request.getAttribute("message")!=null)
+                                        {
+                                           out.print("<p class='text-danger'>"+request.getAttribute("message")+"</p>");
+                                        }
 
-                %>
-              <div class="row gy-3 overflow-hidden">               
-                <div class="col-12">
-                  <div class="form-floating mb-3">
-                    <input type="password" class="form-control" name="password" id="password" value="" placeholder="Password" required>
-                    <label for="password" class="form-label">Password</label>
-                  </div>
+                                %>
+                              <div class="field input-field">
+                                <div class="input-container pass">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" placeholder="Create password" name="password" >
+                                <i id="pass-toggle-btn" class="fa-solid fa-eye"></i>
+                            </div>
+                                <div id="passwordMessage"></div>
+                            </div>
+                            <div class="field input-field">
+                                <div class="input-container pass">
+                                <label for="password">Confirm Password</label>
+                                <input type="password" id="con_password" placeholder="Confirm password" name="confirm_password" >
+                                <i id="con_pass-toggle-btn" class="fa-solid fa-eye"></i> 
+                                </div>
+                                <div id="conPasswordMessage"></div>
+                            </div>
+                                                       
+                            <div class="field button-field">
+                                <button>Reset Password</button>
+                            </div>
+                            
+                        </form>
+                        
+                    </div>
+                    
                 </div>
-                   <div class="col-12">
-                  <div class="form-floating mb-3">
-                    <input type="password" class="form-control" name="confirm_password" id="confirm_password" value="" placeholder="Password" required>
-                    <label for="confirm_password" class="form-label">Confirm Password</label>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="d-grid">
-                    <button class="btn bsb-btn-2xl btn-primary" type="submit">Reset password</button>
-                  </div>
-                </div>
-              </div>
-               
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-              
-              
+            </div>
+            
+        <!-- JavaScript -->
+        <script>
+          // Lắng nghe sự kiện click vào trường tên người dùng
+        document.getElementById("password").onclick = function() {
+          document.getElementById("passmess").innerHTML = ""; // Xóa thông báo tên người dùng
+        };
+        document.getElementById("con_password").onclick = function() {
+          document.getElementById("conpassmess").innerHTML = ""; // Xóa thông báo tên người dùng
+        };
+      </script>
+         
+         <script src="assets/js/passwordAlert.js"></script>
+         
+        <script>
+        const passwordInput = document.getElementById("password");
+        const passToggleBtn = document.getElementById("pass-toggle-btn");
+        const conpassToggleBtn = document.getElementById("con_pass-toggle-btn");
+        const passconInput = document.getElementById("con_password");
+       
+
+        passToggleBtn.addEventListener('click', () => {
+            passToggleBtn.className = passwordInput.type === "password" ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+            passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+        });
+
+        conpassToggleBtn.addEventListener('click',() =>{
+            conpassToggleBtn.className = passconInput.type === "password" ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+            passconInput.type = passconInput.type === "password" ? "text" : "password";
+        })
+
+        </script>
+
+        
+
+
+
     </body>
+
+    
 </html>
 

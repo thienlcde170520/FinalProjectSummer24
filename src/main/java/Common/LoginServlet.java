@@ -6,6 +6,7 @@
 package Common;
 import static Common.CheckValid.userValid;
 import Controller.JavaMongo;
+import static DAO.AdminDAO.getAdminByEmail;
 import static DAO.GamerDAO.getGamerByEmail;
 import static DAO.PublisherDAO.getPublisherByEmail;
 import Model.Users;
@@ -103,7 +104,9 @@ public class LoginServlet extends HttpServlet {
                         if (u.getRole() == 2){
                         session.setAttribute("account",getPublisherByEmail(e));
                         }
-                        
+                        if(u.getRole() == 1){
+                        session.setAttribute("account", getAdminByEmail(e));
+                        }
 ////                        session.setAttribute("account", JavaMongo.getAllUser());
 //                        
                         /*
