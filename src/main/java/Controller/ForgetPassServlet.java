@@ -106,7 +106,7 @@ public class ForgetPassServlet extends HttpServlet {
                             }        
                             
                 
-                            request.setAttribute("message","Code is sent to your email");
+                            request.setAttribute("messageCode","Code is sent to your email");
                             //request.setAttribute("connection", con);
                             mySession.setAttribute("code",codeValue); 
                             mySession.setAttribute("email",email); 
