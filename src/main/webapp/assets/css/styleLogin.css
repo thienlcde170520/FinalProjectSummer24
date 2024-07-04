@@ -9,7 +9,7 @@
 }
 .Main{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     height: 100vh;
     justify-content: space-around;
 }
@@ -24,6 +24,7 @@ header{
 }
 .logo{
     margin: auto;
+    padding-left: 10px;
 }
 #listPage{
     margin: 30px;
@@ -47,6 +48,7 @@ header{
     padding: 30px;
     border-radius: 6px;
     background: white;
+    margin-top: 50px;
 }
 .form.signup{
     opacity: 0;
@@ -60,7 +62,7 @@ header{
     opacity: 0;
     pointer-events: none;
 }
-h1{
+.form-content p{
     font-size: 28px;
     font-weight: 600;
     color: #232836;

@@ -1,0 +1,31 @@
+
+
+.input-container input {
+    width: 100%;
+    padding: 10px;
+    
+    border-radius: 4px;
+    outline: none;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+}
+
+.input-container input:focus {
+    border-color: #ff0000;
+}
+
+.input-container input.invalid {
+    border-color: #ff0000;
+}
+
+.input-container input.valid {
+    border-color: #00ff00;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%2300ff00"><path d="M13.485 1.93l-7.785 7.785-3.215-3.215a1 1 0 1 0-1.415 1.415l3.922 3.922a1 1 0 0 0 1.414 0l8.5-8.5a1 1 0 0 0-1.414-1.414z"/></svg>');
+}
+
+#message {
+    margin-top: 1px;
+    color: #ff0000;
+    font-size: small;
+}
