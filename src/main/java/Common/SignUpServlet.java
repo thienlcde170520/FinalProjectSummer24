@@ -232,7 +232,7 @@ public class SignUpServlet extends HttpServlet {
         
     }
     //radomaId
-    private static String generateRandomNumber() {
+    public static String generateRandomNumber() {
         Random random = new Random();
         String generateID = null;
         do {

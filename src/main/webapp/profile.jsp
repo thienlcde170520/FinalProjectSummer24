@@ -117,6 +117,8 @@ https://templatemo.com/tm-579-cyborg-gaming
               <%
                       Boolean isAdminObj = (Boolean) request.getAttribute("isAdmin");
             boolean isAdmin = isAdminObj != null && isAdminObj.booleanValue();
+               Boolean isUpdateableObj = (Boolean) request.getAttribute("isUpdateable");
+            boolean isUpdateable = isUpdateableObj != null && isUpdateableObj.booleanValue();
             // Lấy thông tin người chơi từ request attribute
             Model.Gamers gamer = (Model.Gamers) request.getAttribute("gamer");
             ArrayList<Game> games = (ArrayList<Game>) request.getAttribute("games");
@@ -140,18 +142,29 @@ https://templatemo.com/tm-579-cyborg-gaming
           <div class="col-lg-4 align-self-center">
     <ul>
            <li>Balance <span><%= gamer.getMoney() %> VNĐ</span></li>
-        <% if (!isAdmin) { %>
-         
-            <li><a href="UpdateProfile.jsp">UPDATE</a></li>
-            <li><a href="FollowServlet?gamerid=<%= gamer.getId() %>">Wish Lists</a></li>
+                <li><a href="FollowServlet?gamerid=<%= gamer.getId() %>">Wish Lists</a></li>
+       <% if (!isAdmin && !isUpdateable) { %>
+      
         </ul>
+        
+        <% } else if ( isAdmin) { %>
         <div class="d-flex justify-content-start align-items-center">
+        
+                <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary">Delete Account</a>
+        </div>
+      
+        <% } else if (isUpdateable) {
+%>
+
+ <div class="d-flex justify-content-start align-items-center">
             <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>
             <a href="transaction.jsp" class="btn btn-primary">Transaction</a>
+            <a href="RespondReportServlet?UserId=<%=user.getId() %>" class="btn btn-primary">Send Report</a>
+                <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary">Delete Account</a>
         </div>
-        <% } else { %>
-        <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary">Delete Account</a>
-        <% } %>
+<%
+}
+%>
 </div>
 
                 </div>

@@ -101,7 +101,16 @@ private void handleGamerProfile(HttpServletRequest request, HttpServletResponse 
         Gamers gamer = GamerDAO.getGamerByGamerId(gamerId);
         ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(gamer.getId());
         ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
-        boolean isAdmin = true;
+        HttpSession session = request.getSession();
+Users user = (Users) session.getAttribute("account");
+boolean isUpdateable = false; // Default to false
+boolean isAdmin = false; // Default to false
+if (user != null && user.getRole() == 1) { // Assuming role 1 means admin
+    isAdmin = true;
+    isUpdateable = true;
+}
+     request.setAttribute("isUpdateable", isUpdateable);
+        
              request.setAttribute("isAdmin", isAdmin);
         request.setAttribute("gamer", gamer);
         request.setAttribute("games", games);
@@ -119,9 +128,10 @@ private void handleGamerProfileByEmail(HttpServletRequest request, HttpServletRe
         if (gamer != null) {
             ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(gamer.getId());
             ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
-
+            boolean isUpdateable = true; // Default to false
             request.setAttribute("gamer", gamer);
-            request.setAttribute("games", games);
+            request.setAttribute("games", games); 
+            request.setAttribute("isUpdateable", isUpdateable);
             request.setAttribute("transactionHistory", transactionHistory);
             request.getRequestDispatcher("profile.jsp").forward(request, response);
         } else {
@@ -136,13 +146,15 @@ private void handlePublisherProfile(HttpServletRequest request, HttpServletRespo
         throws ServletException, IOException {
     try {
         Publishers pub = PublisherDAO.getPublisherByEmail(email);
-         ArrayList<Game> games = GameDAO.getGamesByPublisherName(pub.getName());
+         ArrayList<Game> publishgames = GameDAO.getGamesByPublisherName(pub.getName());
+         ArrayList<Game> unpublishgames = GameDAO.getUnpublishableGamesByPublisher(pub);
             ArrayList<Review> reviews = ReviewDAO.getReviewsByPublisherName(pub.getName());
         if (pub != null) {
            
             request.setAttribute("publisher", pub);
         
-                 request.setAttribute("games", games);
+                 request.setAttribute("publishgames", publishgames);
+                      request.setAttribute("unpublishgames", unpublishgames);
                     request.setAttribute("reviews", reviews);
             request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);
         } else {

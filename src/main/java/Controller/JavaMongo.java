@@ -3,6 +3,7 @@ package Controller;
 
 import DAO.GameDAO;
 import DAO.PublisherDAO;
+import DAO.ReportDAO;
 import Model.Users;
 import com.mongodb.BasicDBObject;
 import com.mongodb.ConnectionString;
@@ -73,7 +74,7 @@ public class JavaMongo {
 //    }
 
 
- System.out.println(GameDAO.getMostProfitableGamesByPeriod("Month"));
+ System.out.println(ReportDAO.searchReportsByProblemName("Game"));
 
 
     }
