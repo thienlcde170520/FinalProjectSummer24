@@ -10,6 +10,7 @@ import Model.Review;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -18,8 +19,10 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
 import java.util.ArrayList;
+import java.util.List;
 import org.bson.conversions.Bson;
 /**
  *
@@ -122,7 +125,44 @@ public class GamerDAO {
 
         return gamersList;
     }
- public static void CreateNewGamerAccount(String id, String name, String password, String email, int role, Double Money, String AvatarLink, String RegistrationDate, String DOB) {
+
+           public static List<Gamers> searchGamersByName(String name) {
+        MongoClientSettings settings = getConnectionLocal();
+        List<Gamers> gamersList = new ArrayList<>();
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+
+            // Search for gamers where the name matches the filter
+            FindIterable<Document> docs = gamersCollection.find(Filters.regex("Name", name, "i"));
+            MongoCursor<Document> cursor = docs.iterator();
+
+            while (cursor.hasNext()) {
+                Document doc = cursor.next();
+                Gamers gamer = new Gamers(
+                        doc.getString("ID"),
+                        doc.getString("Name"),
+                        doc.getString("Email"),
+                        doc.getString("Password"),
+                        doc.getInteger("Role"),
+                        doc.getDouble("Money"),
+                        doc.getString("AvatarLink"),
+                        doc.getString("RegistrationDate"),
+                        doc.getString("Date of Birth")
+                );
+                gamersList.add(gamer);
+            }
+
+            cursor.close();
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        return gamersList;
+    }
+ public static void CreateNewGamerAccount(String id, String name, String password, String email, int role, Double Money, String AvatarLink, String RegistrationDate,String DOB) {
+
 
         MongoClientSettings settings = getConnection();
         try (MongoClient mongoClient = MongoClients.create(settings)) {
@@ -248,6 +288,58 @@ public class GamerDAO {
         }
 
         return null;
+    }
+
+   public static void deleteGamer(Gamers gamer) {
+        MongoClientSettings settingsLocal = getConnectionLocal(); 
+
+        try (MongoClient mongoClient = MongoClients.create(settingsLocal)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+            MongoCollection<Document> transactionCollection = fpteamDB.getCollection("BankTransactions");
+            MongoCollection<Document> billCollection = fpteamDB.getCollection("Buy");
+            MongoCollection<Document> followCollection = fpteamDB.getCollection("Follow");
+            MongoCollection<Document> reviewCollection = fpteamDB.getCollection("Reviews");
+             MongoCollection<Document> userCollection = fpteamDB.getCollection("Users");
+            Bson gamerfilter = Filters.eq("ID", gamer.getId());
+            gamersCollection.deleteMany(gamerfilter);
+            Bson  transactionfilter = Filters.eq("payerId", gamer.getId());
+            transactionCollection.deleteMany(transactionfilter);
+            Bson  billfilter = Filters.eq("ID_Gamer", gamer.getId());
+            billCollection.deleteMany(billfilter);
+            Bson  followfilter = Filters.eq("ID_Gamer", gamer.getId());
+            followCollection.deleteMany(followfilter);
+            Bson  reviewfilter = Filters.eq("ID_Gamer", gamer.getId());
+            reviewCollection.deleteMany(reviewfilter);
+            Bson  userfilter = Filters.eq("ID", gamer.getId());
+            userCollection.deleteMany(userfilter);
+            
+             
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+          MongoClientSettings settings = getConnection(); 
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+     
+            MongoCollection<Document> billCollection = fpteamDB.getCollection("Buy");
+      
+             MongoCollection<Document> userCollection = fpteamDB.getCollection("Users");
+            Bson gamerfilter = Filters.eq("ID", gamer.getId());
+            gamersCollection.deleteMany(gamerfilter);
+            Bson  billfilter = Filters.eq("ID_Gamer", gamer.getId());
+            billCollection.deleteMany(billfilter);
+            Bson  userfilter = Filters.eq("ID", gamer.getId());
+            userCollection.deleteMany(userfilter);
+            
+             
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+        
+        
     }
         
         

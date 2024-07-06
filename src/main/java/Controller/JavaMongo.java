@@ -1,7 +1,8 @@
 package Controller;
 
-import static DAO.AdminDAO.getAdminByEmail;
-import Model.Admin;
+
+import DAO.GameDAO;
+import DAO.PublisherDAO;
 import Model.Users;
 import com.mongodb.BasicDBObject;
 import com.mongodb.ConnectionString;
@@ -61,6 +62,7 @@ public class JavaMongo {
     }
 
     public static void main(String[] args) {
+
         
 //   ArrayList<Game> searchedGames = searchGames("", "", "2024", "", "", new String[]{"", ""});
 //
@@ -69,6 +71,11 @@ public class JavaMongo {
 //    for (Game game : searchedGames) {
 //        System.out.println(game.getName() + " Year: " + game.getPublishDay() + " | Price: " + game.getPrice());
 //    }
+
+
+ System.out.println(GameDAO.getMostProfitableGamesByPeriod("Month"));
+
+
     }
 
     /*publisher*/

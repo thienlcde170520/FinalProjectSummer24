@@ -4,10 +4,7 @@
  */
 package Model;
 
-/**
- *
- * @author ASUS
- */
+
 public class Admin extends Users{
     public Admin(String id, String name, String gmail, String password, int role){
         super(id, name, gmail, password, role);
@@ -18,5 +15,4 @@ public class Admin extends Users{
         return "Admin{" + super.toString()+ '}';
     }
     
-    
-}
+

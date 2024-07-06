@@ -26,7 +26,7 @@ public class DriveQuickstart {
     static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE_FILE);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-    private static final String REFRESH_TOKEN = "1//04Mo1TPuRgLHgCgYIARAAGAQSNwF-L9Ir1dHFkxOK9hHjvEX5h5iXQS9ZHgd3h7q39_z9UQ5q0RJGMNxj8j9NGzvhaS0Qt5K1G7U";  // Replace with your actual refresh token
+    private static final String REFRESH_TOKEN = "1//04eunb1F2jQQFCgYIARAAGAQSNwF-L9IroPShRPb0eJdurFhC0PKeLLK6WfGTZDOLHogDJtGis-LTcaz0XQp6edwsqLyRyZJifIg";  // Replace with your actual refresh token
 
     static GoogleCredential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         InputStream in = DriveQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);

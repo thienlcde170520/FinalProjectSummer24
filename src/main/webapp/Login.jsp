@@ -1,8 +1,3 @@
-<%-- 
-    Document   : Login
-    Created on : May 26, 2024, 5:53:50 PM
-    Author     : ASUS
---%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -10,13 +5,16 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Login Page</title>
-        <link rel="stylesheet" type="text/css" href="assets/css/login_design.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/styleLogin.css">
+        
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+
         
         <!--banner-->
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
         <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
 
 
         <!-- Additional CSS Files -->
@@ -26,6 +24,7 @@
         <link rel="stylesheet" href="assets/css/animate.css">
         <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
         <link rel="stylesheet" href="assets/css/Style.css">
+
         
         <link rel="stylesheet" href="assets/css/alertInput.css">
     </head>
@@ -93,6 +92,7 @@
                                 <i id="pass-toggle-btn" class="fa-solid fa-eye"></i>   
                                 </div>   
                                 <div id="passwordMessage"></div>                               
+
                             </div>
                             
                             <div class="form-link">
@@ -108,22 +108,28 @@
                             </div>
 
                         </form>
+
                     <div class="form-link">
                         <span>Don't have an account? <a href="Register.jsp" class="link signup-link">Register</a></span>
-                    </div>
-                </div>
-                <div class="line"></div>
-               
-                <div class="media-options">
-                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:9999/FPTeam/loginGG&response_type=code
-                        &client_id=861336407219-9pau27upj8qhchdlsr9ljsr630ojfb2h.apps.googleusercontent.com&approval_prompt=force" class="field google">
 
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6WwgH7Nl5_AW9nDCnR2Ozb_AU3rkIbSJdAg&s" alt="" class="google-img">
-                        <span>Login with Google</span>
-                    </a>
-                </div>
+                    </div>
+                    <div class="line"></div>
+                   
+                    <div class="media-options">
+                        <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:9999/FPTeam/loginGG&response_type=code
+                            &client_id=861336407219-9pau27upj8qhchdlsr9ljsr630ojfb2h.apps.googleusercontent.com&approval_prompt=force" class="field google">
+    
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6WwgH7Nl5_AW9nDCnR2Ozb_AU3rkIbSJdAg&s" alt="" class="google-img">
+                            <span>Login with Google</span>
+                        </a>
+                    </div>
+                </div> 
+                
+        
+            </div>
             </div>
             
+
             
             
         </div>
@@ -131,6 +137,7 @@
         <!-- JavaScript -->
         <script src="assets/js/emailAlert.js"></script>
         <script src="assets/js/passwordAlert.js"></script>
+
         <script>
             const passwordInput = document.getElementById("password");
             const passToggleBtn = document.getElementById("pass-toggle-btn");

@@ -38,7 +38,7 @@ public static void exclusiveGenreToGame(String gameId, String genreType) {
                 .append("Type_of_genres", genreType);
 
         // Delete the document matching the filter
-     gameGenresCollection.deleteOne(filter);
+     gameGenresCollection.deleteMany(filter);
 
       
     } catch (Exception e) {

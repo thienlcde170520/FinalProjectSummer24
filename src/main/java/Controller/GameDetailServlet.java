@@ -6,12 +6,14 @@
 package Controller;
 
 
+import DAO.FollowDAO;
 import DAO.GameDAO;
 import DAO.GamerDAO;
 import DAO.GenreDAO;
 import DAO.PublisherDAO;
 import DAO.ReviewDAO;
 import DAO.TransactionBillDAO;
+import Model.Admin;
 import Model.Bill;
 import Model.Game;
 import Model.Gamers;
@@ -80,17 +82,17 @@ public class GameDetailServlet extends HttpServlet {
     
     // Check user role
     int role = user.getRole();
-    
+    boolean isFollow = false;
     boolean hasBuy = false;
     boolean isRefundable = false;
     Bill bill = null;
-    
+    boolean isPublishable = false;
     if (role == 3) { // Gamer role
         Gamers gamer = (Gamers) session.getAttribute("account");
         
         // Check if gamer has bought the game
         hasBuy = GamerDAO.hasGamerBoughtGame(gamer.getId(), gameid);
-        
+        isFollow = FollowDAO.isFollow(gamer, game);
         if (hasBuy) {
             // Retrieve bill details
             bill = TransactionBillDAO.getBillByGameIDAndGamerID(gameid, gamer.getId());
@@ -99,10 +101,18 @@ public class GameDetailServlet extends HttpServlet {
             isRefundable = TransactionBillDAO.isRefundable(bill);
         }
     }
+    if (role == 1) { // Gamer role
+        Admin a = (Admin) session.getAttribute("account");
+        if (GameDAO.isGamePublishable(game.getId())== true){
+            isPublishable =true;
+        }
+    }
     
     // Set attributes to be forwarded to the JSP
     request.setAttribute("bill", bill);
     request.setAttribute("isRefundable", isRefundable);
+    request.setAttribute("isPublishable", isPublishable);
+       request.setAttribute("isFollow", isFollow);
     request.setAttribute("hasBuy", hasBuy);
     request.setAttribute("game", game);
     request.setAttribute("genres", genres);

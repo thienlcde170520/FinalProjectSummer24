@@ -4,6 +4,7 @@
  */
 package DAO;
 
+
 import static Controller.JavaMongo.getConnectionLocal;
 import Model.Admin;
 import Model.Gamers;
@@ -50,5 +51,3 @@ public class AdminDAO {
     }
     
    
-    
-}

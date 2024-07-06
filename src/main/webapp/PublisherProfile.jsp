@@ -20,16 +20,20 @@
     <title>Cyborg - Awesome HTML5 Template</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+ <!-- Bootstrap core CSS -->
+      <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
-    <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
-    <link rel="stylesheet" href="assets/css/owl.css">
-    <link rel="stylesheet" href="assets/css/animate.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
-  <link rel="stylesheet" href="assets/css/Style.css">
+        <!-- Additional CSS Files -->
+         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/fontawesome.css">
+        <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
+        <link rel="stylesheet" href="assets/css/owl.css">
+        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+        <link rel="stylesheet" href="assets/css/Style.css">
+
 <!--
 
 TemplateMo 579 Cyborg Gaming
@@ -129,25 +133,46 @@ https://templatemo.com/tm-579-cyborg-gaming
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <% if (games != null && !games.isEmpty()) { %>
-                                        <% for (Game game : games) { %>
-                                            <div class="col-lg-3 col-sm-6">
-                                                <div class="item">
-                                                    <div class="thumb">
-                                                        <img src="<%= game.getAvatarLink() %>" alt="<%= game.getName() %>" style="border-radius: 23px;">
-                                                        <a href="<%= game.getLinkTrailer() %>" target="_blank"><i class="fa fa-play"></i></a>
-                                                    </div>
-                                                    <div class="down-content">
-                                                        <h4><a href="GameDetailServlet?gameid=<%= game.getId() %>"><%= game.getName() %></a></h4>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        <% } %>
-                                    <% } else { %>
-                                        <p>No games found.</p>
-                                    <% } %>
-                                </div>
+                                 <div class="row">
+                  <div class="col-lg-12">
+                    <div class="clips">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="heading-section">
+                            <h4><em>Recent game</em></h4>
+                          </div>
+                        </div>
+                    <div class="row">
+    <% if (games != null && !games.isEmpty()) { %>
+    <% for (Game game : games) { %>
+        <div class="col-lg-3 col-sm-6">
+            <div class="item">
+                <div class="thumb"> 
+                    <img src="<%= game.getAvatarLink() %>" alt="<%= game.getName() %>" style="border-radius: 23px;">
+                    <a href="<%= game.getLinkTrailer() %>" target="_blank"><i class="fa fa-play"></i></a>
+                </div>
+                <div class="down-content">
+                    <h4><a href="GameDetailServlet?gameid=<%= game.getId() %>"><%= game.getName() %></a></h4>
+                </div>
+            </div>
+        </div>
+    <% } %>
+<% } else { %>
+    <p>No games found.</p>
+<% } %>
+
+</div>
+
+
+                        <div class="col-lg-12">
+                          <div class="main-button">
+                            <a href="#">Load More Games</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                                 <!-- ***** Gaming Library Start ***** -->
                                 <div class="gaming-library profile-library">
@@ -165,7 +190,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                                                             <li><h4>Rating: <%= review.getRating() %></h4></li>
                                                             <li><h4>Description</h4><span><%= review.getDescription() %></span></li>
                                                             <li><h4>Game Name</h4><span><a href="GameDetailServlet?gameid=<%= GameDAO.getGameByReview(review).getId() %>"><%= GameDAO.getGameByReview(review).getName() %></a></span></li>
-                                                            <li><div class="main-border-button border-no-active"><a href="GamerProfileServlet?gamerid=<%= GamerDAO.getGamerByReview(review).getId() %>"><%= GamerDAO.getGamerByReview(review).getName() %></a></div></li>
+                                                            <li><div class="main-border-button border-no-active"><a href="profileServlet?gamerid=<%= GamerDAO.getGamerByReview(review).getId() %>"><%= GamerDAO.getGamerByReview(review).getName() %></a></div></li>
                                                         </ul>
                                                     </div>
                                             <%

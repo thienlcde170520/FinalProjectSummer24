@@ -34,10 +34,7 @@ public class Genre {
     }
 
     @Override
-    public String toString() {
-        return "Genre{" +
-                "type='" + type + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+     public String toString() {
+        return type;
     }
 }

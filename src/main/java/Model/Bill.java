@@ -6,6 +6,17 @@ public class Bill {
     private String gameId;
     private String buyTime;
     private Double buyPrice;
+public Bill(String id, String gamerId, String gameId, String buyTime, Double buyPrice) {
+        this.id = id;
+        this.gamerId = gamerId;
+        this.gameId = gameId;
+        this.buyTime = buyTime;
+        this.buyPrice = buyPrice;
+    }
+public Bill() {
+      
+    }
+
 
     // Getters and setters
     public String getId() {

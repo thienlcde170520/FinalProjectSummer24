@@ -8,11 +8,13 @@ package Controller;
 import DAO.GameDAO;
 import DAO.GamerDAO;
 import DAO.PublisherDAO;
+import DAO.ReviewDAO;
 import DAO.TransactionBillDAO;
 import Model.BankTransactions;
 import Model.Game;
 import Model.Gamers;
 import Model.Publishers;
+import Model.Review;
 import Model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -63,103 +65,108 @@ public class profileServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+@Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    String gamerId = request.getParameter("gamerid");
+    HttpSession session = request.getSession();
+    Users user = (Users) session.getAttribute("account");
+    
+    if (gamerId == null) {
+        handleUserProfile(request, response, user);
+    } else {
+        handleGamerProfile(request, response, gamerId);
+    }
+}
+
+private void handleUserProfile(HttpServletRequest request, HttpServletResponse response, Users user)
+        throws ServletException, IOException {
+    if (user != null) {
+        int role = user.getRole();
+        if (role == 3) {
+            handleGamerProfileByEmail(request, response, user.getGmail());
+        } else if (role == 2) {
+            handlePublisherProfile(request, response, user.getGmail());
+        } else {
+            showErrorPage(response, "Invalid user role");
+        }
+    } else {
+        showErrorPage(response, "User not logged in");
+    }
+}
+
+private void handleGamerProfile(HttpServletRequest request, HttpServletResponse response, String gamerId)
+        throws ServletException, IOException {
+    try {
+        Gamers gamer = GamerDAO.getGamerByGamerId(gamerId);
+        ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(gamer.getId());
+        ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
+        boolean isAdmin = true;
+             request.setAttribute("isAdmin", isAdmin);
+        request.setAttribute("gamer", gamer);
+        request.setAttribute("games", games);
+        request.setAttribute("transactionHistory", transactionHistory);
+        request.getRequestDispatcher("profile.jsp").forward(request, response);
+    } catch (Exception ex) {
+        showErrorPage(response, ex.getMessage());
+    }
+}
+
+private void handleGamerProfileByEmail(HttpServletRequest request, HttpServletResponse response, String email)
+        throws ServletException, IOException {
+    try {
+        Gamers gamer = GamerDAO.getGamerByEmail(email);
+        if (gamer != null) {
+            ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(gamer.getId());
+            ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
+
+            request.setAttribute("gamer", gamer);
+            request.setAttribute("games", games);
+            request.setAttribute("transactionHistory", transactionHistory);
+            request.getRequestDispatcher("profile.jsp").forward(request, response);
+        } else {
+            showErrorPage(response, "Gamer not found");
+        }
+    } catch (Exception ex) {
+        showErrorPage(response, ex.getMessage());
+    }
+}
+
+private void handlePublisherProfile(HttpServletRequest request, HttpServletResponse response, String email)
+        throws ServletException, IOException {
+    try {
+        Publishers pub = PublisherDAO.getPublisherByEmail(email);
+         ArrayList<Game> games = GameDAO.getGamesByPublisherName(pub.getName());
+            ArrayList<Review> reviews = ReviewDAO.getReviewsByPublisherName(pub.getName());
+        if (pub != null) {
+           
+            request.setAttribute("publisher", pub);
         
-         try {
-            HttpSession session = request.getSession();
-            Users user = (Users) session.getAttribute("account");
+                 request.setAttribute("games", games);
+                    request.setAttribute("reviews", reviews);
+            request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);
+        } else {
+            showErrorPage(response, "Publisher not found");
+        }
+    } catch (Exception ex) {
+        showErrorPage(response, ex.getMessage());
+    }
+}
 
-            if (user != null) {
-                int role = user.getRole();
-                if (role == 3) {
-                    Gamers gamer = GamerDAO.getGamerByEmail(user.getGmail());
-
-                    
-                    if(gamer != null){
-
-          ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(user.getId());
-          ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
-
-                        request.setAttribute("gamer", gamer);
-                         //request.setAttribute("games", games);
-                        request.setAttribute("transactionHistory", transactionHistory)
-                                ;
-                        request.getRequestDispatcher("profile.jsp").forward(request, response);
-                    }else {
-                                 try (PrintWriter out = response.getWriter()) {
+private void showErrorPage(HttpServletResponse response, String message) throws IOException {
+   try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet profile 4</title>");  
+            out.println("<title>Servlet profile 9</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet profileServlet at " + 321 + "</h1>");
+            out.println("<h1>Servlet profileServlet at " + message + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-                            }
-
-                }else if(role ==2){
-                    Publishers pub = PublisherDAO.getPublisherByEmail(user.getGmail());
-                    if(pub != null){
-                        ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(user.getId());
-                        request.setAttribute("pub", pub);
-                        request.setAttribute("transactionHistory", transactionHistory);
-                        request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);
-                    }else {
-                        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet profile 3 </title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet profileServlet at " +456 + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-                        }
-                }
-    //            ArrayList<Gamers> gamersList = JavaMongo.getAllGamers();
-
-
-            }
-            else
-            {
-                  try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Login 2</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Error at " + 778 + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-            }
-        }catch (Exception ex) {
-                      try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Login 1</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Error at " + ex.getMessage() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-                }
-        
-    } 
-
+}
     /** 
      * Handles the HTTP <code>POST</code> method.
      * @param request servlet request

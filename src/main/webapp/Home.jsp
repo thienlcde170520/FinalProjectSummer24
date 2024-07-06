@@ -38,13 +38,7 @@
         <link rel="stylesheet" href="assets/css/animate.css">
         <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
         <link rel="stylesheet" href="assets/css/Style.css">
-        <!--
-        
-        TemplateMo 579 Cyborg Gaming
-        
-        https://templatemo.com/tm-579-cyborg-gaming
-        
-        -->
+    
     </head>
 
 
@@ -85,21 +79,43 @@
                             <!-- ***** Menu Start ***** -->
                             <ul class="nav">
                                 <li><a href="Home.jsp" class="active">Home</a></li>
-                                <li><a href="browse.html">Browse</a></li>
+
+                                <li><a href="BestSellerServlet">Game</a></li>
+
                                 <li><a href="DisplayGenreServlet">Genre</a></li>
                                 
+                                <%    Users user = (Users) session.getAttribute("account");
+%>
                                 <%
-    Users user = (Users) session.getAttribute("account");
+    
     if (user != null && user.getRole()== 2 ) {
 %>
         <li><a href="UploadGame">Upload Game</a></li>
+        
 <%
     }
 %>
-                               <li><a href="LogOutServlet">LOG OUT</a></li>
 
-                                <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                <%
+    if (user != null && user.getRole()== 1 ) {
+%>
+        <li><a href="PublishGameServlet">Verify Game</a></li>
+          <li><a href="ManageUser.jsp"> Manage User</a></li>
+<%
+    }
+%>
+        <li><a href="LogOutServlet">LOG OUT</a></li>
+       <%
+                               
+                               if (user != null && user.getRole()== 2 ||  user.getRole()== 3 ) {
+%>
+   
+            <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
 
+<%
+    }
+%>
+                            
                             </ul>   
                             <a class='menu-trigger'>
                                 <span>Menu</span>
@@ -126,7 +142,7 @@
                                         <h6>Welcome To FPTeam</h6>
                                         <h4><em>Welcome</em>  to the  best trading platform to for gamer</h4>
                                         <div class="main-button">
-                                            <a href="browse.html">About us </a>
+                                            <a href="AboutUs.jsp">About us </a>
                                         </div>
                                     </div>
                                 </div>

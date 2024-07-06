@@ -15,19 +15,24 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Fortnite - Game Details</title>
-        <!-- Bootstrap core CSS -->
-        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+       <!-- Bootstrap core CSS -->
+      <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
         <!-- Additional CSS Files -->
+         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="assets/css/fontawesome.css">
         <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
         <link rel="stylesheet" href="assets/css/owl.css">
         <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
         <link rel="stylesheet" href="assets/css/Style.css">
-        <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
         <!-- Custom CSS -->
        <style>
     .genre-button {
-        background: none;
+
+        background: White ;
+
         border: none;
         color: blue;
         text-decoration: underline;
@@ -69,7 +74,10 @@
             boolean hasBuy = hasBuyObj != null && hasBuyObj.booleanValue();
             Boolean isRefundableObj = (Boolean) request.getAttribute("isRefundable");
             boolean isRefundable = isRefundableObj != null && isRefundableObj.booleanValue();
-           
+             Boolean isFollowObj = (Boolean) request.getAttribute("isFollow");
+            boolean isFollow = isFollowObj != null && isFollowObj.booleanValue();
+               Boolean isPublishableObj = (Boolean) request.getAttribute("isPublishable");
+            boolean isPublishable = isPublishableObj != null && isPublishableObj.booleanValue();
         %>
 
         <!-- Header Area Start -->
@@ -163,7 +171,9 @@
                                         <div class="left">
                                             <h4><%= game.getName()%></h4>
 
-                                            <div class="genre-container">
+
+                                            <div class="genre-container" style="color : white">
+
     Genres:
     <%
         for (Genre genre : genres) {
@@ -180,39 +190,76 @@
     %>
     
 <a href="DisplayPublisherServlet?publisherName=<%= publisher.getName() %>" class="publisher-p">Game Publisher: <%= publisher.getName() %></a>
-
-
 </div>
                                        <%
 // Check if logged-in user is the publisher
 Users loggedInUser = (Users) session.getAttribute("account");
 boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publisher.getId());
 %>
-
 <% if (isPublisher) { %>
-    <!-- Display update button for publisher -->
     <a id="UpdateButton" class="btn btn-primary" href="UpdateGameServlet?gameId=<%= game.getId() %>">Update</a>
+     <form action="PublishGameServlet" method="post" style="display:inline;">
+            <input type="hidden" name="gameId" value="<%= game.getId() %>">
+            <input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
 <% } else { %>
-    <% if (!hasBuy) { %>
-        <a id="buyNowButton" class="btn btn-primary" href="PayProcessServlet?gameId=<%= game.getId() %>">Buy Now</a>
-        <button type="button" class="btn btn-outline-primary">Follow</button>
-    <% } else { %>
-        <a id="DownloadNowButton" class="btn btn-primary" href="<%= game.getGameLink() %>">Install Game</a>
-        
-        <% if (isRefundable) { %>
-            <form action="RefundServlet" method="get" style="display:inline;">
-                <input type="hidden" name="gameId" value="<%= bill.getGameId() %>">
-                <input type="hidden" name="billId" value="<%= bill.getId() %>">
-                <input type="hidden" name="gamerId" value="<%= bill.getGamerId() %>">
-                <input type="hidden" name="refundnumber" value="<%= bill.getBuyPrice() %>">
-                <button type="submit" class="btn btn-primary">Refund</button>
-            </form>
+    <% if (loggedInUser.getRole() != 1) { %> <!-- Skip this block for admins -->
+        <% if (!hasBuy) { %>
+            <a id="buyNowButton" class="btn btn-primary" href="PayProcessServlet?gameId=<%= game.getId() %>">Buy Now</a>
+        <% } %>
+
+        <% if (!isPublisher) { %>
+            <% if (isFollow) { %>
+                <form action="FollowServlet" method="post" style="display:inline;">
+                    <input type="hidden" name="gameId" value="<%= game.getId() %>">
+                    <input type="hidden" name="gamerId" value="<%= loggedInUser.getId() %>">
+                    <input type="hidden" name="action" value="unfollow">
+                    <button type="submit" class="btn btn-outline-primary">Unfollow</button>
+                </form>
+            <% } else { %>
+                <form action="FollowServlet" method="post" style="display:inline;">
+                    <input type="hidden" name="gameId" value="<%= game.getId() %>">
+                    <input type="hidden" name="gamerId" value="<%= loggedInUser.getId() %>">
+                    <input type="hidden" name="action" value="follow">
+                    <button type="submit" class="btn btn-outline-primary">Follow</button>
+                </form>
+            <% } %>
+        <% } %>
+
+        <% if (hasBuy) { %>
+            <a id="DownloadNowButton" class="btn btn-primary" href="<%= game.getGameLink() %>">Install Game</a>
+
+            <% if (isRefundable) { %>
+                <form action="RefundServlet" method="get" style="display:inline;">
+                    <input type="hidden" name="gameId" value="<%= bill.getGameId() %>">
+                    <input type="hidden" name="billId" value="<%= bill.getId() %>">
+                    <input type="hidden" name="gamerId" value="<%= bill.getGamerId() %>">
+                    <input type="hidden" name="refundnumber" value="<%= bill.getBuyPrice() %>">
+                    <button type="submit" class="btn btn-primary">Refund</button>
+                </form>
+            <% } %>
         <% } %>
     <% } %>
-    <!-- Display return to home button for non-publisher users -->
+
+    <% if (loggedInUser.getRole() == 1) { %> <!-- Admin-specific options -->
+        <a id="InstallButton" class="btn btn-primary" href="<%= game.getGameLink() %>">Install Game</a>
+        <% if (!isPublishable) { %>
+            <form action="PublishGameServlet" method="post" style="display:inline;">
+                <input type="hidden" name="gameId" value="<%= game.getId() %>">
+                <input type="hidden" name="action" value="accept">
+                <button type="submit" class="btn btn-success">Accept</button>
+            </form>
+        <% } %>
+        <form action="PublishGameServlet" method="post" style="display:inline;">
+            <input type="hidden" name="gameId" value="<%= game.getId() %>">
+            <input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    <% } %>
+
     <a class="btn btn-primary" href="Home.jsp">Return to Home</a>
 <% } %>
-
 
 
                                     </div>
@@ -333,7 +380,7 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <p>Copyright © 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
+                        <p>Copyright ï¿½ 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
 
                             <br>Design: <a href="https://templatemo.com" target="_blank" title="free CSS templates">TemplateMo</a></p>
                     </div>
