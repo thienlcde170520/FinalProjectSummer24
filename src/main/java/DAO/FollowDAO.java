@@ -114,11 +114,29 @@ public class FollowDAO {
                     Filters.eq("ID_Game", game.getId())
             );
 
-            followCollection.deleteOne(filter);  // Remove the follow record
+            followCollection.deleteMany(filter);  // Remove the follow record
         } catch (MongoException e) {
             e.printStackTrace();
         }
     }
 }
+    public static void unfollowAllGames(Game game) {
+    MongoClientSettings settings = getConnectionLocal();
+
+    try (MongoClient mongoClient = MongoClients.create(settings)) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+        MongoCollection<Document> followCollection = fpteamDB.getCollection("Follow");
+
+        Bson filter = Filters.eq("ID_Game", game.getId());
+
+        // Remove all follow records for the gamer
+        followCollection.deleteMany(filter);  
+        
+        System.out.println("Game with ID " + game.getId() + " has been unfollowed.");
+    } catch (MongoException e) {
+        e.printStackTrace();
+    }
+}
+
 
 }

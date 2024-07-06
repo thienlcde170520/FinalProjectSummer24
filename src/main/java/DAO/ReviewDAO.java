@@ -126,7 +126,7 @@ public class ReviewDAO {
             System.out.println("Attempting to delete review with gamerId: " + gamerId + ", gameId: " + gameId);
 
             // Delete the review document from the Reviews collection
-            DeleteResult result = collection.deleteOne(filter);
+            DeleteResult result = collection.deleteMany(filter);
 
             // Check if deletion was successful
             if (result.getDeletedCount() > 0) {

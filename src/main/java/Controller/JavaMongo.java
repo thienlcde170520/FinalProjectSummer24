@@ -62,7 +62,7 @@ public class JavaMongo {
 
     public static void main(String[] args) {
 
- System.out.println(GameDAO.getMostProfitableGamesByPeriod("Month"));
+ System.out.println(GameDAO.deleteGame("game_48956"));
     }
 
     /*publisher*/

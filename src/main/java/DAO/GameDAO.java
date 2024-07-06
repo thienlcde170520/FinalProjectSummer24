@@ -3,62 +3,35 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package DAO;
+
 import static Controller.JavaMongo.getConnection;
 import static Controller.JavaMongo.getConnectionLocal;
-import static DAO.TransactionBillDAO.getBillsByGameID;
+import static DAO.TransactionBillDAO.refundAllGamesForGamer;
 import Model.Bill;
 import Model.Follow;
 import Model.Game;
 import Model.Review;
+import Model.Users;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Accumulators;
-import static com.mongodb.client.model.Aggregates.group;
-import static com.mongodb.client.model.Aggregates.limit;
-import static com.mongodb.client.model.Aggregates.lookup;
-import static com.mongodb.client.model.Aggregates.match;
-import static com.mongodb.client.model.Aggregates.project;
-import static com.mongodb.client.model.Aggregates.sort;
-import static com.mongodb.client.model.Aggregates.unwind;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
-import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import org.bson.Document;
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.bson.conversions.Bson;
-import com.mongodb.client.model.Sorts;
-import static com.mongodb.client.model.Sorts.descending;
-import static com.mongodb.client.model.Sorts.ascending;
-import java.time.ZoneId;
-import java.util.Date;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Updates;
+import jakarta.servlet.http.HttpSession;
 import java.time.DayOfWeek;
 import org.bson.Document;
 import java.time.LocalDate;
@@ -69,12 +42,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  *
  * @author LENOVO
  */
 public class GameDAO {
-   public static Game getGameByReview(Review review) {
+
+    public static Game getGameByReview(Review review) {
         Game game = null;
 
         try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
@@ -105,7 +80,6 @@ public class GameDAO {
                 String maximumRAM = gameDoc.getString("Maximum_RAM");
                 String maximumGPU = gameDoc.getString("Maximum_GPU");
 
-                // Create a Game object
                 game = new Game(id, name, price, publishDay, numberOfBuyers, linkTrailer, avatarLink, gameLink, description, minimumCPU, minimumRAM, minimumGPU, maximumCPU, maximumRAM, maximumGPU);
             }
         } catch (MongoException e) {
@@ -114,8 +88,9 @@ public class GameDAO {
 
         return game;
     }
-        public static void addGame(Game game) {
-              try (MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
+
+    public static void addGame(Game game) {
+        try (MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
             MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
             MongoCollection<Document> gamesCollectionLocal = fpteamDBLocal.getCollection("Games");
 
@@ -166,9 +141,10 @@ public class GameDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
-      
+
     }
-          public static void updateGame(Game game) {
+
+    public static void updateGame(Game game) {
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
             MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
@@ -206,7 +182,7 @@ public class GameDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
-         try (MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
+        try (MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
             MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
             MongoCollection<Document> gamesCollection = fpteamDBLocal.getCollection("Games");
 
@@ -244,7 +220,8 @@ public class GameDAO {
             e.printStackTrace();
         }
     }
-          public static ArrayList<Game> getAllGames() {
+
+    public static ArrayList<Game> getAllGames() {
         MongoClientSettings settings = getConnectionLocal();
         ArrayList<Game> gamesList = new ArrayList<>();
 
@@ -280,7 +257,9 @@ public class GameDAO {
                         doc.getString("Maximum_RAM"),
                         doc.getString("Maximum_GPU")
                 );
-                gamesList.add(game);
+                if (isGamePublishable(game.getId()) == true) {
+                    gamesList.add(game);
+                }
             }
             cursor.close();
         } catch (MongoException e) {
@@ -289,7 +268,56 @@ public class GameDAO {
 
         return gamesList;
     }
-            public static Game getGameByFollow(Follow follow) {
+
+    public static ArrayList<Game> getAllUnpublishableGames() {
+        MongoClientSettings settings = getConnectionLocal();
+        ArrayList<Game> unpublishableGamesList = new ArrayList<>();
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+            try (MongoCursor<Document> cursor = gamesCollection.find().iterator()) {
+                while (cursor.hasNext()) {
+                    Document doc = cursor.next();
+
+                    // Parse price
+                    Double price = doc.getDouble("Price");
+
+                    // Parse number of buyers
+                    Integer numberOfBuyers = doc.getInteger("Number_of_buyers");
+
+                    // Parse nested fields for configuration
+                    Game game = new Game(
+                            doc.getString("ID"),
+                            doc.getString("Name"),
+                            price,
+                            doc.getString("Publish_day"),
+                            numberOfBuyers,
+                            doc.getString("LinkTrailer"),
+                            doc.getString("AvatarLink"),
+                            doc.getString("GameLink"),
+                            doc.getString("Description"),
+                            doc.getString("Minimum_CPU"),
+                            doc.getString("Minimum_RAM"),
+                            doc.getString("Minimum_GPU"),
+                            doc.getString("Maximum_CPU"),
+                            doc.getString("Maximum_RAM"),
+                            doc.getString("Maximum_GPU")
+                    );
+
+                    if (!isGamePublishable(game.getId())) {
+                        unpublishableGamesList.add(game);
+                    }
+                }
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        return unpublishableGamesList;
+    }
+
+    public static Game getGameByFollow(Follow follow) {
         MongoClientSettings settings = getConnectionLocal();
         Game game = null;
 
@@ -326,7 +354,8 @@ public class GameDAO {
 
         return game;
     }
-           public static ArrayList<Game> getGamesByGamerId(String gamerId) {
+
+    public static ArrayList<Game> getGamesByGamerId(String gamerId) {
         ArrayList<Game> games = new ArrayList<>();
 
         MongoClientSettings settings = getConnectionLocal();
@@ -361,7 +390,7 @@ public class GameDAO {
 
         return games;
     }
-           
+
     public static Game getGameByGameID(String gameID) {
         MongoClientSettings settings = getConnectionLocal();
         Game game = null;
@@ -440,13 +469,57 @@ public class GameDAO {
 
                 // Create a Game object and add it to the list
                 Game game = new Game(id, name, price, publishDay, numberOfBuyers, linkTrailer, avatarLink, gameLink, description, minimumCPU, minimumRAM, minimumGPU, maximumCPU, maximumRAM, maximumGPU);
-                games.add(game);
+                if (isGamePublishable(game.getId()) == true) {
+                    games.add(game);
+                }
+
             }
         } catch (MongoException e) {
             e.printStackTrace();
         }
 
         return games;
+    }
+
+    public static boolean isGamePublishable(String gameId) {
+        MongoClientSettings settings = getConnectionLocal();
+        MongoClient mongoClient = MongoClients.create(settings);
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+        MongoCollection<Document> publishCollection = fpteamDB.getCollection("Publish");
+
+        Document publishDoc = publishCollection.find(Filters.eq("ID_Game", gameId)).first();
+        if (publishDoc != null) {
+            Boolean isPublishable = publishDoc.getBoolean("isPublishable");
+            return isPublishable != null && isPublishable;
+        }
+        return false;
+    }
+
+    public static boolean publishGame(String gameId, HttpSession session) {
+        // Get the logged-in user (admin) from the session
+        Users loggedInUser = (Users) session.getAttribute("account");
+
+        // Check if the user is an admin
+        if (loggedInUser != null && loggedInUser.getRole() == 1) {
+            MongoClientSettings settings = getConnectionLocal();
+            try (MongoClient mongoClient = MongoClients.create(settings)) {
+                MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+                MongoCollection<Document> publishCollection = fpteamDB.getCollection("Publish");
+
+                Bson filter = Filters.eq("ID_Game", gameId);
+                Bson update = Updates.combine(
+                        Updates.set("isPublishable", true),
+                        Updates.set("ID_Admin", loggedInUser.getId())
+                );
+
+                publishCollection.updateOne(filter, update);
+
+                return true;
+            } catch (MongoException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
     public static ArrayList<Game> getGamesByPublisherName(String publisherName) {
@@ -501,7 +574,9 @@ public class GameDAO {
 
                         // Create a Game object and add it to the list
                         Game game = new Game(id, name, price, publishDay, numberOfBuyers, linkTrailer, avatarLink, gameLink, description, minimumCPU, minimumRAM, minimumGPU, maximumCPU, maximumRAM, maximumGPU);
-                        games.add(game);
+                        if (isGamePublishable(game.getId()) == true) {
+                            games.add(game);
+                        }
                     }
                 }
             }
@@ -512,72 +587,65 @@ public class GameDAO {
         return games;
     }
 
-  public static ArrayList<Game> getGamesByGenres(String[] selectedGenres) {
-    ArrayList<Game> games = new ArrayList<>();
+    public static ArrayList<Game> getGamesByGenres(String[] selectedGenres) {
+        ArrayList<Game> games = new ArrayList<>();
 
-    try {
-        MongoClientSettings settings = getConnectionLocal();
-        MongoClient mongoClient = MongoClients.create(settings);
-        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+        try {
+            MongoClientSettings settings = getConnectionLocal();
+            MongoClient mongoClient = MongoClients.create(settings);
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
+            // Access the "Game_Has_Genre" collection
+            MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
 
-        // Access the "Game_Has_Genre" collection
-        MongoCollection<Document> gameGenresCollection = fpteamDB.getCollection("Game_Has_Genre");
+            // Check if the selectedGenres array is valid
+            if (selectedGenres != null && selectedGenres.length > 0) {
+                // Create a list from the selected genres
+                List<String> genreList = Arrays.asList(selectedGenres);
 
-        // Check if the selectedGenres array is valid
-        if (selectedGenres != null && selectedGenres.length > 0) {
-            // Create a list from the selected genres
-            List<String> genreList = Arrays.asList(selectedGenres);
+                // Find games that have any of the selected genres
+                Bson filter = Filters.in("Type_of_genres", genreList);
+                FindIterable<Document> gameDocs = gameGenresCollection.find(filter);
 
-
-            // Find games that have any of the selected genres
-            Bson filter = Filters.in("Type_of_genres", genreList);
-            FindIterable<Document> gameDocs = gameGenresCollection.find(filter);
-
-            // Create a Set to store unique game IDs to avoid adding the same game multiple times
-            Set<String> gameIDs = new HashSet<>();
-            for (Document gameDoc : gameDocs) {
-                String gameID = gameDoc.getString("ID_Game");
-                if (!gameIDs.contains(gameID)) {
-                    gameIDs.add(gameID);
-                    Game game = getGameByGameID(gameID); // Implement this method to retrieve a Game by ID
-                    if (game != null) {
-                        games.add(game);
+                // Create a Set to store unique game IDs to avoid adding the same game multiple times
+                Set<String> gameIDs = new HashSet<>();
+                for (Document gameDoc : gameDocs) {
+                    String gameID = gameDoc.getString("ID_Game");
+                    if (!gameIDs.contains(gameID)) {
+                        gameIDs.add(gameID);
+                        Game game = getGameByGameID(gameID); // Implement this method to retrieve a Game by ID
+                        if (game != null) {
+                            if (isGamePublishable(game.getId()) == true) {
+                                games.add(game);
+                            }
+                        }
                     }
                 }
+            } else {
+                System.out.println("No genres provided for filtering.");
             }
-        } else {
-            System.out.println("No genres provided for filtering.");
+        } catch (MongoException e) {
+            e.printStackTrace();
         }
-    } catch (MongoException e) {
-        e.printStackTrace();
+
+        return games;
     }
 
-    return games;
-}
+    public static ArrayList<Game> searchGames(String gameName, String gamePublisher, String year, String priceAmount, String priceCurrency, String[] selectedGenres) {
+        ArrayList<Game> filteredGames = new ArrayList<>();
+        ArrayList<Game> gamesByPublisherName = new ArrayList<>();
+        ArrayList<Game> gamesByGameName = new ArrayList<>();
+        ArrayList<Game> gamesByGenres = new ArrayList<>();
 
-public static ArrayList<Game> searchGames(String gameName, String gamePublisher, String year, String priceAmount, String priceCurrency, String[] selectedGenres) {
-    ArrayList<Game> filteredGames = new ArrayList<>();
-    ArrayList<Game> gamesByPublisherName = new ArrayList<>();
-    ArrayList<Game> gamesByGameName = new ArrayList<>();
-    ArrayList<Game> gamesByGenres = new ArrayList<>();
-
-    // Retrieve games by game name if provided
-
-
+        // Retrieve games by game name if provided
         gamesByGameName = getGamesByGameName(gameName);
         System.out.println("Games by Game Name: " + gamesByGameName); // Debugging statement
-    
 
-    // Retrieve games by publisher name if provided
-   
+        // Retrieve games by publisher name if provided
         gamesByPublisherName = getGamesByPublisherName(gamePublisher);
         System.out.println("Games by Publisher Name: " + gamesByPublisherName); // Debugging statement
 
-
-
-    // Combine the games by game name and publisher name
- 
+        // Combine the games by game name and publisher name
         // Find common games by ID from both lists
         for (Game gameP : gamesByPublisherName) {
             for (Game gameN : gamesByGameName) {
@@ -587,45 +655,45 @@ public static ArrayList<Game> searchGames(String gameName, String gamePublisher,
             }
         }
 
-    // If no games are found after the initial filtering, return an empty list
-    if (filteredGames.isEmpty()) {
-        System.out.println("No games found after initial filters.");
-        return filteredGames;
-    }
+        // If no games are found after the initial filtering, return an empty list
+        if (filteredGames.isEmpty()) {
+            System.out.println("No games found after initial filters.");
+            return filteredGames;
+        }
 
-    System.out.println("Games after Publisher Filter: " + filteredGames); // Debugging statement
+        System.out.println("Games after Publisher Filter: " + filteredGames); // Debugging statement
 
-    // Apply genre filter if provided
-      if (selectedGenres != null && selectedGenres.length > 0 && !Arrays.stream(selectedGenres).allMatch(String::isEmpty)) {
-        gamesByGenres = getGamesByGenres(selectedGenres);
-        System.out.println("Games by Genres: " + gamesByGenres); // Debugging statement   
-        ArrayList<Game> tempFilteredGames = new ArrayList<>();
-        for (Game gameG : gamesByGenres) {
-            for (Game gameN : filteredGames) {
-                if (gameG.getId() != null && gameN.getId() != null && gameG.getId().equals(gameN.getId())) {
-                    tempFilteredGames.add(gameN);
+        // Apply genre filter if provided
+        if (selectedGenres != null && selectedGenres.length > 0 && !Arrays.stream(selectedGenres).allMatch(String::isEmpty)) {
+            gamesByGenres = getGamesByGenres(selectedGenres);
+            System.out.println("Games by Genres: " + gamesByGenres); // Debugging statement   
+            ArrayList<Game> tempFilteredGames = new ArrayList<>();
+            for (Game gameG : gamesByGenres) {
+                for (Game gameN : filteredGames) {
+                    if (gameG.getId() != null && gameN.getId() != null && gameG.getId().equals(gameN.getId())) {
+                        tempFilteredGames.add(gameN);
+                    }
                 }
             }
+            filteredGames = tempFilteredGames;
         }
-        filteredGames = tempFilteredGames;
-    }
 
-    System.out.println("Games after Genre Filter: " + filteredGames); // Debugging statement
-    
-    // Apply year filter if provided
-    if (year != null && !year.isEmpty()) {
-        filteredGames.removeIf(game -> !matchYear(game.getPublishDay(), year));
-        System.out.println("Games after Year Filter: " + filteredGames); // Debugging statement
-    }
+        System.out.println("Games after Genre Filter: " + filteredGames); // Debugging statement
 
-    // Apply price filter if provided
-    if (priceAmount != null && !priceAmount.isEmpty()) {
-        filteredGames.removeIf(game -> !matchPrice(game.getPrice(), priceAmount, priceCurrency));
-        System.out.println("Games after Price Filter: " + filteredGames); // Debugging statement
-    }
+        // Apply year filter if provided
+        if (year != null && !year.isEmpty()) {
+            filteredGames.removeIf(game -> !matchYear(game.getPublishDay(), year));
+            System.out.println("Games after Year Filter: " + filteredGames); // Debugging statement
+        }
 
-    return filteredGames;
-}
+        // Apply price filter if provided
+        if (priceAmount != null && !priceAmount.isEmpty()) {
+            filteredGames.removeIf(game -> !matchPrice(game.getPrice(), priceAmount, priceCurrency));
+            System.out.println("Games after Price Filter: " + filteredGames); // Debugging statement
+        }
+
+        return filteredGames;
+    }
 
 // Helper method to match game publish year based on publishDay and year
     public static boolean matchYear(String publishDay, String year) {
@@ -654,6 +722,7 @@ public static ArrayList<Game> searchGames(String gameName, String gamePublisher,
         }
         return false;
     }
+
     public static List<Game> getMostPopularGamesByPeriod(String period) {
         // Map to store game ID and the number of buyers in the specified period
         Map<String, Integer> gameBuyersCount = new HashMap<>();
@@ -679,35 +748,33 @@ public static ArrayList<Game> searchGames(String gameName, String gamePublisher,
         LocalDate endDate;
 
         // Determine the start and end dates based on the period
-         switch (period.toLowerCase()) {
-        case "day":
-            startDate = today;
-            endDate = today;
-            break;
-        case "week":
-            startDate = today.with(DayOfWeek.MONDAY);  // Start of the week
-            endDate = today.with(DayOfWeek.SUNDAY);  // End of the week
-            break;
-        case "month":
-            startDate = today.with(TemporalAdjusters.firstDayOfMonth());  // Start of the month
-            endDate = today.with(TemporalAdjusters.lastDayOfMonth());  // End of the month
-            break;
-        case "year":
-            startDate = today.with(TemporalAdjusters.firstDayOfYear());  // Start of the year
-            endDate = today.with(TemporalAdjusters.lastDayOfYear());  // End of the year
-            break;
-        default:
-            throw new IllegalArgumentException("Invalid period specified. Valid periods are: day, week, month, year.");
-    }
-       // Convert dates to strings in the required format
-
-      
+        switch (period.toLowerCase()) {
+            case "day":
+                startDate = today;
+                endDate = today;
+                break;
+            case "week":
+                startDate = today.with(DayOfWeek.MONDAY);  // Start of the week
+                endDate = today.with(DayOfWeek.SUNDAY);  // End of the week
+                break;
+            case "month":
+                startDate = today.with(TemporalAdjusters.firstDayOfMonth());  // Start of the month
+                endDate = today.with(TemporalAdjusters.lastDayOfMonth());  // End of the month
+                break;
+            case "year":
+                startDate = today.with(TemporalAdjusters.firstDayOfYear());  // Start of the year
+                endDate = today.with(TemporalAdjusters.lastDayOfYear());  // End of the year
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid period specified. Valid periods are: day, week, month, year.");
+        }
+        // Convert dates to strings in the required format
 
         // Filter bills based on the period
         for (Bill bill : allBills) {
             String buyDate = bill.getBuyTime().split(" ")[0];
-            if (buyDate.compareTo(startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) >= 0 &&
-                buyDate.compareTo(endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) <= 0) {
+            if (buyDate.compareTo(startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) >= 0
+                    && buyDate.compareTo(endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) <= 0) {
                 gameBuyersCount.put(bill.getGameId(), gameBuyersCount.getOrDefault(bill.getGameId(), 0) + 1);
             }
         }
@@ -733,7 +800,7 @@ public static ArrayList<Game> searchGames(String gameName, String gamePublisher,
         return games;
     }
 
- public static List<Game> getMostProfitableGamesByPeriod(String period) {
+    public static List<Game> getMostProfitableGamesByPeriod(String period) {
         // Map to store game ID and the total profit in the specified period
         Map<String, Double> gameProfitMap = new HashMap<>();
         // Map to store game ID and the list of bills for that game
@@ -758,35 +825,33 @@ public static ArrayList<Game> searchGames(String gameName, String gamePublisher,
         LocalDate endDate;
 
         // Determine the start and end dates based on the period
-         switch (period.toLowerCase()) {
-        case "day":
-            startDate = today;
-            endDate = today;
-            break;
-        case "week":
-            startDate = today.with(DayOfWeek.MONDAY);  // Start of the week
-            endDate = today.with(DayOfWeek.SUNDAY);  // End of the week
-            break;
-        case "month":
-            startDate = today.with(TemporalAdjusters.firstDayOfMonth());  // Start of the month
-            endDate = today.with(TemporalAdjusters.lastDayOfMonth());  // End of the month
-            break;
-        case "year":
-            startDate = today.with(TemporalAdjusters.firstDayOfYear());  // Start of the year
-            endDate = today.with(TemporalAdjusters.lastDayOfYear());  // End of the year
-            break;
-        default:
-            throw new IllegalArgumentException("Invalid period specified. Valid periods are: day, week, month, year.");
-    }
+        switch (period.toLowerCase()) {
+            case "day":
+                startDate = today;
+                endDate = today;
+                break;
+            case "week":
+                startDate = today.with(DayOfWeek.MONDAY);  // Start of the week
+                endDate = today.with(DayOfWeek.SUNDAY);  // End of the week
+                break;
+            case "month":
+                startDate = today.with(TemporalAdjusters.firstDayOfMonth());  // Start of the month
+                endDate = today.with(TemporalAdjusters.lastDayOfMonth());  // End of the month
+                break;
+            case "year":
+                startDate = today.with(TemporalAdjusters.firstDayOfYear());  // Start of the year
+                endDate = today.with(TemporalAdjusters.lastDayOfYear());  // End of the year
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid period specified. Valid periods are: day, week, month, year.");
+        }
 
         // Convert dates to strings in the required format
-      
-
         // Filter bills based on the period and calculate the total profit
         for (Bill bill : allBills) {
             String buyDate = bill.getBuyTime().split(" ")[0];
-            if (buyDate.compareTo(startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) >= 0 &&
-                buyDate.compareTo(endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) <= 0) {
+            if (buyDate.compareTo(startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) >= 0
+                    && buyDate.compareTo(endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))) <= 0) {
                 gameProfitMap.put(bill.getGameId(), gameProfitMap.getOrDefault(bill.getGameId(), 0.0) + bill.getBuyPrice());
             }
         }
@@ -811,7 +876,8 @@ public static ArrayList<Game> searchGames(String gameName, String gamePublisher,
         // Return the sorted list of games
         return games;
     }
-   public static Bson createPeriodFilter(String period) {
+
+    public static Bson createPeriodFilter(String period) {
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.minusDays(30);  // Default to a 30-day period
 
@@ -837,5 +903,57 @@ public static ArrayList<Game> searchGames(String gameName, String gamePublisher,
 
         // Adjust the filter to match Buy date
         return Filters.and(Filters.gte("Buy_time", start), Filters.lt("Buy_time", end));
+    }
+
+    public static boolean deleteGame(String gameId) {
+           refundAllGamesForGamer(gameId);
+        try (MongoClient mongoClient = MongoClients.create(getConnection())) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+            MongoCollection<Document> billCollection = fpteamDB.getCollection("Buy");
+           
+            // Create a filter to find the existing document by game ID
+            Bson gamesfilter = Filters.eq("ID", gameId);
+            gamesCollection.deleteMany(gamesfilter);
+            Bson billfilter = Filters.eq("ID_Game", gameId);
+            billCollection.deleteMany(billfilter);
+            // Check if the game was successfully deleted
+            Document deletedGame = gamesCollection.find(gamesfilter).first();
+            
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        MongoClientSettings settings = getConnectionLocal();
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+         
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+            MongoCollection<Document> billCollection = fpteamDB.getCollection("Buy");
+            MongoCollection<Document> followCollection = fpteamDB.getCollection("Follow");
+            MongoCollection<Document> genreCollection = fpteamDB.getCollection("Game_Has_Genre");
+            MongoCollection<Document> publishCollection = fpteamDB.getCollection("Publish");
+             MongoCollection<Document> reviewCollection = fpteamDB.getCollection("Reviews");
+            // Create a filter to find the existing document by game ID
+            Bson gamesfilter = Filters.eq("ID", gameId);
+            gamesCollection.deleteMany(gamesfilter);
+            Bson billfilter = Filters.eq("ID_Game", gameId);
+            billCollection.deleteMany(billfilter);
+            Bson followfilter = Filters.eq("ID_Game", gameId);
+            followCollection.deleteMany(followfilter);
+            Bson genrefilter = Filters.eq("ID_Game", gameId);
+            genreCollection.deleteMany(genrefilter);
+            Bson publishfilter = Filters.eq("ID_Game", gameId);
+            publishCollection.deleteMany(publishfilter);
+             Bson reviewfilter = Filters.eq("ID_Game", gameId);
+            reviewCollection.deleteMany(reviewfilter);
+            // Check if the game was successfully deleted
+            Document deletedGame = gamesCollection.find(gamesfilter).first();
+            return deletedGame == null;
+
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
