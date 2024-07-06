@@ -255,7 +255,9 @@ public class JavaMongo {
         }
     }
 
+
    public static void updateProfile(String id, String name, String email, String password, String AvatarLink, String DOB , int role){
+
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 

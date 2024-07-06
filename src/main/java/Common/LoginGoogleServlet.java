@@ -43,7 +43,9 @@ public class LoginGoogleServlet extends HttpServlet {
         GooglePojo acc = gg.getUserInfo(accessToken);
         //System.out.print(acc);
         int role =3;
-                Users a = CheckEmail(acc.getEmail());
+
+        Users a = CheckEmail(acc.getEmail());
+
         Gamers g = new Gamers();
         HttpSession session = request.getSession();
         

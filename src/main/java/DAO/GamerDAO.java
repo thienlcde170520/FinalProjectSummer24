@@ -52,6 +52,7 @@ public class GamerDAO {
                 Double money = gamerDoc.getDouble("Money");
                 String avatarLink = gamerDoc.getString("AvatarLink");
                 String registrationDate = gamerDoc.getString("RegistrationDate");
+                String dob = gamerDoc.getString("Date of Birth");
 
                  String dob = gamerDoc.getString("Date of Birth");
 
@@ -113,7 +114,7 @@ public class GamerDAO {
                             doc.getInteger("Role"),
                             doc.getDouble("Money"),
                             doc.getString("AvatarLink"), // Get AvatarLink from the document
-                                doc.getString("RegistrationDate"),
+                             doc.getString("RegistrationDate"),
                             doc.getString("Date of Birth")
                     );
                     gamersList.add(gamers);
@@ -126,6 +127,7 @@ public class GamerDAO {
 
         return gamersList;
     }
+
            public static List<Gamers> searchGamersByName(String name) {
         MongoClientSettings settings = getConnectionLocal();
         List<Gamers> gamersList = new ArrayList<>();
@@ -148,7 +150,9 @@ public class GamerDAO {
                         doc.getInteger("Role"),
                         doc.getDouble("Money"),
                         doc.getString("AvatarLink"),
-                         doc.getString("RegistrationDate"),
+
+                        doc.getString("RegistrationDate"),
+
                         doc.getString("Date of Birth")
                 );
                 gamersList.add(gamer);
@@ -162,6 +166,7 @@ public class GamerDAO {
         return gamersList;
     }
  public static void CreateNewGamerAccount(String id, String name, String password, String email, int role, Double Money, String AvatarLink, String RegistrationDate,String DOB) {
+
 
         MongoClientSettings settings = getConnection();
         try (MongoClient mongoClient = MongoClients.create(settings)) {
@@ -187,7 +192,7 @@ public class GamerDAO {
                     .append("Money", Money)
                     .append("AvatarLink", AvatarLink)
                     .append("Role", role)
-                      .append("RegistrationDate", RegistrationDate)
+                    .append("RegistrationDate", RegistrationDate)
                     .append("Date of Birth", DOB);
             gamersCollection.insertOne(gamer);
         } catch (MongoException e) {
@@ -217,7 +222,9 @@ public class GamerDAO {
                     .append("Money", Money)
                     .append("AvatarLink", AvatarLink)
                     .append("Role", role)
-                       .append("RegistrationDate", RegistrationDate)
+
+                    .append("RegistrationDate", RegistrationDate)
+
                     .append("Date of Birth", DOB);
             gamersCollection.insertOne(gamer);
         } catch (MongoException e) {
@@ -246,7 +253,9 @@ public class GamerDAO {
                         gamerDoc.getInteger("Role"),
                         gamerDoc.getDouble("Money"),
                         gamerDoc.getString("AvatarLink"),
+
                          gamerDoc.getString("RegistrationDate"),
+
                         gamerDoc.getString("Date of Birth")
                 );
             }
@@ -278,7 +287,8 @@ public class GamerDAO {
                         gamerDoc.getInteger("Role"),
                         gamerDoc.getDouble("Money"),
                         gamerDoc.getString("AvatarLink"),
-                              gamerDoc.getString("RegistrationDate"),
+                gamerDoc.getString("RegistrationDate"),
+
                         gamerDoc.getString("Date of Birth")
                 );
             }

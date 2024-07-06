@@ -104,11 +104,11 @@ https://templatemo.com/tm-579-cyborg-gaming
             <div class="col-12">
                 <form action="UpdateProfileServlet" method="POST"   enctype="multipart/form-data">
                     <%
-        String error = (String) request.getAttribute("error");
-        Boolean red = (Boolean) request.getAttribute("red");
-        if (red != null && red) {
+        String mess = (String) request.getAttribute("mess");
+        
+        if (mess != null) {
     %>
-        <p class="error"><%= error %></p>
+        <p class="error"><%= mess %></p>
     <%
         }
     %>
@@ -129,7 +129,12 @@ https://templatemo.com/tm-579-cyborg-gaming
                         <label for="newEmail">Email</label>
                         <input type="text" class="form-control" id="Email" name="newEmail" placeholder="Enter your new Email ">
                     </div>
-
+    
+                    <div class="form-group">
+                        <label for="newDOB">Date of Birth</label>
+                        <input type="date" class="form-control" id="DOB" name="newDOB" placeholder="Enter your date of birth ">
+                    </div>
+    
                        <div class="form-group">
                         <label for="newPassWord">PassWord</label>
                         <input type="password" class="form-control" id="PassWord" name="newPassWord" placeholder="Enter your new PassWord ">

@@ -104,6 +104,7 @@ public class UpdateProfileServlet extends HttpServlet {
         String newDOB = request.getParameter("newDOB");
         String newP = request.getParameter("newPassWord");
         String conP = request.getParameter("confirmPass");
+
         String gamerAvatarUrl = null;
         
    
@@ -124,9 +125,14 @@ public class UpdateProfileServlet extends HttpServlet {
         if(!newEM.matches(emailCheck) || !newP.equals(conP) || !newP.matches(regex) || newP.length() < 5 || newDOB.isEmpty()){
             request.setAttribute("mess", "Invalid email or password!!!!");
             //response.sendRedirect("SignUp.jsp");
+
             request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
         }else
+
+        {        
+
           {        
+
 //            Users sp = new Users();
 //            if(newEM.isEmpty() || newEM == null){
 //                newEM = as.getGmail();
@@ -134,6 +140,7 @@ public class UpdateProfileServlet extends HttpServlet {
 //            }
 
             Users as = CheckEmail(newEM);
+
 
             if(as == null )
             {
@@ -144,7 +151,9 @@ public class UpdateProfileServlet extends HttpServlet {
                         if( u.getRole() == 3){
 
 
+
                         updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,newDOB,u.getRole());
+
                         Gamers gamer = GamerDAO.getGamerByEmail(newEM);
                             if(gamer != null){
                                 request.setAttribute("gamer", gamer);
@@ -164,7 +173,10 @@ public class UpdateProfileServlet extends HttpServlet {
                                 }                 
                             }
                         }else if( u.getRole() ==2){
-                          updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,newDOB,u.getRole());
+
+
+                             updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,newDOB,u.getRole());
+
                              Publishers pub = PublisherDAO.getPublisherByEmail(newEM);
                              if(pub != null){
                                  request.setAttribute("pub", pub);
@@ -194,7 +206,7 @@ public class UpdateProfileServlet extends HttpServlet {
                     }
             }else{
                 request.setAttribute("mess", "An Account is Exist!!!");
-          
+
                     //response.sendRedirect("SignUp.jsp");
                     request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
             }

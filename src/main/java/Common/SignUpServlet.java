@@ -162,6 +162,7 @@ public class SignUpServlet extends HttpServlet {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 String registrationDate = now.format(formatter);
                 //String Id = "game_" + generateRandomNumber();
+                
                 Users as = CheckEmail(em);
                 if (as == null) {
                     try{
@@ -169,7 +170,9 @@ public class SignUpServlet extends HttpServlet {
 //                        int numberCus = JavaMongo.getAllGamers().size();
 
                         if(roleValue == 3){
-                          CreateNewGamerAccount( idG,n, p, em, roleValue,g.getMoney(),g.getAvatarLink(),registrationDate,g.getDOB());
+
+                            CreateNewGamerAccount( idG,n,  p,  em, roleValue,g.getMoney(),g.getAvatarLink(),registrationDate,g.getDOB());
+
                             HttpSession session = request.getSession();
                             session.setAttribute("account",getGamerByEmail(em));
                         }else if (roleValue == 2){
