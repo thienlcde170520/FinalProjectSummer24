@@ -62,14 +62,8 @@ public class Gamers extends Users{
 
 
 
-    public String getDOB() {
-        return DOB;
-    }
-
-    public void setDOB(String DOB) {
-        this.DOB = DOB;
-    }
-    
+  
+   
     
 
     @Override

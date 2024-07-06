@@ -54,7 +54,7 @@ public class GamerDAO {
                 String registrationDate = gamerDoc.getString("RegistrationDate");
                 String dob = gamerDoc.getString("Date of Birth");
 
-                 String dob = gamerDoc.getString("Date of Birth");
+            
 
                 // Create a Gamer object
                 gamer = new Gamers(id, name, gmail, password, role, money, avatarLink, registrationDate, dob);
