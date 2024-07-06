@@ -128,23 +128,29 @@ public class UpdateProfileServlet extends HttpServlet {
 
             request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
         }else
+
         {        
+
+          {        
+
 //            Users sp = new Users();
 //            if(newEM.isEmpty() || newEM == null){
 //                newEM = as.getGmail();
 //                sp = CheckWithId(newEM,sp.getId());          
 //            }
-            
+
             Users as = CheckEmail(newEM);
-            
+
+
             if(as == null )
             {
                 try{
                     HttpSession session = request.getSession();
                     Users u = (Users) session.getAttribute("account");
-                   
+
                         if( u.getRole() == 3){
-                           
+
+
 
                         updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,newDOB,u.getRole());
 
@@ -167,6 +173,7 @@ public class UpdateProfileServlet extends HttpServlet {
                                 }                 
                             }
                         }else if( u.getRole() ==2){
+
 
                              updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,newDOB,u.getRole());
 
@@ -199,7 +206,7 @@ public class UpdateProfileServlet extends HttpServlet {
                     }
             }else{
                 request.setAttribute("mess", "An Account is Exist!!!");
-                     
+
                     //response.sendRedirect("SignUp.jsp");
                     request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
             }

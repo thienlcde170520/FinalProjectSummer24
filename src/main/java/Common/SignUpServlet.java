@@ -170,7 +170,9 @@ public class SignUpServlet extends HttpServlet {
 //                        int numberCus = JavaMongo.getAllGamers().size();
 
                         if(roleValue == 3){
+
                             CreateNewGamerAccount( idG,n,  p,  em, roleValue,g.getMoney(),g.getAvatarLink(),registrationDate,g.getDOB());
+
                             HttpSession session = request.getSession();
                             session.setAttribute("account",getGamerByEmail(em));
                         }else if (roleValue == 2){
@@ -233,7 +235,7 @@ public class SignUpServlet extends HttpServlet {
         
     }
     //radomaId
-    private static String generateRandomNumber() {
+    public static String generateRandomNumber() {
         Random random = new Random();
         String generateID = null;
         do {
