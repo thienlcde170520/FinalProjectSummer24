@@ -68,6 +68,10 @@
                             {
                                 out.print("<div class='text-danger'>"+request.getAttribute("status")+"</div>");
                             }
+                        if(request.getAttribute("success") != null)
+                        {
+                                out.print("<div class='text_success'>"+request.getAttribute("success")+"</div>");
+                        }
 
                     %>                 
 

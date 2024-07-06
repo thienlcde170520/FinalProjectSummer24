@@ -30,9 +30,15 @@
                 color: red;
                 background-color: #ffcccc;
                 margin: 17px 0;
+                border-radius: 2px;
             }
-
-            
+            .Inputerror{
+                font-size: small;
+                color: red;
+            }
+            #rolemess{
+                margin: -33px 0 0 0;
+            }
 
         </style>
 
@@ -99,6 +105,8 @@
                             </div>
                                 <div id="messageName"></div>
 
+                                <div id="namemess" class="Inputerror"><%= request.getAttribute("namemess") != null ? request.getAttribute("namemess") : "" %></div><!--name-->
+
                             </div>
                             <div class="field input-field">
                                 <div class="input-container">
@@ -106,6 +114,7 @@
                                     <input type="email" id="emailInput" placeholder="Email" name="email" class="input">
                                 </div>
                                 <div id="message"></div>
+                                <div id="emailmess" class="Inputerror"><%= request.getAttribute("emailmess") != null ? request.getAttribute("emailmess") : "" %></div><!--email-->
                             </div>
                             <div class="field input-field">
 
@@ -114,7 +123,8 @@
                                 <input type="password" id="password" placeholder="Create password" name="password" >
                                 <i id="pass-toggle-btn" class="fa-solid fa-eye"></i>
                             </div>
-                                <div id="passwordMessage"></div> 
+                                <div id="passwordMessage"></div>
+                                <div id="passmess" class="Inputerror"><%= request.getAttribute("passmess") != null ? request.getAttribute("passmess") : "" %></div> <!--pass-->
                             </div>
                             <div class="field input-field">
                                 <div class="input-container pass">
@@ -124,15 +134,18 @@
                                 </div>
                                 <div id="conPasswordMessage"></div>
 
+                                <div id="conpassmess" class="Inputerror"><%= request.getAttribute("conpassmess") != null ? request.getAttribute("conpassmess") : "" %></div><!--con_pass-->
+
                             </div>
                             <div class="role-selection">
                                 <label for="role" style="font-weight: bold;">Choose your role:</label>
                                 <label for="gamer">Gamer</label>
                                 <input type="radio" id="gamer" name="role" value="gamer">
                                 <label for="publisher">Publisher</label>
-                                <input type="radio" id="publisher" name="role" value="publisher">
+                                <input type="radio" id="publisher" name="role" value="publisher">                               
                             </div>
-    
+                            <div id="rolemess" class="Inputerror"><%= request.getAttribute("rolemess") != null ? request.getAttribute("rolemess") : "" %></div>
+                            
                             <div class="field button-field">
                                 <button>Register</button>
                             </div>
@@ -149,6 +162,22 @@
         </div>
                     </div>
         <!-- JavaScript -->
+        
+        <script>
+            // Lắng nghe sự kiện click vào trường tên người dùng
+            document.getElementById("namespace").onclick = function() {
+                document.getElementById("namemess").innerHTML = ""; // Xóa thông báo tên người dùng
+            };
+            document.getElementById("emailInput").onclick = function() {
+                document.getElementById("emailmess").innerHTML = ""; // Xóa thông báo tên người dùng
+            };
+            document.getElementById("password").onclick = function() {
+                document.getElementById("passmess").innerHTML = ""; // Xóa thông báo tên người dùng
+            };
+            document.getElementById("con_password").onclick = function() {
+                document.getElementById("conpassmess").innerHTML = ""; // Xóa thông báo tên người dùng
+            };
+        </script>
         <script src="assets/js/emailAlert.js"></script>
         <script src="assets/js/passwordAlert.js"></script>
         <script src="assets/js/nameAlert.js"></script>
@@ -170,7 +199,7 @@
         conpassToggleBtn.addEventListener('click',() =>{
             conpassToggleBtn.className = passconInput.type === "password" ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
             passconInput.type = passconInput.type === "password" ? "text" : "password";
-        })
+        });
 
         passwordInput.addEventListener('focus', () => {
             passwordMessage.style.display = 'block';

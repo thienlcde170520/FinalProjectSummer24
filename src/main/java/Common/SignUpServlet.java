@@ -31,6 +31,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -94,16 +95,49 @@ public class SignUpServlet extends HttpServlet {
         String rp = request.getParameter("confirm_password");
         String role = request.getParameter("role");
         
+        boolean hasErrors = false;
         
         
         // Generate the current date and time
         String regex = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // yeu cau pass có it nhat 1 so 1 chu
-       String emailPattern = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
+        String emailPattern = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
+        
+        // Kiểm tra tên người dùng
+        if (n == null || n.trim().isEmpty()) {
+            request.setAttribute("namemess", "Tên người dùng không được để trống.");
+            hasErrors = true;
+        }
 
-        if (em.isEmpty() || !em.matches(emailPattern) || p.isEmpty()|| !p.matches(regex)|| !p.matches(rp) || role.isEmpty() || role == null || n.isEmpty() || n == null) {           
-                request.setAttribute("mess", "Invalid information!!!!");
-                
-                
+        // Kiểm tra email
+        if (em == null || em.trim().isEmpty()) {
+            request.setAttribute("emailmess", "Email không được để trống.");
+            hasErrors = true;
+        } else if (!em.matches(emailPattern)) {
+            request.setAttribute("emailmess", "Email không đúng mẫu.");
+            hasErrors = true;
+        }
+
+        // Kiểm tra mật khẩu
+        if (p == null || p.trim().isEmpty()) {
+            request.setAttribute("passmess", "Mật khẩu không được để trống.");
+            hasErrors = true;
+        } else if (p.length() < 5 || !p.matches(regex)) {
+            request.setAttribute("passmess", "Mật khẩu phải có ít nhất 8 ký tự.");
+            hasErrors = true;
+        }
+
+        // Kiểm tra xác nhận mật khẩu
+        if (rp == null || !rp.equals(p)) {
+            request.setAttribute("conpassmess", "Xác nhận mật khẩu không đúng.");
+            hasErrors = true;
+        }
+        if(role == null){
+            request.setAttribute("rolemess","Role khong duoc trong");
+            hasErrors =true;
+        }
+        
+        
+        if (hasErrors) {           
                 request.getRequestDispatcher("Register.jsp").forward(request, response);
             
         }else{
@@ -116,7 +150,6 @@ public class SignUpServlet extends HttpServlet {
                 roleValue = 2;
             }else{
                 request.setAttribute("mess", "Invalid role selected!");
-                request.setAttribute("blue", true);
                 request.getRequestDispatcher("Register.jsp").forward(request, response);
                 return;
             }

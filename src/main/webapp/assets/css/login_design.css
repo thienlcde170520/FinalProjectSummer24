@@ -200,6 +200,14 @@ a.google span{
     background-color: #ffcccc;
     margin: 17px 0;
     color: red;
+    border-radius: 2px;
+}
+.text_success{
+    font-size: 16px;
+    background-color: #ccffe6;
+    margin: 17px 0;
+    color: #00ff99;
+    border-radius: 2px;
 }
 @media screen and (max-width: 400px) {
     .form{

@@ -63,7 +63,7 @@ input{
     margin-top: 50px;
     width: 100%;
     background-color: #ff1a75;
-    color: #080710; /*#080710*/
+    color: white; /*#080710*/
     padding: 15px 0;
     font-size: 18px;
     font-weight: 600;
@@ -107,14 +107,23 @@ button:hover {
 
 
 .text-danger{
-    font-family: Arial ;
-    margin-top: 2px;
-    height: 30px;
-    padding: 2px;
+    font-size: 16px;
+    background-color: #ffcccc;
+    margin: 15px 0;
+    padding: 5px;
     color: red;
-    transition: all 0.3s ease;
+    height: 25px;
+    border-radius: 2px;
 }
-
+.mess-success{
+    font-size: 16px;
+    
+    margin: 15px 0;
+    padding: 5px;
+    color: #00ff99;
+    height: 25px;
+    border-radius: 2px;
+}
 .error {
     border: 1px solid #d9534f !important; /* Đổi màu viền thành đỏ */
 

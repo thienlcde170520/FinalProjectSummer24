@@ -1,5 +1,6 @@
 package Controller;
 
+
 import DAO.GameDAO;
 import DAO.PublisherDAO;
 import Model.Users;
@@ -62,7 +63,19 @@ public class JavaMongo {
 
     public static void main(String[] args) {
 
- System.out.println(GameDAO.deleteGame("game_48956"));
+        
+//   ArrayList<Game> searchedGames = searchGames("", "", "2024", "", "", new String[]{"", ""});
+//
+//    // Print the results
+//    System.out.println("\nSearched Games:");
+//    for (Game game : searchedGames) {
+//        System.out.println(game.getName() + " Year: " + game.getPublishDay() + " | Price: " + game.getPrice());
+//    }
+
+
+ System.out.println(GameDAO.getMostProfitableGamesByPeriod("Month"));
+
+
     }
 
     /*publisher*/
@@ -145,7 +158,7 @@ public class JavaMongo {
 
     /*tao moi publisher*/
  /*---------------------*/
-    public Users getUserByEmail(String email) {
+    public static Users getUserByEmail(String email) {
         MongoClientSettings settings = getConnectionLocal();
 
         try (MongoClient mongoClient = MongoClients.create(settings)) {

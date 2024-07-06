@@ -13,7 +13,19 @@
         
         <form action ="ValidateCode" method="post">
         
-            <h3>Check Valid Email</h3>       
+
+            <h3>Check Valid Email</h3>
+            <%
+		if(request.getAttribute("message")!=null)
+		{
+		   out.print("<p class='text-danger'>"+request.getAttribute("message")+"</p>");
+		}
+		if(request.getAttribute("messageCode")!=null)
+                {
+                    out.print("<p class='mess-success'>"+request.getAttribute("messageCode")+"</p>");
+                }
+	%>
+
             <label for="Code">OTP</label>
             <div class="pass_time">
                 <input type="password" name="code" placeholder="Enter OTP" id="password">
@@ -26,12 +38,12 @@
         
          <script>
             document.addEventListener('DOMContentLoaded', function() {
-                var countdown = 60; // Th?i gian ??m ng??c (60 gi‚y)
+                var countdown = 60; // Th?i gian ??m ng??c (60 gi√¢y)
                 var timer = setInterval(function() {
                     countdown--;
                     if (countdown <= 0) {
                         clearInterval(timer);
-                        // X? l˝ khi h?t th?i gian ??m ng??c (vÌ d?: ?n ho?c l‡m gÏ ?Û)
+                        // X? l√Ω khi h?t th?i gian ??m ng??c (v√≠ d?: ?n ho?c l√†m g√¨ ?√≥)
                     }
                     document.getElementById('countdown').innerText = countdown + `s`;
                 }, 1000);
