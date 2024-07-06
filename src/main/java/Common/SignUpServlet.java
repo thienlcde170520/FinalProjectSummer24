@@ -169,7 +169,7 @@ public class SignUpServlet extends HttpServlet {
 //                        int numberCus = JavaMongo.getAllGamers().size();
 
                         if(roleValue == 3){
-                            CreateNewGamerAccount( idG,n,  p,  em, roleValue,g.getMoney(),g.getAvatarLink(),registrationDate);
+                          CreateNewGamerAccount( idG,n, p, em, roleValue,g.getMoney(),g.getAvatarLink(),registrationDate,g.getDOB());
                             HttpSession session = request.getSession();
                             session.setAttribute("account",getGamerByEmail(em));
                         }else if (roleValue == 2){

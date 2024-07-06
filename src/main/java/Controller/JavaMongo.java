@@ -255,7 +255,7 @@ public class JavaMongo {
         }
     }
 
-    public static void updateProfile(String id, String name, String email, String password, String AvatarLink, int role) {
+   public static void updateProfile(String id, String name, String email, String password, String AvatarLink, String DOB , int role){
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
@@ -281,6 +281,9 @@ public class JavaMongo {
             }
             if (AvatarLink != null && !AvatarLink.isEmpty()) {
                 gamerUpdateFields.append("AvatarLink", AvatarLink);
+            }
+            if(DOB != null && !DOB.isEmpty()){
+                gamerUpdateFields.append("Date of Birth",DOB);
             }
             if (!gamerUpdateFields.isEmpty() ) {
               
@@ -325,7 +328,9 @@ public class JavaMongo {
             if (AvatarLink != null && !AvatarLink.isEmpty()) {
                 gamerUpdateFields.append("AvatarLink", AvatarLink);
             }
-
+             if(DOB != null && !DOB.isEmpty()){
+                gamerUpdateFields.append("Date of Birth",DOB);
+            }
             // Tạo một document mới chứa thông tin cập nhật cho Users
             Document userUpdateFields = new Document();
             if (name != null && !name.isEmpty()) {
