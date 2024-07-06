@@ -132,6 +132,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <div class="main-info header-text">
                       <h4><%=gamer.getName() %></h4>
                       <p>Email: <%=gamer.getGmail()%></p>
+                      <p>Date of Birth: <%=gamer.getDOB()%></p>
                       <p>Tham gia từ : <%=gamer.getRegistrationDate()%></p>
                       <div class="main-border-button">
                       </div>
