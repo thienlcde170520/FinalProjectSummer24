@@ -76,7 +76,8 @@
             boolean isRefundable = isRefundableObj != null && isRefundableObj.booleanValue();
              Boolean isFollowObj = (Boolean) request.getAttribute("isFollow");
             boolean isFollow = isFollowObj != null && isFollowObj.booleanValue();
-           
+               Boolean isPublishableObj = (Boolean) request.getAttribute("isPublishable");
+            boolean isPublishable = isPublishableObj != null && isPublishableObj.booleanValue();
         %>
 
         <!-- Header Area Start -->
@@ -189,10 +190,6 @@
     %>
     
 <a href="DisplayPublisherServlet?publisherName=<%= publisher.getName() %>" class="publisher-p">Game Publisher: <%= publisher.getName() %></a>
-
- 
-
-
 </div>
                                        <%
 // Check if logged-in user is the publisher
@@ -200,52 +197,69 @@ Users loggedInUser = (Users) session.getAttribute("account");
 boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publisher.getId());
 %>
 <% if (isPublisher) { %>
-    <!-- Display update button for publisher -->
     <a id="UpdateButton" class="btn btn-primary" href="UpdateGameServlet?gameId=<%= game.getId() %>">Update</a>
+     <form action="PublishGameServlet" method="post" style="display:inline;">
+            <input type="hidden" name="gameId" value="<%= game.getId() %>">
+            <input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
 <% } else { %>
-    <!-- Check if the user has not bought the game -->
-    <% if (!hasBuy) { %>
-        <a id="buyNowButton" class="btn btn-primary" href="PayProcessServlet?gameId=<%= game.getId() %>">Buy Now</a>
-    <% } %>
+    <% if (loggedInUser.getRole() != 1) { %> <!-- Skip this block for admins -->
+        <% if (!hasBuy) { %>
+            <a id="buyNowButton" class="btn btn-primary" href="PayProcessServlet?gameId=<%= game.getId() %>">Buy Now</a>
+        <% } %>
 
-    <!-- Display Follow/Unfollow button based on the follow status -->
-    <% if (!isPublisher) { %>
-        <% if (isFollow) { %>
-            <form action="FollowServlet" method="post" style="display:inline;">
-                <input type="hidden" name="gameId" value="<%= game.getId() %>">
-                <input type="hidden" name="gamerId" value="<%= loggedInUser.getId() %>">
-                <input type="hidden" name="action" value="unfollow">
-                <button type="submit" class="btn btn-outline-primary">Unfollow</button>
-            </form>
-        <% } else { %>
-            <form action="FollowServlet" method="post" style="display:inline;">
-                <input type="hidden" name="gameId" value="<%= game.getId() %>">
-                <input type="hidden" name="gamerId" value="<%= loggedInUser.getId() %>">
-                <input type="hidden" name="action" value="follow">
-                <button type="submit" class="btn btn-outline-primary">Follow</button>
-            </form>
+        <% if (!isPublisher) { %>
+            <% if (isFollow) { %>
+                <form action="FollowServlet" method="post" style="display:inline;">
+                    <input type="hidden" name="gameId" value="<%= game.getId() %>">
+                    <input type="hidden" name="gamerId" value="<%= loggedInUser.getId() %>">
+                    <input type="hidden" name="action" value="unfollow">
+                    <button type="submit" class="btn btn-outline-primary">Unfollow</button>
+                </form>
+            <% } else { %>
+                <form action="FollowServlet" method="post" style="display:inline;">
+                    <input type="hidden" name="gameId" value="<%= game.getId() %>">
+                    <input type="hidden" name="gamerId" value="<%= loggedInUser.getId() %>">
+                    <input type="hidden" name="action" value="follow">
+                    <button type="submit" class="btn btn-outline-primary">Follow</button>
+                </form>
+            <% } %>
+        <% } %>
+
+        <% if (hasBuy) { %>
+            <a id="DownloadNowButton" class="btn btn-primary" href="<%= game.getGameLink() %>">Install Game</a>
+
+            <% if (isRefundable) { %>
+                <form action="RefundServlet" method="get" style="display:inline;">
+                    <input type="hidden" name="gameId" value="<%= bill.getGameId() %>">
+                    <input type="hidden" name="billId" value="<%= bill.getId() %>">
+                    <input type="hidden" name="gamerId" value="<%= bill.getGamerId() %>">
+                    <input type="hidden" name="refundnumber" value="<%= bill.getBuyPrice() %>">
+                    <button type="submit" class="btn btn-primary">Refund</button>
+                </form>
+            <% } %>
         <% } %>
     <% } %>
 
-    <!-- Display Install Game button for users who have bought the game -->
-    <% if (hasBuy) { %>
-        <a id="DownloadNowButton" class="btn btn-primary" href="<%= game.getGameLink() %>">Install Game</a>
-
-        <% if (isRefundable) { %>
-            <form action="RefundServlet" method="get" style="display:inline;">
-                <input type="hidden" name="gameId" value="<%= bill.getGameId() %>">
-                <input type="hidden" name="billId" value="<%= bill.getId() %>">
-                <input type="hidden" name="gamerId" value="<%= bill.getGamerId() %>">
-                <input type="hidden" name="refundnumber" value="<%= bill.getBuyPrice() %>">
-                <button type="submit" class="btn btn-primary">Refund</button>
+    <% if (loggedInUser.getRole() == 1) { %> <!-- Admin-specific options -->
+        <a id="InstallButton" class="btn btn-primary" href="<%= game.getGameLink() %>">Install Game</a>
+        <% if (!isPublishable) { %>
+            <form action="PublishGameServlet" method="post" style="display:inline;">
+                <input type="hidden" name="gameId" value="<%= game.getId() %>">
+                <input type="hidden" name="action" value="accept">
+                <button type="submit" class="btn btn-success">Accept</button>
             </form>
         <% } %>
+        <form action="PublishGameServlet" method="post" style="display:inline;">
+            <input type="hidden" name="gameId" value="<%= game.getId() %>">
+            <input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
     <% } %>
-    
-    <!-- Display return to home button for non-publisher users -->
+
     <a class="btn btn-primary" href="Home.jsp">Return to Home</a>
 <% } %>
-
 
 
                                     </div>

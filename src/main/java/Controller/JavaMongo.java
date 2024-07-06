@@ -75,6 +75,7 @@ public class JavaMongo {
 
  System.out.println(GameDAO.getMostProfitableGamesByPeriod("Month"));
 
+
     }
 
     /*publisher*/

@@ -80,7 +80,7 @@ public class TransactionBillDAO {
      public static List<Bill> getBillsByGameID(String gameId) {
     MongoClientSettings settings = getConnectionLocal();
     List<Bill> billsList = new ArrayList<>();
-
+    
     try (MongoClient mongoClient = MongoClients.create(settings)) {
         MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
@@ -216,7 +216,7 @@ public class TransactionBillDAO {
 
                 // Remove the purchase document from the Buy collection
                 Bson deleteFilter = Filters.eq("ID_Bill", billId);
-                DeleteResult result = buyCollection.deleteOne(deleteFilter);
+                DeleteResult result = buyCollection.deleteMany(deleteFilter);
                 if (result.getDeletedCount() > 0) {
                     System.out.println("Purchase refunded: " + billId);
                 } else {
@@ -282,7 +282,7 @@ public class TransactionBillDAO {
 
                 // Remove the purchase document from the Buy collection
                 Bson deleteFilter = Filters.eq("ID_Bill", billId);
-                DeleteResult result = buyCollection.deleteOne(deleteFilter);
+                DeleteResult result = buyCollection.deleteMany(deleteFilter);
                 if (result.getDeletedCount() > 0) {
                     System.out.println("Purchase refunded: " + billId);
                 } else {
@@ -295,6 +295,39 @@ public class TransactionBillDAO {
             e.printStackTrace();
         }
     }
+    
+     public static void refundAllGamesForGamer(String gamerId) {
+        MongoClientSettings settingsLocal = getConnectionLocal();
+        try (MongoClient mongoClientLocal = MongoClients.create(settingsLocal)) {
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+
+            // Access the collections
+            MongoCollection<Document> buyCollection = fpteamDBLocal.getCollection("Buy");
+
+            // Find all bills related to the gamer
+            MongoCursor<Document> cursor = buyCollection.find(Filters.eq("ID_Gamer", gamerId)).iterator();
+
+            // Iterate over each bill and process the refund
+            while (cursor.hasNext()) {
+                Document billDoc = cursor.next();
+                String billId = billDoc.getString("ID_Bill");
+                String gameId = billDoc.getString("ID_Game");
+                Double refundPrice = billDoc.getDouble("Price");
+
+                // Create a Bill object from the document
+                Bill bill = new Bill(billId, gameId, gamerId,billDoc.getString("BuyTime") ,refundPrice);
+
+                // Check if the bill is refundable
+                if (isRefundable(bill)) {
+                    refundPurchase(billId, gamerId, gameId, refundPrice);
+                }
+            }
+            cursor.close();
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static void addPurchase(String billId, String gamerId, String gameId, String buyTime, Double buyPrice) {
         MongoClientSettings settings = getConnection();

@@ -115,6 +115,8 @@ https://templatemo.com/tm-579-cyborg-gaming
           <!-- ***** Banner Start ***** -->
          <div class="row" >
               <%
+                      Boolean isAdminObj = (Boolean) request.getAttribute("isAdmin");
+            boolean isAdmin = isAdminObj != null && isAdminObj.booleanValue();
             // Lấy thông tin người chơi từ request attribute
             Model.Gamers gamer = (Model.Gamers) request.getAttribute("gamer");
             ArrayList<Game> games = (ArrayList<Game>) request.getAttribute("games");
@@ -135,28 +137,23 @@ https://templatemo.com/tm-579-cyborg-gaming
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-4 align-self-center">
-                    <ul>
+          <div class="col-lg-4 align-self-center">
+    <ul>
+           <li>Balance <span><%= gamer.getMoney() %> VNĐ</span></li>
+        <% if (!isAdmin) { %>
+         
+            <li><a href="UpdateProfile.jsp">UPDATE</a></li>
+            <li><a href="FollowServlet?gamerid=<%= gamer.getId() %>">Wish Lists</a></li>
+        </ul>
+        <div class="d-flex justify-content-start align-items-center">
+            <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>
+            <a href="transaction.jsp" class="btn btn-primary">Transaction</a>
+        </div>
+        <% } else { %>
+        <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary">Delete Account</a>
+        <% } %>
+</div>
 
-                      <li>Games Downloaded <span> 1</span></li>
-
-                      <li>Balance <span><%=gamer.getMoney()%> VNĐ</span></li>
-                      <li>  <a href="UpdateProfile.jsp">UPDATE</a></li>
-
-
-                      
-                      
-
-                      <li>Review History <span>None</span></li>
-
-                <li><a href="FollowServlet?gamerid=<%=gamer.getId()%>">Wish Lists</a></li>
-
-                    </ul>
-                        <div class="d-flex justify-content-start align-items-center">
-                      <a href="UpdateProfile.jsp" class="btn btn-primary ">Update</a>
-                      <a href="transaction.jsp" class="btn btn-primary">Transaction</a>
-                    </div>
-                  </div>
                 </div>
                 <div class="row">
                   <div class="col-lg-12">

@@ -1,3 +1,4 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -6,6 +7,8 @@ package DAO;
 
 import static Controller.JavaMongo.getConnection;
 import static Controller.JavaMongo.getConnectionLocal;
+import Model.Game;
+import Model.Gamers;
 import Model.Publishers;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
@@ -40,8 +43,8 @@ public class PublisherDAO {
             Document gamePublishDoc = new Document()
                     .append("ID_Game", gameId)
                     .append("ID_Game_Publisher", publisherId)
-                    .append("ID_Admin", "admin_1")
-                    .append("isPublishable", true);
+                    .append("ID_Admin", "")
+                    .append("isPublishable", false);
 
             gamesCollection.insertOne(gamePublishDoc);
         } catch (Exception e) {
@@ -122,6 +125,41 @@ public class PublisherDAO {
             }
         } catch (MongoException e) {
             e.printStackTrace();
+        }
+
+        return publisher;
+    }
+      public static Publishers getPublisherByPublisherId(String publisherID) {
+        MongoClientSettings settings = getConnectionLocal();
+        Publishers publisher = null;
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            try {
+                MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+                MongoCollection<Document> gamePublishersCollection = fpteamDB.getCollection("GamePublishers");
+
+                Document doc = gamePublishersCollection.find(Filters.eq("ID", publisherID)).first();
+
+                if (doc != null) {
+                    publisher = new Publishers(
+                            doc.getString("ID"),
+                            doc.getString("Name"),
+
+                            doc.getString("Email"),
+                            doc.getString("Password"),
+
+                            doc.getString("Bank_account"),
+                            doc.getDouble("Profit"),
+                            doc.getString("Description"),
+                            doc.getString("AvatarLink"),
+                            doc.getDouble("Money"),
+                            doc.getInteger("Role", 2),
+                            doc.getString("RegistrationDate")
+                    );
+                }
+            } catch (MongoException e) {
+                e.printStackTrace();
+            }
         }
 
         return publisher;
@@ -310,6 +348,57 @@ public class PublisherDAO {
         return null; // Return null if no publisher found with the given email
     }
 
+   public static void deletePublisher(Publishers publisher) {
+       
+      MongoClientSettings settingsLocal = getConnectionLocal(); 
+
+        try (MongoClient mongoClient = MongoClients.create(settingsLocal)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> publisherCollection = fpteamDB.getCollection("GamePublishers");
+        
+            ArrayList<Game> games = GameDAO.getGamesByPublisherName(publisher.getName());
+            for (Game game : games){
+                   GameDAO.deleteGame(game.getId());
+                   
+            }
+           
+             MongoCollection<Document> userCollection = fpteamDB.getCollection("Users");
+            Bson gamerfilter = Filters.eq("ID", publisher.getId());
+            publisherCollection.deleteMany(gamerfilter);        
+            Bson  userfilter = Filters.eq("ID", publisher.getId());
+            userCollection.deleteMany(userfilter);
+            
+             
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+          MongoClientSettings settings = getConnection(); 
+
+         try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> publisherCollection = fpteamDB.getCollection("GamePublishers");
+        
+            ArrayList<Game> games = GameDAO.getGamesByPublisherName(publisher.getName());
+            for (Game game : games){
+                   GameDAO.deleteGame(game.getId());
+                   
+            }
+           
+             MongoCollection<Document> userCollection = fpteamDB.getCollection("Users");
+            Bson gamerfilter = Filters.eq("ID", publisher.getId());
+            publisherCollection.deleteMany(gamerfilter);        
+            Bson  userfilter = Filters.eq("ID", publisher.getId());
+            userCollection.deleteMany(userfilter);
+            
+             
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+        
+        
+    
+}
+}
+
 
   
-}
