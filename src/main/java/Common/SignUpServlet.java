@@ -122,7 +122,7 @@ public class SignUpServlet extends HttpServlet {
             request.setAttribute("passmess", "Mật khẩu không được để trống.");
             hasErrors = true;
         } else if (p.length() < 5 || !p.matches(regex)) {
-            request.setAttribute("passmess", "Mật khẩu phải có ít nhất 8 ký tự.");
+            request.setAttribute("passmess", "Mật khẩu phải có ít nhất 5 ký tự.");
             hasErrors = true;
         }
 
