@@ -6,6 +6,7 @@
 package Controller;
 
 import static Common.CheckValid.CheckEmail;
+import static Common.CheckValid.CheckEmailVSId;
 import static Controller.DriveQuickstart.APPLICATION_NAME;
 import static Controller.DriveQuickstart.JSON_FACTORY;
 import static Controller.JavaMongo.updateProfile;
@@ -106,8 +107,7 @@ public class UpdateProfileServlet extends HttpServlet {
         String conP = request.getParameter("confirmPass");
 
         String gamerAvatarUrl = null;
-        
-   
+        boolean hasErrors = false; //them       
         // Upload game file to Google Drive if provided
          Part gamerAvatarPart = request.getPart("gamerAvatar"); // Assuming "gameAvatar" is the name of the file input field
         if (  gamerAvatarPart != null && gamerAvatarPart.getSize() > 0) {
@@ -120,37 +120,61 @@ public class UpdateProfileServlet extends HttpServlet {
                 Logger.getLogger(UpdateProfileServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        String regex = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // yeu cau pass có it nhat 1 so 1 chu
-        String emailCheck = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
-        if(!newEM.matches(emailCheck) || !newP.equals(conP) || !newP.matches(regex) || newP.length() < 5 || newDOB.isEmpty()){
+        //start
+        if(!newEM.isEmpty()){
+            String emailCheck = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
+            if(!newEM.matches(emailCheck)){
+                request.setAttribute("mess", "Invalid email!!!!");
+                hasErrors = true;
+            }      
+        }
+        if(!newP.isEmpty()){
+            String pcheck = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // yeu cau pass có it nhat 1 so 1 chu}
+            if(!newP.matches(pcheck) || newP.length()<5){
+                request.setAttribute("mess", "Invalid Password!!!!");
+                hasErrors = true;
+            }
+        }
+        
+        if(!newP.equals(conP)){
+            request.setAttribute("mess", "Password confirmation or Password is incorrect.");
+            hasErrors = true;
+        }
+            //end 
+        /*
+        if(!newEM.matches(emailCheck) || !newP.equals(conP) || !newP.matches(pcheck) || newP.length() < 5 || newDOB.isEmpty()){
             request.setAttribute("mess", "Invalid email or password!!!!");
             //response.sendRedirect("SignUp.jsp");
 
             request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
+        }
+        */
+        
+        if(hasErrors){
+               request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
         }else
-
-        {        
-
-          {        
-
-//            Users sp = new Users();
-//            if(newEM.isEmpty() || newEM == null){
-//                newEM = as.getGmail();
-//                sp = CheckWithId(newEM,sp.getId());          
-//            }
-
+        {   
+            HttpSession session = request.getSession();
+            Users c = (Users) session.getAttribute("account");
+            Gamers g = (Gamers) session.getAttribute("account");
+            if(newEM == null || newEM.isEmpty()){newEM = c.getGmail();}
+            
+            if(newP == null || newP.isEmpty()){newP = c.getPassword();}
+            
+            if(newDOB == null || newDOB.isEmpty()){newDOB = g.getDOB();}
+            
+            if(newN == null || newN.isEmpty()){newN = c.getName();}
+            
             Users as = CheckEmail(newEM);
-
-
-            if(as == null )
-            {
+            Users sp = CheckEmailVSId(newEM, c.getId());
+            if((as == null && sp == null)|| (as != null && sp != null))
+            {              
                 try{
-                    HttpSession session = request.getSession();
+                    //HttpSession session = request.getSession();
                     Users u = (Users) session.getAttribute("account");
-
+                   
                         if( u.getRole() == 3){
-
-
+                           
 
                         updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,newDOB,u.getRole());
 
@@ -167,13 +191,12 @@ public class UpdateProfileServlet extends HttpServlet {
                                     out.println("<title>Servlet profileServlet</title>");  
                                     out.println("</head>");
                                     out.println("<body>");
-                                    out.println("<h1>Servlet profileServlet at " + u.getRole()+ "</h1>");
+                                    out.println("<h1>Servlet profileServlet at " + newEM+ "</h1>");
                                     out.println("</body>");
                                     out.println("</html>");
                                 }                 
                             }
                         }else if( u.getRole() ==2){
-
 
                              updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,newDOB,u.getRole());
 
@@ -206,7 +229,7 @@ public class UpdateProfileServlet extends HttpServlet {
                     }
             }else{
                 request.setAttribute("mess", "An Account is Exist!!!");
-
+                     
                     //response.sendRedirect("SignUp.jsp");
                     request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
             }
@@ -214,7 +237,6 @@ public class UpdateProfileServlet extends HttpServlet {
         
         
         
-    }
     }
     /** 
      * Returns a short description of the servlet.

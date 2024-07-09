@@ -50,5 +50,14 @@ public class CheckValid extends JavaMongo {
             return null;
     }
    
-    
+    public static Users CheckEmailVSId(String email, String id){
+        ArrayList<Users> users = getAllUser();
+
+            for (Users u : users) {
+                if (u.getGmail().equals(email) && u.getId().equals(id)) {
+                    return u;
+                }
+            }
+            return null;
+    }
 }
