@@ -54,6 +54,8 @@ public class GamerDAO {
                 String registrationDate = gamerDoc.getString("RegistrationDate");
                 String dob = gamerDoc.getString("Date of Birth");
 
+            
+
                 // Create a Gamer object
                 gamer = new Gamers(id, name, gmail, password, role, money, avatarLink, registrationDate, dob);
             }
@@ -112,7 +114,7 @@ public class GamerDAO {
                             doc.getInteger("Role"),
                             doc.getDouble("Money"),
                             doc.getString("AvatarLink"), // Get AvatarLink from the document
-                            doc.getString("RegistrationDate"),
+                             doc.getString("RegistrationDate"),
                             doc.getString("Date of Birth")
                     );
                     gamersList.add(gamers);
@@ -148,7 +150,9 @@ public class GamerDAO {
                         doc.getInteger("Role"),
                         doc.getDouble("Money"),
                         doc.getString("AvatarLink"),
+
                         doc.getString("RegistrationDate"),
+
                         doc.getString("Date of Birth")
                 );
                 gamersList.add(gamer);
@@ -218,7 +222,9 @@ public class GamerDAO {
                     .append("Money", Money)
                     .append("AvatarLink", AvatarLink)
                     .append("Role", role)
+
                     .append("RegistrationDate", RegistrationDate)
+
                     .append("Date of Birth", DOB);
             gamersCollection.insertOne(gamer);
         } catch (MongoException e) {
@@ -247,7 +253,9 @@ public class GamerDAO {
                         gamerDoc.getInteger("Role"),
                         gamerDoc.getDouble("Money"),
                         gamerDoc.getString("AvatarLink"),
-                        gamerDoc.getString("RegistrationDate"),
+
+                         gamerDoc.getString("RegistrationDate"),
+
                         gamerDoc.getString("Date of Birth")
                 );
             }
@@ -279,7 +287,8 @@ public class GamerDAO {
                         gamerDoc.getInteger("Role"),
                         gamerDoc.getDouble("Money"),
                         gamerDoc.getString("AvatarLink"),
-                        gamerDoc.getString("RegistrationDate"),
+                gamerDoc.getString("RegistrationDate"),
+
                         gamerDoc.getString("Date of Birth")
                 );
             }

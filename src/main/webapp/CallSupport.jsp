@@ -13,21 +13,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>Cyborg - Awesome HTML5 Template</title>
+        <title>Cyborg - Awesome HTML5 Template</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Bootstrap core CSS -->
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
-    <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
-    <link rel="stylesheet" href="assets/css/owl.css">
-    <link rel="stylesheet" href="assets/css/animate.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
-  <link rel="stylesheet" href="assets/css/Style.css">
+        <!-- Additional CSS Files -->
+         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/fontawesome.css">
+        <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
+        <link rel="stylesheet" href="assets/css/owl.css">
+        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+        <link rel="stylesheet" href="assets/css/Style.css">
+    
 <!--
 
 TemplateMo 579 Cyborg Gaming
@@ -124,44 +126,28 @@ https://templatemo.com/tm-579-cyborg-gaming
             <div class="col-lg-12">
                 <h2>Get Support</h2>
                 <!-- Search Box -->
-                <form id="searchForm" class="mb-4">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for your problem..." aria-label="Search" aria-describedby="button-search">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button" id="button-search">Search</button>
-                        </div>
-                    </div>
-                </form>
+                   <form action="ReportServlet" method="get">
+        <input type="hidden" name="action" value="search">
+        <div class="form-group">
+            <label for="problemName">Problem Name:</label>
+            <input type="text" id="problemName" name="problemName" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+                
+                
                 <!-- Support Form -->
-                <form id="supportForm">
-                    <div class="form-group" >
-                        <div class="form-group">
-                                <label for="gameName">Overall Problem</label>
-                                <input type="text" class="form-control" id="OverallProblem" placeholder="Enter problems name">
-                            </div>
-                        <label for="supportCategory">Select Support Category</label>
-                        <div >
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="gameSupport" value="game">
-                                <label style=" color: white" class="form-check-label" for="gameSupport">Game</label>
-                            </div>
-                       
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="policySupport" value="policy">
-                                <label style=" color: white" class="form-check-label" for="policySupport">Policy</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="publisherSupport" value="game-publisher">
-                                <label  style=" color: white" class="form-check-label" for="publisherSupport">Game Publisher</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="supportReason">Reason for Support</label>
-                        <textarea class="form-control" id="supportReason" rows="4" placeholder="Please describe your issue..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit Support Request</button>
-                </form>
+                <form id="supportForm" action="ReportServlet" method="post">
+            <div class="form-group">
+                <label for="OverallProblem">Overall Problem</label>
+                <input type="text" class="form-control" id="OverallProblem" name="OverallProblem" placeholder="Enter problems name" required>
+            </div>
+            <div class="form-group">
+                <label for="supportReason">Reason for Support</label>
+                <textarea class="form-control" id="supportReason" name="supportReason" rows="4" placeholder="Please describe your issue..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Support Request</button>
+        </form>
             </div>
         </div>
     </div>

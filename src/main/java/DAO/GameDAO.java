@@ -10,6 +10,7 @@ import static DAO.TransactionBillDAO.refundAllGamesForGamer;
 import Model.Bill;
 import Model.Follow;
 import Model.Game;
+import Model.Publishers;
 import Model.Review;
 import Model.Users;
 import com.mongodb.MongoClientSettings;
@@ -315,6 +316,72 @@ public class GameDAO {
         }
 
         return unpublishableGamesList;
+    }
+
+    
+       public static ArrayList<Game> getUnpublishableGamesByPublisher(Publishers p ) {
+           MongoClientSettings settings = getConnectionLocal();
+        ArrayList<Game> games = new ArrayList<>();
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+
+            // Access the "Games" and "Publish" collections
+            MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+            MongoCollection<Document> publishCollection = fpteamDB.getCollection("Publish");
+            MongoCollection<Document> gamePublishersCollection = fpteamDB.getCollection("GamePublishers");
+
+            // Find the publisher document based on the provided publisher name
+            Document publisherDoc = gamePublishersCollection.find(Filters.regex("Name", ".*" + p.getName()  + ".*", "i")).first();
+
+            if (publisherDoc != null) {
+                String publisherId = publisherDoc.getString("ID");
+
+                // Create a filter to search for game documents with the matching publisher ID in the Publish collection
+                Bson filter = Filters.eq("ID_Game_Publisher", publisherId);
+
+                // Find all documents in the Publish collection that match the filter
+                FindIterable<Document> publishDocs = publishCollection.find(filter);
+
+                for (Document publishDoc : publishDocs) {
+                    String gameId = publishDoc.getString("ID_Game");
+
+                    // Create a filter to find the game document in the Games collection based on gameId
+                    Bson gameFilter = Filters.eq("ID", gameId);
+
+                    // Find the game document in the Games collection
+                    Document gameDoc = gamesCollection.find(gameFilter).first();
+
+                    if (gameDoc != null) {
+                        // Extract game attributes from the document
+                        String id = gameDoc.getString("ID");
+                        String name = gameDoc.getString("Name");
+                        double price = gameDoc.getDouble("Price");
+                        String publishDay = gameDoc.getString("Publish_day");
+                        int numberOfBuyers = gameDoc.getInteger("Number_of_buyers");
+                        String linkTrailer = gameDoc.getString("LinkTrailer");
+                        String avatarLink = gameDoc.getString("AvatarLink");
+                        String gameLink = gameDoc.getString("GameLink");
+                        String description = gameDoc.getString("Description");
+                        String minimumCPU = gameDoc.getString("Minimum_CPU");
+                        String minimumRAM = gameDoc.getString("Minimum_RAM");
+                        String minimumGPU = gameDoc.getString("Minimum_GPU");
+                        String maximumCPU = gameDoc.getString("Maximum_CPU");
+                        String maximumRAM = gameDoc.getString("Maximum_RAM");
+                        String maximumGPU = gameDoc.getString("Maximum_GPU");
+
+                        // Create a Game object and add it to the list
+                        Game game = new Game(id, name, price, publishDay, numberOfBuyers, linkTrailer, avatarLink, gameLink, description, minimumCPU, minimumRAM, minimumGPU, maximumCPU, maximumRAM, maximumGPU);
+                        if (isGamePublishable(game.getId()) == false) {
+                            games.add(game);
+                        }
+                    }
+                }
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        return games;
     }
 
     public static Game getGameByFollow(Follow follow) {

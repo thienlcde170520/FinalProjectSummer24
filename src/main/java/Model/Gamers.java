@@ -9,8 +9,10 @@ public class Gamers extends Users{
     private String RegistrationDate;
     private String DOB;
     
+
     
     public Gamers(String id, String name, String gmail, String password, int role, Double Money, String AvatarLink, String RegistrationDate, String DOB) {
+
         super(id, name, gmail, password, role);
         //if Money = null => this.Money = 0;
         this.Money = (Money != null) ? Money : 0;
@@ -50,22 +52,24 @@ public class Gamers extends Users{
     public void setRegistrationDate(String RegistrationDate) {
         this.RegistrationDate = RegistrationDate;
     }
-
-    public String getDOB() {
+  public String getDOB() {
         return DOB;
     }
 
     public void setDOB(String DOB) {
         this.DOB = DOB;
     }
-    
+
+
+
+  
+   
     
 
     @Override
     public String toString() {
         return "Gamers{" + super.toString()+ "Money=" + Money + ", AvatarLink=" + AvatarLink + ", RegistrationDate=" + RegistrationDate + ", Date of Birth=" + DOB + '}';
     }
-    
     
     
     
