@@ -80,7 +80,9 @@ public class ReportDAO {
             MongoDatabase database = mongoClient.getDatabase("FPT");
             MongoCollection<Document> collection = database.getCollection("Reports");
             
-            String reportId = "Report_" + generateRandomNumber();
+            String reportId;
+            do{ reportId = "Report_" + generateRandomNumber();
+            } while (isReportIdExist(reportId));
             String timestamp = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
             boolean isSearchable = false;
             String respond = null;
@@ -101,6 +103,15 @@ public class ReportDAO {
             e.printStackTrace();
         }
     }
+     
+     private static boolean isReportIdExist (String reportId){
+         List<Report> report = getAllReports();
+         for (Report r : report){
+             if(r.getReportId().equals(reportId))
+                 return true;
+         }
+         return false;
+     }
      
     public static void deleteReport(String reportId) {
         MongoClientSettings settings = getConnectionLocal();

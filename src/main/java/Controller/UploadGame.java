@@ -7,6 +7,7 @@ package Controller;
 import static Controller.DriveQuickstart.APPLICATION_NAME;
 import static Controller.DriveQuickstart.JSON_FACTORY;
 import DAO.GameDAO;
+import static DAO.GameDAO.getAllGames;
 import DAO.GenreDAO;
 import DAO.PublisherDAO;
 import Model.Game;
@@ -175,8 +176,10 @@ public class UploadGame extends HttpServlet {
         e.printStackTrace();
         response.getWriter().println("Failed to upload game files: " + e.getMessage());
     }
-
-            String gameId = "game_" + generateRandomNumber();
+        String gameId;
+        do{
+           gameId = "game_" + generateRandomNumber();
+        } while (isGameIdExists(gameId));
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         String currentDate = dateFormat.format(new Date());
         Game game = new Game(
@@ -311,6 +314,15 @@ public String uploadFileToDrive(String fileName, java.io.File file, String mimeT
         return random.nextInt(100000); // Adjust as per your requirement for random number range
     }
 
+    
+    private boolean isGameIdExists(String gameId){
+        ArrayList<Game> games = getAllGames();
+        for (Game g : games){
+            if (g.getId().equals(gameId))
+                return true;
+        }
+        return false;
+    }
     /**
      * Returns a short description of the servlet.
      *
