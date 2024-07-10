@@ -83,21 +83,46 @@
                             <!-- ***** Menu Start ***** -->
                             <ul class="nav">
                                 <li><a href="Home.jsp" class="active">Home</a></li>
-                                <li><a href="browse.html">Browse</a></li>
-                                <li><a href="DisplayGenreServlet">Genre</a></li>
 
+                            
+                           
+                
+                                <%    Users user = (Users) session.getAttribute("account");
+%>
                                 <%
-                                    Users user = (Users) session.getAttribute("account");
-                                    if (user != null && user.getRole() == 2) {
-                                %>
-                                <li><a href="UploadGame">Upload Game</a></li>
-                                    <%
-                                        }
-                                    %>
-                                <li><a href="LogOutServlet">LOG OUT</a></li>
+    
+    if (user != null && user.getRole()== 2 ) {
+%>
+        <li><a href="UploadGame">Upload Game</a></li>
+   
+<%
+    }
+%>
 
-                                <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                <%
+    if (user != null && user.getRole()== 1 ) {
+%>
+        <li><a href="PublishGameServlet">Verify Game</a></li>
+          <li><a href="ManageUser.jsp"> Manage User</a></li>
+           <li><a href="ReportServlet">Respond Report </a></li>
+<%
+    }
+%>
+        
+           <li><a href="LogOutServlet">LOG OUT</a></li>
+       <%
+                               
+                               if (user != null && user.getRole()== 2 ||  user.getRole()== 3 ) {
+%>    <li><a href="BestSellerServlet">Game</a></li>
 
+                                <li><a href="DisplayGenreServlet">Genre</a></li>
+                    <li><a href="CallSupport.jsp">Report </a></li>
+            <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+<%
+    }
+%>
+                            
                             </ul>   
                             <a class='menu-trigger'>
                                 <span>Menu</span>
@@ -109,11 +134,12 @@
             </div>
         </header>
 
+
         <!-- ***** Header Area End ***** -->
 
         <!-- ***** Game Presentation Start ***** -->
 
-      <section class="game-presentation">
+     
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -122,7 +148,7 @@
                     <h1>Report List</h1>
                 </div>
                        
-                
+                 <section class="game-presentation">
                   <div class="container mt-5">
        
                      <form action="ReportServlet" method="get">
@@ -134,56 +160,74 @@
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
     </div>
-              <div class="game-results">
-                    <%
-                        Boolean isAdmin = (Boolean) request.getAttribute("isAdmin");
-                        if (isAdmin == null) {
-                            isAdmin = false;
-                        }
+             <div class="game-results">
+    <%
+        Boolean isAdmin = (Boolean) request.getAttribute("isAdmin");
+        if (isAdmin == null) {
+            isAdmin = false;
+        }
 
-                        ArrayList<Report> reports = (ArrayList<Report>) request.getAttribute("reports");
-                        if (reports != null && !reports.isEmpty()) {
-                            for (Report report : reports) {
-                    %>
-                    <div class="game-box">
-                        <div class="game-description">
-                            <h2><%= report.getProblemName() %></h2>
-                            <p><%= report.getDescription() %></p>
-                            <p>Report Time: <%= report.getTimestamp() %></p>
-                            <p>Reporter: <a href="profileServlet?gamerid=<%= report.getUserId() %>"><%= report.getUserId() %></a></p>
-                            <% if (isAdmin) { %>
-                                <!-- Form for responding to the report -->
-                                <div class="form-container">
-                                    <form action="RespondReportServlet" method="post">
-                                        <input type="hidden" name="reportId" value="<%= report.getReportId() %>">
-                                        <div class="form-group">
-                                            <label for="respondText">Respond:</label>
-                                            <textarea class="form-control" id="respondText" name="respondText" rows="3" placeholder="Write your response here..."><%= report.getRespond() != null ? report.getRespond() : "" %></textarea>
-                                        </div>
-                                        <div class="form-group form-check">
-                                            <input type="checkbox" class="form-check-input" id="isSearchable" name="isSearchable" <%= report.isIsSearchable() ? "checked" : "" %>>
-                                            <label class="form-check-label" for="isSearchable">Mark as Searchable</label>
-                                        </div>
-                                        <button type="submit" name="action" value="respond" class="btn btn-primary">Submit Response</button>
-                                        <button type="submit" name="action" value="delete" class="btn btn-danger">Delete Report</button>
-                                    </form>
-                                </div>
-                            <% } %>
+        ArrayList<Report> reports = (ArrayList<Report>) request.getAttribute("reports");
+        if (reports != null && !reports.isEmpty()) {
+            for (Report report : reports) {
+    %>
+    <div class="game-box">
+        <div class="game-description">
+            <h2><%= report.getProblemName() %></h2>
+            <p><%= report.getDescription() %></p>
+            <p>Report Time: <%= report.getTimestamp() %></p>
+            <p>Reporter: <a href="profileServlet?gamerid=<%= report.getUserId() %>"><%= report.getUserId() %></a></p>
+            <% if (isAdmin) { %>
+                <!-- Form for responding to the report -->
+                <div class="form-container">
+                    <form action="RespondReportServlet" method="post">
+                        <input type="hidden" name="reportId" value="<%= report.getReportId() %>">
+                        <div class="form-group">
+                            <label for="respondText">Respond:</label>
+                            <textarea class="form-control" id="respondText" name="respondText" rows="3" placeholder="Write your response here..."><%= report.getRespond() != null ? report.getRespond() : "" %></textarea>
                         </div>
-                    </div>
-                    <%
-                            }
-                        } else {
-                    %>
-                    <p>No report history found.</p>
-                    <%
-                        }
-                    %>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="isSearchable" name="isSearchable" <%= report.isIsSearchable() ? "checked" : "" %>>
+                            <label class="form-check-label" for="isSearchable">Mark as Searchable</label>
+                        </div>
+                        <button type="submit" name="action" value="respond" class="btn btn-primary">Submit Response</button>
+                        <button type="submit" name="action" value="delete" class="btn btn-danger">Delete Report</button>
+                    </form>
                 </div>
+            <% } else { %>
+                <div class="form-container">
+                    <form>
+                        <input type="hidden" name="reportId" value="<%= report.getReportId() %>">
+                        <div class="form-group">
+                            <label for="respondText">Respond:</label>
+                            <textarea class="form-control" readonly id="respondText" name="respondText" rows="3" placeholder="Write your response here..."><%= report.getRespond() != null ? report.getRespond() : "" %></textarea>
+                        </div>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="isSearchable" name="isSearchable" <%= report.isIsSearchable() ? "checked" : "" %> disabled>
+                            <label class="form-check-label" for="isSearchable">Mark as Searchable</label>
+                        </div>
+                            <button type="submit" name="action" value="respond" class="btn btn-primary" hidden disabled>Submit Response</button>
+                        <button type="submit" name="action" value="delete" class="btn btn-danger" hidden disabled>Delete Report</button>
+                    </form>
+                </div>
+            <% } %>
+        </div>
+    </div>
+    <%
+            }
+        } else {
+    %>
+    <p>No report history found.</p>
+    <%
+        }
+    %>
+</div>
+
+                </section>
+
             </div>
         </div>
     </div>
-</section>
  
 
 

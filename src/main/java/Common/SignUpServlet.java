@@ -156,6 +156,7 @@ public class SignUpServlet extends HttpServlet {
             try {
                 Gamers g = new Gamers();
                 String idG = "gamer_"+generateRandomNumber();
+                
                 String idP = "pub_" + generateRandomNumber();
                 Publishers pu = new Publishers();
                 LocalDateTime now = LocalDateTime.now();
