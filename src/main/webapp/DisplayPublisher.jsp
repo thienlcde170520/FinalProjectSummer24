@@ -171,16 +171,17 @@ https://templatemo.com/tm-579-cyborg-gaming
                                     </div>
                                         
                                     <div class="col-lg-4 align-self-center">
+
     <ul>
                  <li>Games Published <span><%= publishgames.size() %></span></li>
-               
+                <li>Balance <span><%= pub.getMoney() %> VNĐ</span></li>
        <% if (!isUpdateable) { %>
         </ul>
         <% } else {
 %>
 
  <div class="d-flex justify-content-start align-items-center">
-            <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>
+             <a href="UpdatePubProfile.jsp" class="btn btn-primary" >Update</a>
             <a href="RespondReportServlet?UserId=<%=user.getId() %>" class="btn btn-primary">Send Report</a>
             <a href="DeleteAccountServlet?UserId=<%= user.getId() %>" class="btn btn-primary">Delete Account</a>
         </div>
@@ -188,6 +189,7 @@ https://templatemo.com/tm-579-cyborg-gaming
 }
 %>
 </div>                                </div>
+
                               <div class="row">
                   <div class="col-lg-12">
                     <div class="clips">

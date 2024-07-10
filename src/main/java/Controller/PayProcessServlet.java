@@ -7,6 +7,8 @@ package Controller;
 
 import DAO.GameDAO;
 import DAO.TransactionBillDAO;
+import static DAO.TransactionBillDAO.getBillsByGameID;
+import Model.Bill;
 import Model.Game;
 import Model.Gamers;
 import Model.Users;
@@ -18,6 +20,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -89,8 +92,9 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     String buyTime = request.getParameter("buyTime");
 
     // Generate random bill ID
-    String billId = generateBillId();
-
+    String billId;
+    do{billId = generateBillId();
+    } while (isBillIdExist(gameId,billId));
     // Retrieve game details and logged-in user (gamer)
     Game game = GameDAO.getGameByGameID(gameId);
     HttpSession session = request.getSession();
@@ -114,6 +118,14 @@ private String generateBillId() {
     return "bill_" + randomNumber;
 }
 
+private boolean isBillIdExist (String billId, String gameId){
+    List<Bill> bill = getBillsByGameID(gameId);
+    for (Bill b :bill){
+        if(b.getId().equals(billId))
+            return true;
+    }
+    return false;
+}
     /** 
      * Returns a short description of the servlet.
      * @return a String containing servlet description
