@@ -1,3 +1,4 @@
+<%@page import="Model.Publishers"%>
 <%@page import="Model.Users"%>
 <%@page import="DAO.GamerDAO"%>
 <%@page import="DAO.GameDAO"%>
@@ -144,9 +145,12 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <%
                     // Lấy thông tin người chơi từ request attribute
                     Model.Publishers pub = (Model.Publishers) request.getAttribute("publisher");
+                    Publishers User = (Publishers) session.getAttribute("account");
                     ArrayList<Game> publishgames = (ArrayList<Game>) request.getAttribute("publishgames");
-                              ArrayList<Game> unpublishgames = (ArrayList<Game>) request.getAttribute("unpublishgames");
+                    ArrayList<Game> unpublishgames = (ArrayList<Game>) request.getAttribute("unpublishgames");
                     ArrayList<Review> reviews = (ArrayList<Review>) request.getAttribute("reviews");
+                       Boolean isUpdateableObj = (Boolean) request.getAttribute("isUpdateable");
+            boolean isUpdateable = isUpdateableObj != null && isUpdateableObj.booleanValue();
                     if (pub != null) {
                     %>
                         <div class="col-lg-12">
@@ -165,13 +169,25 @@ https://templatemo.com/tm-579-cyborg-gaming
                                             </div>
                                         </div>
                                     </div>
+                                        
                                     <div class="col-lg-4 align-self-center">
-                                        <ul>
-                                            <li>Games Published <span><%= publishgames.size() %></span></li>
-                                            <li>Balance <span><%= pub.getMoney() %> VNĐ</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
+    <ul>
+                 <li>Games Published <span><%= publishgames.size() %></span></li>
+               
+       <% if (!isUpdateable) { %>
+        </ul>
+        <% } else {
+%>
+
+ <div class="d-flex justify-content-start align-items-center">
+            <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>
+            <a href="RespondReportServlet?UserId=<%=user.getId() %>" class="btn btn-primary">Send Report</a>
+            <a href="DeleteAccountServlet?UserId=<%= user.getId() %>" class="btn btn-primary">Delete Account</a>
+        </div>
+<%
+}
+%>
+</div>                                </div>
                               <div class="row">
                   <div class="col-lg-12">
                     <div class="clips">
