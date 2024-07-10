@@ -17,10 +17,29 @@
         <link rel="stylesheet" href="assets/css/Style.css">
         <!-- Custom CSS for white text on labels -->
         <style>
-            .label-white {
+            .label-white{
                 color: white;
             }
-        </style>
+        .error-message {
+            color: red;
+            font-size: 0.875em;
+            display: none;
+        }
+    </style>
+    <script>
+        function validateForm() {
+            var amount = document.forms["payment-form"]["amount"].value;
+            var amountError = document.getElementById("amount-error");
+
+            if (isNaN(amount) || amount <= 0) {
+                amountError.style.display = "block";
+                return false;
+            } else {
+                amountError.style.display = "none";
+                return true;
+            }
+        }
+    </script>
     </head>
 
     <body>
@@ -85,42 +104,43 @@
         </header>
         <!-- ***** Header Area End ***** -->
 
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="page-content">
+      <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-content">
 
-                        <h2>Gamer Transaction Page</h2>
+                    <h2>Gamer Transaction Page</h2>
 
-                        <div class="make-payment">
-                            <h3>Make Payment</h3>
-                            <form id="payment-form" action="atm_momo" method="POST">
+                    <div class="make-payment">
+                        <h3>Make Payment</h3>
+                        <form id="payment-form" name="payment-form" action="atm_momo" method="POST" onsubmit="return validateForm()">
 
-                                <div class="form-group">
-                                    <label for="amount" class="col-form-label label-white">Amount:</label>
-                                    <input type='text' name="amount" value="<%= (request.getAttribute("amount") != null) ? request.getAttribute("amount") : "" %>"
-                                           class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="order-info" class="col-form-label label-white">Order Information:</label>
-                                    <input type='text' name="order-info" value="<%= (request.getAttribute("order-info") != null) ? request.getAttribute("order-info") : "" %>"
-                                           class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="requestType" class="label-white">Payment Method:</label>
-                                    <select class="form-control" id="requestType" name="requestType" required>
-                                        <option value="payWithATM">Pay with ATM</option>
-                                        <option value="captureWallet">Pay with QR CODE</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Submit Payment</button>
-                            </form>
+                            <div class="form-group">
+                                <label for="amount" class="col-form-label label-white">Amount:</label>
+                                <input type='text' name="amount" value="<%= (request.getAttribute("amount") != null) ? request.getAttribute("amount") : "" %>"
+                                       class="form-control" />
+                                <div id="amount-error" class="error-message">Please enter a valid amount greater than 0.</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="order-info" class="col-form-label label-white">Order Information:</label>
+                                <input type='text' name="order-info" value="<%= (request.getAttribute("order-info") != null) ? request.getAttribute("order-info") : "" %>"
+                                       class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="requestType" class="label-white">Payment Method:</label>
+                                <select class="form-control" id="requestType" name="requestType" required>
+                                    <option value="payWithATM">Pay with ATM</option>
+                                    <option value="captureWallet">Pay with QR CODE</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Payment</button>
+                        </form>
 
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
         <!-- Footer and Scripts -->
         <footer>

@@ -8,8 +8,10 @@ package Common;
 import static Common.CheckValid.CheckEmail;
 import Controller.JavaMongo;
 import static DAO.GamerDAO.CreateNewGamerAccount;
+import static DAO.GamerDAO.getAllGamers;
 import static DAO.GamerDAO.getGamerByEmail;
 import static DAO.PublisherDAO.CreateNewPublisgherAccount;
+import static DAO.PublisherDAO.getAllPublishers;
 import static DAO.PublisherDAO.getPublisherByEmail;
 
 
@@ -26,6 +28,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -86,154 +89,156 @@ public class SignUpServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        //processRequest(request, response);
-        String n = request.getParameter("name");
-        String em = request.getParameter("email");
-        String p = request.getParameter("password");
-        String rp = request.getParameter("confirm_password");
-        String role = request.getParameter("role");
-        
-        boolean hasErrors = false;
-        
-        
-        // Generate the current date and time
-        String regex = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // yeu cau pass có it nhat 1 so 1 chu
-        String emailPattern = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
-        
-        // Kiểm tra tên người dùng
-        if (n == null || n.trim().isEmpty()) {
-            request.setAttribute("namemess", "Tên người dùng không được để trống.");
-            hasErrors = true;
-        }
+    // processRequest(request, response);
+    String n = request.getParameter("name");
+    String em = request.getParameter("email");
+    String p = request.getParameter("password");
+    String rp = request.getParameter("confirm_password");
+    String role = request.getParameter("role");
 
-        // Kiểm tra email
-        if (em == null || em.trim().isEmpty()) {
-            request.setAttribute("emailmess", "Email không được để trống.");
-            hasErrors = true;
-        } else if (!em.matches(emailPattern)) {
-            request.setAttribute("emailmess", "Email không đúng mẫu.");
-            hasErrors = true;
-        }
+    boolean hasErrors = false;
 
-        // Kiểm tra mật khẩu
-        if (p == null || p.trim().isEmpty()) {
-            request.setAttribute("passmess", "Mật khẩu không được để trống.");
-            hasErrors = true;
-        } else if (p.length() < 5 || !p.matches(regex)) {
-            request.setAttribute("passmess", "Mật khẩu phải có ít nhất 5 ký tự.");
-            hasErrors = true;
-        }
+    // Generate the current date and time
+    String regex = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // Password must have at least one letter and one number
+    String emailPattern = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
 
-        // Kiểm tra xác nhận mật khẩu
-        if (rp == null || !rp.equals(p)) {
-            request.setAttribute("conpassmess", "Xác nhận mật khẩu không đúng.");
-            hasErrors = true;
-        }
-        if(role == null){
-            request.setAttribute("rolemess","Role khong duoc trong");
-            hasErrors =true;
-        }
-        
-        
-        if (hasErrors) {           
-                request.getRequestDispatcher("Register.jsp").forward(request, response);
-            
-        }else{
-            
-            int roleValue;
-            
-            if("gamer".equals(role)){
-                roleValue = 3;
-            }else if("publisher".equals(role)){
-                roleValue = 2;
-            }else{
-                request.setAttribute("mess", "Invalid role selected!");
-                request.getRequestDispatcher("Register.jsp").forward(request, response);
-                return;
-            }
-            try {
-                Gamers g = new Gamers();
-                String idG = "gamer_"+generateRandomNumber();
-                String idP = "pub_" + generateRandomNumber();
-                Publishers pu = new Publishers();
-                LocalDateTime now = LocalDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                String registrationDate = now.format(formatter);
-                //String Id = "game_" + generateRandomNumber();
-                
-                Users as = CheckEmail(em);
-                if (as == null) {
-                    try{
-//                        int numberUser = JavaMongo.getAllUser().size();
-//                        int numberCus = JavaMongo.getAllGamers().size();
-
-                        if(roleValue == 3){
-
-                            CreateNewGamerAccount( idG,n,  p,  em, roleValue,g.getMoney(),g.getAvatarLink(),registrationDate,g.getDOB());
-
-                            HttpSession session = request.getSession();
-                            session.setAttribute("account",getGamerByEmail(em));
-                        }else if (roleValue == 2){
-                            CreateNewPublisgherAccount(idP, n,  p,  em,pu.getBank_account(),
-                                    pu.getProfit(),pu.getDescription(),pu.getAvatarLink(),pu.getMoney() ,roleValue, registrationDate );
-                            HttpSession session = request.getSession();
-                            session.setAttribute("account",getPublisherByEmail(em));
-                        }
-                        //response.sendRedirect("Home.jsp");
-                        
-                        request.getRequestDispatcher("Home.jsp").forward(request, response);
-                        
-                    } catch (ServletException | IOException e) {
-                        try (PrintWriter out = response.getWriter()) {
-                            /* TODO output your page here. You may use following sample code. */
-                            out.println("<!DOCTYPE html>");
-                            out.println("<html>");
-                            out.println("<head>");
-                            out.println("<title>Servlet SignUpServlet</title>");
-                            out.println("</head>");
-                            out.println("<body>");
-                            out.println("<h1>Servlet SignUpServlet at " + e.getMessage() + "</h1>");
-                            out.println("</body>");
-                            out.println("</html>");
-                        }
-                    }
-                } else {
-                    request.setAttribute("mess", "An Account is Exist!!!");
-                     request.setAttribute("blue", true);
-                    //response.sendRedirect("SignUp.jsp");
-                    request.getRequestDispatcher("Login.jsp").forward(request, response);
-                }
-
-                /*
-            try (java.sql.Connection con = Java_JDBC.getConnectionWithSqlJdbc()) {
-            String name = request.getParameter("name");  
-            String pass = request.getParameter("pass");
-            Java_JDBC.CreateAccount(con, name, pass);
-            } catch (Exception e) {
-            e.printStackTrace();
-            }
-            response.sendRedirect("index.jsp");
-                 */
-            } catch (Exception ex) {
-                try (PrintWriter out = response.getWriter()) {
-                    /* TODO output your page here. You may use following sample code. */
-                    out.println("<!DOCTYPE html>");
-                    out.println("<html>");
-                    out.println("<head>");
-                    out.println("<title>Servlet SignUpServlet</title>");
-                    out.println("</head>");
-                    out.println("<body>");
-                    out.println("<h1>Servlet SignUpServlet at " + ex.getMessage() + "</h1>");
-                    out.println("</body>");
-                    out.println("</html>");
-                }
-                Logger.getLogger(SignUpServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
+    // Validate username
+    if (n == null || n.trim().isEmpty()) {
+        request.setAttribute("namemess", "Tên người dùng không được để trống.");
+        hasErrors = true;
     }
+
+    // Validate email
+    if (em == null || em.trim().isEmpty()) {
+        request.setAttribute("emailmess", "Email không được để trống.");
+        hasErrors = true;
+    } else if (!em.matches(emailPattern)) {
+        request.setAttribute("emailmess", "Email không đúng mẫu.");
+        hasErrors = true;
+    }
+
+    // Validate password
+    if (p == null || p.trim().isEmpty()) {
+        request.setAttribute("passmess", "Mật khẩu không được để trống.");
+        hasErrors = true;
+    } else if (p.length() < 5 || !p.matches(regex)) {
+        request.setAttribute("passmess", "Mật khẩu phải có ít nhất 5 ký tự.");
+        hasErrors = true;
+    }
+
+    // Validate confirm password
+    if (rp == null || !rp.equals(p)) {
+        request.setAttribute("conpassmess", "Xác nhận mật khẩu không đúng.");
+        hasErrors = true;
+    }
+
+    if (role == null) {
+        request.setAttribute("rolemess", "Role không được trống.");
+        hasErrors = true;
+    }
+
+    if (hasErrors) {
+        request.getRequestDispatcher("Register.jsp").forward(request, response);
+    } else {
+        int roleValue;
+
+        if ("gamer".equals(role)) {
+            roleValue = 3;
+        } else if ("publisher".equals(role)) {
+            roleValue = 2;
+        } else {
+            request.setAttribute("mess", "Invalid role selected!");
+            request.getRequestDispatcher("Register.jsp").forward(request, response);
+            return;
+        }
+
+        try {
+            Gamers g = new Gamers();
+            String idG;
+            do {
+                idG = "gamer_" + generateRandomNumber();
+            } while (isGamerIdExists(idG));
+
+            String idP;
+            do {
+                idP = "pub_" + generateRandomNumber();
+            } while (isPublisherIdExists(idP));
+
+            Publishers pu = new Publishers();
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String registrationDate = now.format(formatter);
+
+            Users as = CheckEmail(em);
+            if (as == null) {
+                try {
+                    if (roleValue == 3) {
+                        CreateNewGamerAccount(idG, n, p, em, roleValue, g.getMoney(), g.getAvatarLink(), registrationDate, g.getDOB());
+                        HttpSession session = request.getSession();
+                        session.setAttribute("account", getGamerByEmail(em));
+                    } else if (roleValue == 2) {
+                        CreateNewPublisgherAccount(idP, n, p, em, pu.getBank_account(), pu.getProfit(), pu.getDescription(), pu.getAvatarLink(), pu.getMoney(), roleValue, registrationDate);
+                        HttpSession session = request.getSession();
+                        session.setAttribute("account", getPublisherByEmail(em));
+                    }
+                    request.getRequestDispatcher("Home.jsp").forward(request, response);
+                } catch (ServletException | IOException e) {
+                    try (PrintWriter out = response.getWriter()) {
+                        out.println("<!DOCTYPE html>");
+                        out.println("<html>");
+                        out.println("<head>");
+                        out.println("<title>Servlet SignUpServlet</title>");
+                        out.println("</head>");
+                        out.println("<body>");
+                        out.println("<h1>Servlet SignUpServlet at " + e.getMessage() + "</h1>");
+                        out.println("</body>");
+                        out.println("</html>");
+                    }
+                }
+            } else {
+                request.setAttribute("mess", "An Account is Exist!!!");
+                request.setAttribute("blue", true);
+                request.getRequestDispatcher("Login.jsp").forward(request, response);
+            }
+        } catch (Exception ex) {
+            try (PrintWriter out = response.getWriter()) {
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Servlet SignUpServlet</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>Servlet SignUpServlet at " + ex.getMessage() + "</h1>");
+                out.println("</body>");
+                out.println("</html>");
+            }
+            Logger.getLogger(SignUpServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+}
+ 
+ //check if ID is existed?
+ 
+ private boolean  isGamerIdExists (String idG){
+     ArrayList<Gamers> gamers = getAllGamers();
+     for (Gamers g : gamers){
+         if (g.getId().equals(idG))
+             return true;
+     }
+     return false;
+ }
+ 
+  private boolean  isPublisherIdExists (String idP){
+     ArrayList<Publishers> publisher = getAllPublishers();
+     for (Publishers p : publisher){
+         if (p.getId().equals(idP))
+             return true;
+     }
+     return false;
+ }
+ 
     //radomaId
     public static String generateRandomNumber() {
         Random random = new Random();

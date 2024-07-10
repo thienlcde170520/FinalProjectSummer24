@@ -2,6 +2,7 @@ package Controller;
 
 
 import DAO.GameDAO;
+import DAO.GamerDAO;
 import DAO.PublisherDAO;
 import DAO.ReportDAO;
 import Model.Users;
@@ -74,7 +75,7 @@ public class JavaMongo {
 //    }
 
 
- System.out.println(ReportDAO.searchReportsByProblemName("Game"));
+ System.out.println(GamerDAO.getAllGamers());
 
 
     }

@@ -1,3 +1,4 @@
+<%@page import="Model.Users"%>
 <%@page import="Model.Game"%>
 <%@page import="Model.Genre"%>
 <%@page import="java.util.ArrayList"%>
@@ -39,7 +40,7 @@
         </div>
         <!-- ***** Preloader End ***** -->
         <!-- ***** Header Area Start ***** -->
-        <header class="header-area header-sticky">
+       <header class="header-area header-sticky">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -52,18 +53,54 @@
                             <!-- ***** Search End ***** -->
                             <div class="search-input">
                                 <form id="search" action="SearchGameServlet" method="get">
-                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" />
-                                    <button type="submit"><i class="fa fa-search"></i></button>
+                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                                    <i class="fa fa-search"></i>
                                 </form>
                             </div>
                             <!-- ***** Search End ***** -->
                             <!-- ***** Menu Start ***** -->
                             <ul class="nav">
                                 <li><a href="Home.jsp" class="active">Home</a></li>
-                                <li><a href="browse.html">Browse</a></li>
-                                <li><a href="details.html">Details</a></li>
-                                <li><a href="streams.html">Streams</a></li>
-                                <li><a href="profile.html">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+                            
+                           
+                
+                                <%    Users user = (Users) session.getAttribute("account");
+%>
+                                <%
+    
+    if (user != null && user.getRole()== 2 ) {
+%>
+        <li><a href="UploadGame">Upload Game</a></li>
+   
+<%
+    }
+%>
+
+                <%
+    if (user != null && user.getRole()== 1 ) {
+%>
+        <li><a href="PublishGameServlet">Verify Game</a></li>
+          <li><a href="ManageUser.jsp"> Manage User</a></li>
+           <li><a href="ReportServlet">Respond Report </a></li>
+<%
+    }
+%>
+        
+           <li><a href="LogOutServlet">LOG OUT</a></li>
+       <%
+                               
+                               if (user != null && user.getRole()== 2 ||  user.getRole()== 3 ) {
+%>    <li><a href="BestSellerServlet">Game</a></li>
+
+                                <li><a href="DisplayGenreServlet">Genre</a></li>
+                    <li><a href="CallSupport.jsp">Report </a></li>
+            <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+<%
+    }
+%>
+                            
                             </ul>   
                             <a class='menu-trigger'>
                                 <span>Menu</span>
@@ -74,10 +111,11 @@
                 </div>
             </div>
         </header>
+
         <!-- ***** Header Area End ***** -->
 
         <!-- ***** Game Presentation Start ***** -->
-        <section class="game-presentation">
+       
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -86,6 +124,7 @@
                         </div>
                         <!-- Filter Form -->
                         <!-- Filter Form -->
+                         <section class="game-presentation">
                         <form id="filterForm" action="SearchGameServlet" method="post">
                             <div class="form-row">
                                 <!-- Genre Filter -->
@@ -187,10 +226,11 @@
                                 }
                             %>
                         </div>
+                          </section>
                     </div>
                 </div>
             </div>
-        </section>
+      
         <!-- ***** Game Presentation End ***** -->
 
         <footer>
