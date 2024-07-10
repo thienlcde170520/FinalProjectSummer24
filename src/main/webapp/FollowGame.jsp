@@ -1,4 +1,4 @@
-    <%@page import="Model.Follow"%>
+<%@page import="Model.Follow"%>
 <%-- 
     Document   : Home
     Created on : May 28, 2024, 12:58:34 PM
@@ -18,7 +18,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%><!DOCTYPE html>
 <html lang="en">
 
-     <head>
+    <head>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -27,21 +27,21 @@
 
         <title>Cyborg - Awesome HTML5 Template</title>
 
-       
-    <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Bootstrap core CSS -->
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 
-    <!-- Additional CSS Files -->
+        <!-- Additional CSS Files -->
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
-    <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
-    <link rel="stylesheet" href="assets/css/owl.css">
-    <link rel="stylesheet" href="assets/css/animate.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
-  <link rel="stylesheet" href="assets/css/Style.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    
+        <link rel="stylesheet" href="assets/css/fontawesome.css">
+        <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
+        <link rel="stylesheet" href="assets/css/owl.css">
+        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+        <link rel="stylesheet" href="assets/css/Style.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+
     </head>
 
 
@@ -82,20 +82,43 @@
                             <!-- ***** Menu Start ***** -->
                             <ul class="nav">
                                 <li><a href="Home.jsp" class="active">Home</a></li>
-                                <li><a href="browse.html">Browse</a></li>
-                                <li><a href="DisplayGenreServlet">Genre</a></li>
-                                
-                                <%
-    Users user = (Users) session.getAttribute("account");
-    if (user != null && user.getRole()== 2 ) {
-%>
-        <li><a href="UploadGame">Upload Game</a></li>
-<%
-    }
-%>
-                               <li><a href="LogOutServlet">LOG OUT</a></li>
 
+
+
+
+                                <%    Users user = (Users) session.getAttribute("account");
+                                %>
+                                <%
+                                    if (user != null && user.getRole() == 2) {
+                                %>
+                                <li><a href="UploadGame">Upload Game</a></li>
+
+                                <%
+                                    }
+                                %>
+
+                                <%
+                                    if (user != null && user.getRole() == 1) {
+                                %>
+                                <li><a href="PublishGameServlet">Verify Game</a></li>
+                                <li><a href="ManageUser.jsp"> Manage User</a></li>
+                                <li><a href="ReportServlet">Respond Report </a></li>
+                                    <%
+                                        }
+                                    %>
+
+                                <li><a href="LogOutServlet">LOG OUT</a></li>
+                                    <%
+                                        if (user != null && user.getRole() == 2 || user.getRole() == 3) {
+                                    %>    <li><a href="BestSellerServlet">Game</a></li>
+
+                                <li><a href="DisplayGenreServlet">Genre</a></li>
+                                <li><a href="CallSupport.jsp">Report </a></li>
                                 <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+                                <%
+                                    }
+                                %>
 
                             </ul>   
                             <a class='menu-trigger'>
@@ -108,70 +131,74 @@
             </div>
         </header>
 
+
         <!-- ***** Header Area End ***** -->
 
         <!-- ***** Game Presentation Start ***** -->
-        <section class="game-presentation">
+
+        <!-- ***** Game Presentation End ***** -->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-content">
+
+
+
+
+                     
+                                    <div class="section-heading">
+                                        <h1>Follow Game</h1>
+                                    </div>
+                                    <!-- Search Box -->
+                                    <%
+                                        ArrayList<Game> games = (ArrayList<Game>) request.getAttribute("games");
+                                        ArrayList<Follow> follows = (ArrayList<Follow>) request.getAttribute("follows");
+
+                                        if (follows != null && !follows.isEmpty()) {
+                                            for (Follow follow : follows) {
+                                                for (Game game : games) {
+                                                    if (game.getId().equals(follow.getIdGame())) {
+                                    %>
+                                    <div class="game-box">
+                                        <a href="GameDetailServlet?gameid=<%= game.getId()%>">
+                                            <img src="<%= game.getAvatarLink()%>" alt="Game Avatar" class="game-avatar">
+                                        </a>
+                                        <div class="game-description">
+                                            <h2><%= game.getName()%></h2>
+                                            <p><%= game.getDescription()%></p>
+                                            <p>Price: <%= game.getPrice()%> VNĐ</p>
+                                            <p>Follow Price: <%= follow.getFollowPrice()%> VNĐ</p>
+                                            <p>Follow Time: <%= follow.getFollowTime()%></p>
+                                        </div>
+                                    </div>
+                                    <%
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                    %>
+                                    <p>No follow history found.</p>
+                                    <%
+                                        }
+                                    %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               
+
+        <footer>
             <div class="container">
                 <div class="row">
-                    <div class="col-12">
-                        <div class="section-heading">
-                            <h1>Follow Game</h1>
-                        </div>
-                     
+                    <div class="col-lg-12">
+                        <p>Copyright © 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
 
-                   <div class="game-results">
-    <%
-        ArrayList<Game> games = (ArrayList<Game>) request.getAttribute("games");
-        ArrayList<Follow> follows = (ArrayList<Follow>) request.getAttribute("follows");
-
-        if (follows != null && !follows.isEmpty()) {
-            for (Follow follow : follows) {
-                for (Game game : games) {
-                    if (game.getId().equals(follow.getIdGame())) {
-    %>
-    <div class="game-box">
-        <a href="GameDetailServlet?gameid=<%= game.getId() %>">
-            <img src="<%= game.getAvatarLink() %>" alt="Game Avatar" class="game-avatar">
-        </a>
-        <div class="game-description">
-            <h2><%= game.getName() %></h2>
-            <p><%= game.getDescription() %></p>
-            <p>Price: <%= game.getPrice() %> VNĐ</p>
-            <p>Follow Price: <%= follow.getFollowPrice() %> VNĐ</p>
-            <p>Follow Time: <%= follow.getFollowTime() %></p>
-        </div>
-    </div>
-    <%
-                    }
-                }
-            }
-        } else {
-    %>
-    <p>No follow history found.</p>
-    <%
-        }
-    %>
-</div>
+                            <br>Design: <a href="https://templatemo.com" target="_blank" title="free CSS templates">TemplateMo</a></p>
                     </div>
                 </div>
             </div>
-        </section>
-        <!-- ***** Game Presentation End ***** -->
-        
-        
-        
-      <footer>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <p>Copyright © 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
-          
-          <br>Design: <a href="https://templatemo.com" target="_blank" title="free CSS templates">TemplateMo</a></p>
-        </div>
-      </div>
-    </div>
-  </footer>
+        </footer>
 
 
 

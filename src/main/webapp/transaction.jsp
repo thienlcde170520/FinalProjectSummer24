@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="assets/css/animate.css">
         <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
         <link rel="stylesheet" href="assets/css/Style.css">
+          <link rel="stylesheet" href="assets/css/style.css">
         <!-- Custom CSS for white text on labels -->
         <style>
             .label-white {
@@ -37,7 +38,8 @@
         </div>
         <!-- Preloader End -->
         <!-- ***** Header Area Start ***** -->
-       <header class="header-area header-sticky">
+           <!-- ***** Header Area Start ***** -->
+        <header class="header-area header-sticky">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -58,21 +60,46 @@
                             <!-- ***** Menu Start ***** -->
                             <ul class="nav">
                                 <li><a href="Home.jsp" class="active">Home</a></li>
-                                <li><a href="browse.html">Browse</a></li>
-                                <li><a href="details.html">Genre</a></li>
-                                
+
+                            
+                           
+                
+                                <%    Users user = (Users) session.getAttribute("account");
+%>
                                 <%
-    Users user = (Users) session.getAttribute("account");
+    
     if (user != null && user.getRole()== 2 ) {
 %>
         <li><a href="UploadGame">Upload Game</a></li>
+   
 <%
     }
 %>
-                               <li><a href="LogOutServlet">LOG OUT</a></li>
 
-                                <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                <%
+    if (user != null && user.getRole()== 1 ) {
+%>
+        <li><a href="PublishGameServlet">Verify Game</a></li>
+          <li><a href="ManageUser.jsp"> Manage User</a></li>
+           <li><a href="ReportServlet">Respond Report </a></li>
+<%
+    }
+%>
+        
+           <li><a href="LogOutServlet">LOG OUT</a></li>
+       <%
+                               
+                               if (user != null && user.getRole()== 2 ||  user.getRole()== 3 ) {
+%>    <li><a href="BestSellerServlet">Game</a></li>
 
+                                <li><a href="DisplayGenreServlet">Genre</a></li>
+                    <li><a href="CallSupport.jsp">Report </a></li>
+            <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+<%
+    }
+%>
+                            
                             </ul>   
                             <a class='menu-trigger'>
                                 <span>Menu</span>

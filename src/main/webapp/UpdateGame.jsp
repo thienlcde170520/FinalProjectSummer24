@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="assets/css/animate.css">
     <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="assets/css/Style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <!--
     
     TemplateMo 579 Cyborg Gaming
@@ -53,7 +54,7 @@
 </div>
 <!-- ***** Preloader End ***** -->
 <!-- ***** Header Area Start ***** -->
-<header class="header-area header-sticky">
+ <header class="header-area header-sticky">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -74,21 +75,46 @@
                             <!-- ***** Menu Start ***** -->
                             <ul class="nav">
                                 <li><a href="Home.jsp" class="active">Home</a></li>
-                                <li><a href="browse.html">Browse</a></li>
-                                <li><a href="details.html">Genre</a></li>
-                                
+
+                            
+                           
+                
+                                <%    Users user = (Users) session.getAttribute("account");
+%>
                                 <%
-    Users user = (Users) session.getAttribute("account");
+    
     if (user != null && user.getRole()== 2 ) {
 %>
         <li><a href="UploadGame">Upload Game</a></li>
+   
 <%
     }
 %>
-                               <li><a href="LogOutServlet">LOG OUT</a></li>
 
-                                <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                <%
+    if (user != null && user.getRole()== 1 ) {
+%>
+        <li><a href="PublishGameServlet">Verify Game</a></li>
+          <li><a href="ManageUser.jsp"> Manage User</a></li>
+           <li><a href="ReportServlet">Respond Report </a></li>
+<%
+    }
+%>
+        
+           <li><a href="LogOutServlet">LOG OUT</a></li>
+       <%
+                               
+                               if (user != null && user.getRole()== 2 ||  user.getRole()== 3 ) {
+%>    <li><a href="BestSellerServlet">Game</a></li>
 
+                                <li><a href="DisplayGenreServlet">Genre</a></li>
+                    <li><a href="CallSupport.jsp">Report </a></li>
+            <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+<%
+    }
+%>
+                            
                             </ul>   
                             <a class='menu-trigger'>
                                 <span>Menu</span>
@@ -110,11 +136,14 @@
 
 
 <%-- Game Input Form Section --%>
-<section class="game-input-form" style="background-color: #000; color: #F0F5FF">
+
     <div class="container">
         <div class="row">
             <!-- Form Section -->
             <div class="col-12">
+                     <div class="page-content">
+                
+                <section class="game-input-form" style="background-color: #000; color: #F0F5FF">
                 <form action="UpdateGameServlet" method="post"  enctype="multipart/form-data" >
 
                     <div class="form-group">
@@ -251,10 +280,12 @@
                     </div>
 
                 </form>
+                     </section>
+
+                     </div>
             </div>
         </div>
     </div>
-</section>
 <!-- ***** Game Input Form End ***** -->
 <footer>
     <div class="container">
