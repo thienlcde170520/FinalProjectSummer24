@@ -22,7 +22,6 @@
             text-align: center;
             background-color: #ffcccc;
             border-radius: 2px;
-            
         }
 </style>
     <!-- Bootstrap core CSS -->
@@ -132,12 +131,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <div class="form-group">
                         <label for="newEmail">Email</label>
                         <input type="text" class="form-control" id="Email" name="newEmail" placeholder="Enter your new Email ">
-                    </div>
-    
-                    <div class="form-group">
-                        <label for="newDOB">Date of Birth</label>
-                        <input type="date" class="form-control" id="DOB" name="newDOB" placeholder="Enter your date of birth ">
-                    </div>
+                    </div>                   
     
                        <div class="form-group">
                         <label for="newPassWord">PassWord</label>

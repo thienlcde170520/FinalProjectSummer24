@@ -132,8 +132,11 @@ https://templatemo.com/tm-579-cyborg-gaming
                                             <li>Games Published <span><%= publishgames.size() %></span></li>
                                             <li>Balance <span><%= pub.getMoney() %> VNĐ</span></li>
                                         </ul>
-                                    </div>
+                                    </div>                                       
                                 </div>
+                                        <div class="d-flex justify-content-end align-items-center" style="padding-right: 136px;">
+                                            <a href="UpdatePubProfile.jsp" class="btn btn-primary" >Update</a>
+                                        </div>
                               <div class="row">
                   <div class="col-lg-12">
                     <div class="clips">

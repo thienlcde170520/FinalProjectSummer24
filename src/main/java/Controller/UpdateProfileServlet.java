@@ -140,15 +140,7 @@ public class UpdateProfileServlet extends HttpServlet {
             request.setAttribute("mess", "Password confirmation or Password is incorrect.");
             hasErrors = true;
         }
-            //end 
-        /*
-        if(!newEM.matches(emailCheck) || !newP.equals(conP) || !newP.matches(pcheck) || newP.length() < 5 || newDOB.isEmpty()){
-            request.setAttribute("mess", "Invalid email or password!!!!");
-            //response.sendRedirect("SignUp.jsp");
-
-            request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
-        }
-        */
+            //end        
         
         if(hasErrors){
                request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
@@ -156,13 +148,15 @@ public class UpdateProfileServlet extends HttpServlet {
         {   
             HttpSession session = request.getSession();
             Users c = (Users) session.getAttribute("account");
-            Gamers g = (Gamers) session.getAttribute("account");
+            
             if(newEM == null || newEM.isEmpty()){newEM = c.getGmail();}
             
             if(newP == null || newP.isEmpty()){newP = c.getPassword();}
             
-            if(newDOB == null || newDOB.isEmpty()){newDOB = g.getDOB();}
-            
+            if(c.getRole() == 3){
+                Gamers g = (Gamers) session.getAttribute("account");
+                if(newDOB == null || newDOB.isEmpty()){newDOB = g.getDOB();}
+            }
             if(newN == null || newN.isEmpty()){newN = c.getName();}
             
             Users as = CheckEmail(newEM);
@@ -202,8 +196,11 @@ public class UpdateProfileServlet extends HttpServlet {
 
                              Publishers pub = PublisherDAO.getPublisherByEmail(newEM);
                              if(pub != null){
+                                 response.sendRedirect("Home.jsp");
+                                 /*
                                  request.setAttribute("pub", pub);
                                  request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);
+                                 */
                              }else{
                                  try (PrintWriter out = response.getWriter()) {
                                     /* TODO output your page here. You may use following sample code. */
@@ -230,8 +227,8 @@ public class UpdateProfileServlet extends HttpServlet {
             }else{
                 request.setAttribute("mess", "An Account is Exist!!!");
                      
-                    //response.sendRedirect("SignUp.jsp");
-                    request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
+                    if(c.getRole() == 2){request.getRequestDispatcher("UpdatePubProfile.jsp").forward(request, response);}
+                    else if(c.getRole() == 3){request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);}
             }
         }
         
