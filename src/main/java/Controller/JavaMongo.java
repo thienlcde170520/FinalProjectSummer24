@@ -331,9 +331,6 @@ public class JavaMongo {
             if (AvatarLink != null && !AvatarLink.isEmpty()) {
                 gamerUpdateFields.append("AvatarLink", AvatarLink);
             }
-             if(DOB != null && !DOB.isEmpty()){
-                gamerUpdateFields.append("Date of Birth",DOB);
-            }
             // Tạo một document mới chứa thông tin cập nhật cho Users
             Document userUpdateFields = new Document();
             if (name != null && !name.isEmpty()) {

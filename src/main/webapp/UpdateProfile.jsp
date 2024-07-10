@@ -15,15 +15,21 @@
 
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-        <title>Cyborg - Awesome HTML5 Template</title>
-        <style>
-            .error mess{
-                color: red;
-                font-weight: bold;
-            }
-        </style>
-        <!-- Bootstrap core CSS -->
-        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <title>Cyborg - Awesome HTML5 Template</title>
+    <style>
+        .error{
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            background-color: #ffcccc;
+            border-radius: 2px;
+            
+        }
+</style>
+    <!-- Bootstrap core CSS -->
+       <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
 
 
         <!-- Additional CSS Files -->
