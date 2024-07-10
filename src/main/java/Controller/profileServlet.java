@@ -109,6 +109,9 @@ if (user != null && user.getRole() == 1) { // Assuming role 1 means admin
     isAdmin = true;
     isUpdateable = true;
 }
+if (user.getId() == gamerId  ){
+     isUpdateable = true;
+}
      request.setAttribute("isUpdateable", isUpdateable);
         
              request.setAttribute("isAdmin", isAdmin);
@@ -149,10 +152,17 @@ private void handlePublisherProfile(HttpServletRequest request, HttpServletRespo
          ArrayList<Game> publishgames = GameDAO.getGamesByPublisherName(pub.getName());
          ArrayList<Game> unpublishgames = GameDAO.getUnpublishableGamesByPublisher(pub);
             ArrayList<Review> reviews = ReviewDAO.getReviewsByPublisherName(pub.getName());
+                  HttpSession session = request.getSession();
+Users user = (Users) session.getAttribute("account");
+             boolean isUpdateable = false; // Default to false
+if (    user.getId() == null ? pub.getId() == null : user.getId().equals(pub.getId())  ){
+     isUpdateable = true;
+}
         if (pub != null) {
            
             request.setAttribute("publisher", pub);
-        
+              request.setAttribute("isUpdateable", isUpdateable);
+          
                  request.setAttribute("publishgames", publishgames);
                       request.setAttribute("unpublishgames", unpublishgames);
                     request.setAttribute("reviews", reviews);

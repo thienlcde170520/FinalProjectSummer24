@@ -11,6 +11,7 @@ import DAO.ReviewDAO;
 import Model.Game;
 import Model.Publishers;
 import Model.Review;
+import Model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,6 +19,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.concurrent.Flow.Publisher;
 
@@ -44,6 +46,20 @@ public class DisplayPublisherServlet extends HttpServlet {
        request.setAttribute("publisher", publisher);
         request.setAttribute("games", games);
          request.setAttribute("reviews", reviews);
+                       HttpSession session = request.getSession();
+Users user = (Users) session.getAttribute("account");
+             boolean isUpdateable = false; // Default to false
+boolean isAdmin = false; // Default to false
+if (user != null && user.getRole() == 1) { // Assuming role 1 means admin
+    isAdmin = true;
+    isUpdateable = true;
+}
+if (   user.getId() == null ? publisher.getId() == null : user.getId().equals(publisher.getId())  ){
+     isUpdateable = true;
+}     
+request.setAttribute("isUpdateable", isUpdateable);
+               request.setAttribute("isAdmin", isAdmin);
+          
     // Forward the request to the single-game.jsp page
     request.getRequestDispatcher("PublisherProfile.jsp").forward(request, response);
     } 
