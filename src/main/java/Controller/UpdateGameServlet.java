@@ -95,18 +95,18 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     Game game = GameDAO.getGameByGameID(gameId); // Retrieve the existing game by its ID
 
     // Update game details from form inputs
-    String gameName = request.getParameter("gameName");
-    String trailerLink = request.getParameter("trailerLink");
-    String description = request.getParameter("description");
-    String minCpu = request.getParameter("minCpu");
-    String minRam = request.getParameter("minRam");
-    String minGpu = request.getParameter("minGpu");
-    String maxCpu = request.getParameter("maxCpu");
-    String maxRam = request.getParameter("maxRam");
-    String maxGpu = request.getParameter("maxGpu");
-    String priceStr = request.getParameter("priceAmount");
+    String gameName = getParameterOrDefault(request, "gameName", game.getName());
+    String trailerLink = getParameterOrDefault(request, "trailerLink", game.getLinkTrailer());
+    String description = getParameterOrDefault(request, "description", game.getDescription());
+    String minCpu = getParameterOrDefault(request, "minCpu", game.getMinimumCPU());
+    String minRam = getParameterOrDefault(request, "minRam", game.getMinimumRAM());
+    String minGpu = getParameterOrDefault(request, "minGpu", game.getMinimumGPU());
+    String maxCpu = getParameterOrDefault(request, "maxCpu", game.getMaximumCPU());
+    String maxRam = getParameterOrDefault(request, "maxRam", game.getMaximumRAM());
+    String maxGpu = getParameterOrDefault(request, "maxGpu", game.getMaximumGPU());
+    String priceStr = getParameterOrDefault(request, "priceAmount", Double.toString(game.getPrice()));
 
-    double price = 0;
+    double price = game.getPrice();
     if (priceStr != null && !priceStr.trim().isEmpty()) {
         try {
             price = Double.parseDouble(priceStr.trim());
@@ -163,8 +163,6 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     String[] inclusiveGenres = request.getParameterValues("incluGenres");
     String[] exclusiveGenres = request.getParameterValues("excluGenres");
 
-    
-
     // Add inclusive genres
     if (inclusiveGenres != null) {
         for (String genre : inclusiveGenres) {
@@ -181,6 +179,12 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
 
     // Optionally, redirect to a success page or perform other actions
     response.sendRedirect("Home.jsp");
+}
+
+// Utility method to get a parameter or a default value if the parameter is null or empty
+private String getParameterOrDefault(HttpServletRequest request, String paramName, String defaultValue) {
+    String paramValue = request.getParameter(paramName);
+    return (paramValue != null && !paramValue.trim().isEmpty()) ? paramValue : defaultValue;
 }
 
 
