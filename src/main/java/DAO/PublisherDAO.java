@@ -184,10 +184,10 @@ public class PublisherDAO {
                             doc.getString("Password"),
 
                             doc.getString("Bank_account"),
-                            Double.valueOf(doc.getInteger("Profit")),
+                            doc.getDouble("Profit"),
                             doc.getString("Description"),
                             doc.getString("AvatarLink"),
-                            Double.valueOf(doc.getInteger("Money")),
+                            doc.getDouble("Money"),
                             doc.getInteger("Role", 2),
                             doc.getString("RegistrationDate")
                     );
@@ -225,10 +225,10 @@ public class PublisherDAO {
                             doc.getString("Password"),
                             doc.getString("Email"),
                             doc.getString("Bank_account"),
-                            Double.valueOf(doc.getInteger("Profit")),
+                            doc.getDouble("Profit"),
                             doc.getString("Description"),
                             doc.getString("AvatarLink"),
-                            Double.valueOf(doc.getInteger("Money")),
+                            doc.getDouble("Money"),
                             doc.getInteger("Role", 0),
                             doc.getString("RegistrationDate")
                     );
@@ -261,7 +261,6 @@ public class PublisherDAO {
                     .append("Email", email)
                     .append("Role", role);
             usersCollection.insertOne(user);
-
             Document gamer = new Document("ID", id)
                     .append("Name", name)
                     .append("Password", password)

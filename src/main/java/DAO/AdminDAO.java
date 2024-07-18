@@ -36,7 +36,7 @@ public class AdminDAO {
                 return new Admin(
                         adminDoc.getString("ID"),
                         adminDoc.getString("Name"),
-                        adminDoc.getString("Email"),
+                        adminDoc.getString("Gmail"),
                         adminDoc.getString("Password"),
                         adminDoc.getInteger("Role")
                 );
@@ -60,7 +60,7 @@ public class AdminDAO {
                     String id = billDoc.getString("ID");
                     String name = billDoc.getString("Name");
                     String password = "";
-                    Double money = Double.valueOf(billDoc.getInteger("Money"));
+                    Double money =billDoc.getDouble("Money");
                     String avatar = billDoc.getString("AvatarLink");
                     String RegistrationDate = billDoc.getString("RegistrationDate");
                     String Date_of_Birth = billDoc.getString("Date of Birth");

@@ -163,7 +163,7 @@
                                 for (Gamers gamer : gamers) {
                     %>
                     <div class="game-box">
-                        <a href="profileServlet?gamerid=<%= gamer.getId() %>">
+                        <a href="profileServlet?userid=<%= gamer.getId() %>">
                             <img src="<%= gamer.getAvatarLink() %>" alt="Gamer Avatar" class="game-avatar">
                         </a>
                         <div class="game-description">

@@ -137,7 +137,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="section-heading">
-                        <h1>Follow Game</h1>
+                        <h1>Verify Game</h1>
                     </div>
 <section class="game-presentation">
                     <div class="game-results">

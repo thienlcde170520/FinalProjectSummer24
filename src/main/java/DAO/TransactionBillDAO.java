@@ -614,7 +614,7 @@ public class TransactionBillDAO {
                     String id = billDoc.getString("ID_Bill");
                     String gamerID = billDoc.getString("ID_Gamer");
                     String buyTime = billDoc.getString("Buy_time");
-                    Double buyPrice = Double.valueOf(billDoc.getInteger("Buy_price"));
+                    Double buyPrice = billDoc.getDouble("Buy_price");
                     String gameId = billDoc.getString("ID_Game");
                     // Create a Bill object
                     Bill bill = new Bill();
