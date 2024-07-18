@@ -5,7 +5,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Login Page</title>
-        <link rel="stylesheet" type="text/css" href="assets/css/styleLogin.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/login_design.css">
         
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
@@ -13,7 +13,7 @@
         
         <!--banner-->
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 
 
 
@@ -23,7 +23,7 @@
         <link rel="stylesheet" href="assets/css/owl.css">
         <link rel="stylesheet" href="assets/css/animate.css">
         <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
-        <link rel="stylesheet" href="assets/css/Style.css">
+        <!-- <link rel="stylesheet" href="assets/css/Style.css"> -->
 
         
         <link rel="stylesheet" href="assets/css/alertInput.css">
@@ -66,7 +66,7 @@
                     <%
                         if(request.getAttribute("status")!=null)
                             {
-                                out.print("<div class='text-danger'>"+request.getAttribute("status")+"</div>");
+                                out.print("<div class='text_danger'>"+request.getAttribute("status")+"</div>");
                             }
                         if(request.getAttribute("success") != null)
                         {
@@ -117,7 +117,7 @@
                    
                     <div class="media-options">
                         <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:9999/FPTeam/loginGG&response_type=code
-                            &client_id=861336407219-9pau27upj8qhchdlsr9ljsr630ojfb2h.apps.googleusercontent.com&approval_prompt=force" class="field google">
+                            &client_id=507196321849-krfc104j5mdadoum3q5vcl1fapv607qb.apps.googleusercontent.com&approval_prompt=force" class="field google">
     
                             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6WwgH7Nl5_AW9nDCnR2Ozb_AU3rkIbSJdAg&s" alt="" class="google-img">
                             <span>Login with Google</span>

@@ -36,10 +36,15 @@
             #rolemess{
                 margin: -33px 0 0 0;
             }
-            .text-danger{
-                font-size: 16px;
-                background-color: #ffcccc;
+            .text_danger{
+                background-color:   #e6ffe6
+                ;
                 margin: 17px 0;
+                color: #00ff00;
+                font-size: 20px;
+                font-weight: 600;               
+                text-align: center;
+                border-radius: 10px;
             }
         </style>
               
@@ -60,7 +65,7 @@
                                 <%
                                         if(request.getAttribute("message")!=null)
                                         {
-                                           out.print("<p class='text-danger'>"+request.getAttribute("message")+"</p>");
+                                           out.print("<div class='text_danger'>"+request.getAttribute("message")+"</div>");
                                         }
 
                                 %>
