@@ -11,12 +11,10 @@ import Model.Gamers;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import org.bson.Document;
 
+import java.util.ArrayList;
 /**
  *
  * @author ASUS
@@ -48,6 +46,43 @@ public class AdminDAO {
         }
 
         return null;
+    }
+
+    public static ArrayList<Gamers> getAllGamers(){
+        MongoClientSettings settings = getConnectionLocal();
+        ArrayList<Gamers> gamers = new ArrayList<>();
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> buyCollection = fpteamDB.getCollection("Gamers");
+            try (MongoCursor<Document> cursor = buyCollection.find().iterator()) {
+                while (cursor.hasNext()) {
+                    Document billDoc = cursor.next();
+                    String id = billDoc.getString("ID");
+                    String name = billDoc.getString("Name");
+                    String password = "";
+                    Double money = Double.valueOf(billDoc.getInteger("Money"));
+                    String avatar = billDoc.getString("AvatarLink");
+                    String RegistrationDate = billDoc.getString("RegistrationDate");
+                    String Date_of_Birth = billDoc.getString("Date of Birth");
+                    String email = billDoc.getString("Email");
+                    int role = billDoc.getInteger("Role");
+                    Gamers gamer = new Gamers();
+                    gamer.setId(id);
+                    gamer.setName(name);
+                    gamer.setPassword(password);
+                    gamer.setGmail(email);
+                    gamer.setRole(role);
+                    gamer.setMoney(money);
+                    gamer.setAvatarLink(avatar);
+                    gamer.setRegistrationDate(RegistrationDate);
+                    gamer.setDOB(Date_of_Birth);
+                    gamers.add(gamer);
+                }
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+        return gamers;
     }
 }
 
