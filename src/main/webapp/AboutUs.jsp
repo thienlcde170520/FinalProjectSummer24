@@ -192,7 +192,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <div class="col-lg-12">
                     <div class="section-heading">
                         <h2>Our Amazing Team</h2>
-                        <span>Details to details is what makes Hexashop different from the other themes.</span>
+                       
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -276,24 +276,9 @@ https://templatemo.com/tm-579-cyborg-gaming
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h2>Contact Us</h2>
-                <form id="contactForm">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="Your Name">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" placeholder="Your Email">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea class="form-control" id="message" rows="4" placeholder="Your Message"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                </form>
+       <h2><a href="https://drive.google.com/drive/folders/1-z6zxKSTvoBcAN_4iTabjzvHC7bZICJt">Link to Using our game package</a></h2>
+
+                
             </div>
         </div>
     </div>

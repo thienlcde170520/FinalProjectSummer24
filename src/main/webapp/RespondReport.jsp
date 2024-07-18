@@ -176,7 +176,7 @@
             <h2><%= report.getProblemName() %></h2>
             <p><%= report.getDescription() %></p>
             <p>Report Time: <%= report.getTimestamp() %></p>
-            <p>Reporter: <a href="profileServlet?gamerid=<%= report.getUserId() %>"><%= report.getUserId() %></a></p>
+            <p>Reporter: <a href="profileServlet?userid=<%= report.getUserId() %>"><%= report.getUserId() %></a></p>
             <% if (isAdmin) { %>
                 <!-- Form for responding to the report -->
                 <div class="form-container">
