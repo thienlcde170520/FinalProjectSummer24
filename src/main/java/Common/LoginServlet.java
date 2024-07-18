@@ -86,10 +86,34 @@ public class LoginServlet extends HttpServlet {
                 String p = request.getParameter("pass");
                 String r = request.getParameter("remember");
             
-                
+                String regex = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // yeu cau pass có it nhat 1 so 1 chu
+                String emailPattern = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
+                boolean hasErrors = false;
 
                 try {
-                    Users u = userValid(e, p);
+                    if(e.trim().isEmpty() || e == null || p.trim().isEmpty() || p == null){
+                        request.setAttribute("status", "Email and Password not be empty");                                             
+                        hasErrors = true;
+                    }else if(!p.matches(regex) && !e.matches(emailPattern)){
+                        request.setAttribute("status", "Please enter information according to format");
+                        hasErrors = true;
+                    }else{
+                        if(!e.matches(emailPattern)){
+                            request.setAttribute("status", "Please re-enter your email "); 
+                            hasErrors = true;
+                        }
+                        if(!p.matches(regex)|| p.length() < 5){
+                            request.setAttribute("status", "Please re-enter your password ");
+                            hasErrors = true;
+                        }
+                    }
+                    
+                    
+                    if (hasErrors) {           
+                        request.getRequestDispatcher("Login.jsp").forward(request, response);
+                    }
+                    else{
+                        Users u = userValid(e, p);
                     if(u == null){
                         request.setAttribute("status", "An Account not Exist!!!");
                                               
@@ -139,6 +163,7 @@ public class LoginServlet extends HttpServlet {
                         response.addCookie(cr);
                         // response.sendRedirect("Home.jsp");
                         response.sendRedirect("Home.jsp");
+                    }
                     }
                 } catch (Exception ex ) {
                       try (PrintWriter out = response.getWriter()) {

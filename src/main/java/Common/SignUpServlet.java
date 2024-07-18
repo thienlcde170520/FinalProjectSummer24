@@ -104,35 +104,35 @@ public class SignUpServlet extends HttpServlet {
         
         // Kiểm tra tên người dùng
         if (n == null || n.trim().isEmpty()) {
-            request.setAttribute("namemess", "Tên người dùng không được để trống.");
+            request.setAttribute("namemess", "Username cannot be empty");
             hasErrors = true;
         }
 
         // Kiểm tra email
         if (em == null || em.trim().isEmpty()) {
-            request.setAttribute("emailmess", "Email không được để trống.");
+            request.setAttribute("emailmess", "Email cannot be empty");
             hasErrors = true;
         } else if (!em.matches(emailPattern)) {
-            request.setAttribute("emailmess", "Email không đúng mẫu.");
+            request.setAttribute("emailmess", "Email format is not correct");
             hasErrors = true;
         }
 
         // Kiểm tra mật khẩu
         if (p == null || p.trim().isEmpty()) {
-            request.setAttribute("passmess", "Mật khẩu không được để trống.");
+            request.setAttribute("passmess", "Password cannot be empty");
             hasErrors = true;
         } else if (p.length() < 5 || !p.matches(regex)) {
-            request.setAttribute("passmess", "Mật khẩu phải có ít nhất 5 ký tự.");
+            request.setAttribute("passmess", "Password format is wrong");
             hasErrors = true;
         }
 
         // Kiểm tra xác nhận mật khẩu
         if (rp == null || !rp.equals(p)) {
-            request.setAttribute("conpassmess", "Xác nhận mật khẩu không đúng.");
+            request.setAttribute("conpassmess", "Confirm password is wrong");
             hasErrors = true;
         }
         if(role == null){
-            request.setAttribute("rolemess","Role khong duoc trong");
+            request.setAttribute("rolemess","Role cannot be empty");
             hasErrors =true;
         }
         
