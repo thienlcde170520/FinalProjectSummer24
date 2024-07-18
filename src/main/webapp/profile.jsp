@@ -183,7 +183,7 @@ https://templatemo.com/tm-579-cyborg-gaming
 
  <div class="d-flex justify-content-start align-items-center">
             <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>
-            <a href="transaction.jsp" class="btn btn-primary">Transaction</a>
+            <a href="NewTransaction.jsp" class="btn btn-primary">Transaction</a>
             <a href="RespondReportServlet?UserId=<%=user.getId() %>" class="btn btn-primary">Send Report</a>
             <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary">Delete Account</a>
         </div>
