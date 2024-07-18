@@ -235,7 +235,7 @@ public class GameDAO {
                 Document doc = cursor.next();
 
                 // Parse price
-                Double price = doc.getDouble("Price");
+                Double price = Double.valueOf(doc.getInteger("Price"));
 
                 // Parse number of buyers
                 Integer numberOfBuyers = doc.getInteger("Number_of_buyers");

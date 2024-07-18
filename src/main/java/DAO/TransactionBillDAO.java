@@ -599,4 +599,40 @@ public class TransactionBillDAO {
         return transactionsList;
     }
 
+    public static ArrayList<Bill> getAllBills(){
+        MongoClientSettings settings = getConnectionLocal();
+        ArrayList<Bill> billsList = new ArrayList<>();
+
+        try (MongoClient mongoClient = MongoClients.create(settings)) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> buyCollection = fpteamDB.getCollection("Buy");
+            try (MongoCursor<Document> cursor = buyCollection.find().iterator()) {
+                while (cursor.hasNext()) {
+                    Document billDoc = cursor.next();
+
+                    // Extract bill attributes from the document
+                    String id = billDoc.getString("ID_Bill");
+                    String gamerID = billDoc.getString("ID_Gamer");
+                    String buyTime = billDoc.getString("Buy_time");
+                    Double buyPrice = Double.valueOf(billDoc.getInteger("Buy_price"));
+                    String gameId = billDoc.getString("ID_Game");
+                    // Create a Bill object
+                    Bill bill = new Bill();
+                    bill.setId(id);
+                    bill.setGamerId(gamerID);  // Set gamerId for the Bill
+                    bill.setGameId(gameId);
+                    bill.setBuyTime(buyTime);
+                    bill.setBuyPrice(buyPrice);
+
+                    // Add Bill to the list
+                    billsList.add(bill);
+                }
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        return billsList;
+    }
+
 }
