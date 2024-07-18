@@ -225,10 +225,10 @@ public class PublisherDAO {
                             doc.getString("Password"),
                             doc.getString("Email"),
                             doc.getString("Bank_account"),
-                            doc.getDouble("Profit"),
+                            Double.valueOf(doc.getInteger("Profit")),
                             doc.getString("Description"),
                             doc.getString("AvatarLink"),
-                            doc.getDouble("Money"),
+                            Double.valueOf(doc.getInteger("Money")),
                             doc.getInteger("Role", 0),
                             doc.getString("RegistrationDate")
                     );
