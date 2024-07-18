@@ -779,8 +779,6 @@
                 if (this.bar_chart_age === null){
                     const labels = this.age_ranges.map(function(item) { return item.range + '(' + item.label + ')'; });
                     const data = this.age_ranges.map(item => item.count);
-                    console.log(labels)
-                    console.log(data)
                     this.bar_chart_age = new Chart('bar_chart_age', {
                         type: 'bar',
                         data:{
@@ -809,7 +807,6 @@
                     })
                 } else {
                     this.bar_chart_age.data.datasets[0].data = this.age_ranges.map(item => item.count)
-                    console.log(this.age_ranges.map(item => item.count))
                     this.bar_chart_age.update();
                 }
             },
@@ -818,8 +815,6 @@
                 if (this.pie_chart_age === null){
                     const labels = this.age_ranges.map(function(item) { return item.range + '(' + item.label + ')'; });
                     const data = this.age_ranges.map(item => item.count);
-                    console.log(labels)
-                    console.log(data)
                     this.pie_chart_age = new Chart("pie_chart_age", {
                         type: "pie",
                         data: {
@@ -837,7 +832,6 @@
                     });
                 } else {
                     this.pie_chart_age.data.datasets[0].data = this.age_ranges.map(item => item.count)
-                    console.log(this.age_ranges.map(item => item.count))
                     this.pie_chart_age.update();
                 }
             },
