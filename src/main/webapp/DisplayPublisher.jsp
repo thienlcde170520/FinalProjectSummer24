@@ -1,3 +1,5 @@
+<%@page import="Model.Publishers"%>
+<%@page import="Model.Users"%>
 <%@page import="DAO.GamerDAO"%>
 <%@page import="DAO.GameDAO"%>
 <%@page import="DAO.ReviewDAO"%>
@@ -59,41 +61,78 @@ https://templatemo.com/tm-579-cyborg-gaming
   <!-- ***** Preloader End ***** -->
 
   <!-- ***** Header Area Start ***** -->
-  <header class="header-area header-sticky">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <nav class="main-nav">
-                    <!-- ***** Logo Start ***** -->
-                    <a href="index.html" class="logo">
-                        <img src="assets/images/logo.png" alt="">
-                    </a>
-                    <!-- ***** Logo End ***** -->
-                    <!-- ***** Search End ***** -->
-                    <div class="search-input">
-                      <form id="search" action="#">
-                        <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                        <i class="fa fa-search"></i>
-                      </form>
+   <header class="header-area header-sticky">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <nav class="main-nav">
+                            <!-- ***** Logo Start ***** -->
+                            <a href="Home.jsp" class="logo">
+                                <img src="assets/images/logo.png" alt="">
+                            </a>
+                            <!-- ***** Logo End ***** -->
+                            <!-- ***** Search End ***** -->
+                            <div class="search-input">
+                                <form id="search" action="SearchGameServlet" method="get">
+                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                                    <i class="fa fa-search"></i>
+                                </form>
+                            </div>
+                            <!-- ***** Search End ***** -->
+                            <!-- ***** Menu Start ***** -->
+                            <ul class="nav">
+                                <li><a href="Home.jsp" class="active">Home</a></li>
+
+                            
+                           
+                
+                                <%    Users user = (Users) session.getAttribute("account");
+%>
+                                <%
+    
+    if (user != null && user.getRole()== 2 ) {
+%>
+        <li><a href="UploadGame">Upload Game</a></li>
+   
+<%
+    }
+%>
+
+                <%
+    if (user != null && user.getRole()== 1 ) {
+%>
+        <li><a href="PublishGameServlet">Verify Game</a></li>
+          <li><a href="ManageUser.jsp"> Manage User</a></li>
+           <li><a href="ReportServlet">Respond Report </a></li>
+<%
+    }
+%>
+        
+           <li><a href="LogOutServlet">LOG OUT</a></li>
+       <%
+                               
+                               if (user != null && user.getRole()== 2 ||  user.getRole()== 3 ) {
+%>    <li><a href="BestSellerServlet">Game</a></li>
+
+                                <li><a href="DisplayGenreServlet">Genre</a></li>
+                    <li><a href="CallSupport.jsp">Report </a></li>
+            <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+<%
+    }
+%>
+                            
+                            </ul>   
+                            <a class='menu-trigger'>
+                                <span>Menu</span>
+                            </a>
+                            <!-- ***** Menu End ***** -->
+                        </nav>
                     </div>
-                    <!-- ***** Search End ***** -->
-                    <!-- ***** Menu Start ***** -->
-                    <ul class="nav">
-                        <li><a href="Home.jsp">Home</a></li>
-                        <li><a href="browse.html">Browse</a></li>
-                        <li><a href="details.html">Details</a></li>
-                        <li><a href="streams.html">Streams</a></li>
-                        <li><a href="profile.jsp" class="active">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
-                    </ul>   
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
-                    <!-- ***** Menu End ***** -->
-                </nav>
+                </div>
             </div>
-        </div>
-    </div>
-  </header>
+        </header>
+
   <!-- ***** Header Area End ***** -->
 
  <div class="container">
@@ -106,9 +145,12 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <%
                     // Lấy thông tin người chơi từ request attribute
                     Model.Publishers pub = (Model.Publishers) request.getAttribute("publisher");
+                    Publishers User = (Publishers) session.getAttribute("account");
                     ArrayList<Game> publishgames = (ArrayList<Game>) request.getAttribute("publishgames");
-                              ArrayList<Game> unpublishgames = (ArrayList<Game>) request.getAttribute("unpublishgames");
+                    ArrayList<Game> unpublishgames = (ArrayList<Game>) request.getAttribute("unpublishgames");
                     ArrayList<Review> reviews = (ArrayList<Review>) request.getAttribute("reviews");
+                       Boolean isUpdateableObj = (Boolean) request.getAttribute("isUpdateable");
+            boolean isUpdateable = isUpdateableObj != null && isUpdateableObj.booleanValue();
                     if (pub != null) {
                     %>
                         <div class="col-lg-12">
@@ -127,16 +169,27 @@ https://templatemo.com/tm-579-cyborg-gaming
                                             </div>
                                         </div>
                                     </div>
+                                        
                                     <div class="col-lg-4 align-self-center">
-                                        <ul>
-                                            <li>Games Published <span><%= publishgames.size() %></span></li>
-                                            <li>Balance <span><%= pub.getMoney() %> VNĐ</span></li>
-                                        </ul>
-                                    </div>                                       
-                                </div>
-                                        <div class="d-flex justify-content-end align-items-center" style="padding-right: 136px;">
-                                            <a href="UpdatePubProfile.jsp" class="btn btn-primary" >Update</a>
-                                        </div>
+
+    <ul>
+                 <li>Games Published <span><%= publishgames.size() %></span></li>
+                <li>Balance <span><%= pub.getMoney() %> VNĐ</span></li>
+       <% if (!isUpdateable) { %>
+        </ul>
+        <% } else {
+%>
+
+ <div class="d-flex justify-content-start align-items-center">
+             <a href="UpdatePubProfile.jsp" class="btn btn-primary" >Update</a>
+            <a href="RespondReportServlet?UserId=<%=user.getId() %>" class="btn btn-primary">Send Report</a>
+            <a href="DeleteAccountServlet?UserId=<%= user.getId() %>" class="btn btn-primary">Delete Account</a>
+        </div>
+<%
+}
+%>
+</div>                                </div>
+
                               <div class="row">
                   <div class="col-lg-12">
                     <div class="clips">

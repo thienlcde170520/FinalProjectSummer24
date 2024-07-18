@@ -83,44 +83,66 @@
         <!-- Header Area Start -->
 
         <!-- ***** Header Area Start ***** -->
+                 <!-- ***** Header Area Start ***** -->
         <header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="Home.jsp" class="logo">
+                        <img src="assets/images/logo.png" alt="">
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Search End ***** -->
+                    <div class="search-input">
+                        <form id="search" action="SearchGameServlet" method="get">
+                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <i class="fa fa-search"></i>
+                        </form>
+                    </div>
+                    <!-- ***** Search End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li><a href="Home.jsp" class="active">Home</a></li>
+                       
+                                                                 
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <nav class="main-nav">
-                            <!-- ***** Logo Start ***** -->
-                            <a href="Home.jsp" class="logo">
-                                <img src="assets/images/logo.png" alt="">
-                            </a>
-                            <!-- ***** Logo End ***** -->
-                            <!-- ***** Search End ***** -->
-                            <div class="search-input">
-                                <form id="search" action="SearchGameServlet" method="get">
-                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                                    <i class="fa fa-search"></i>
-                                </form>
-                            </div>
-                            <!-- ***** Search End ***** -->
-                            <!-- ***** Menu Start ***** -->
-                            <ul class="nav">
-                                <li><a href="Home.jsp" class="active">Home</a></li>
-                                <li><a href="browse.html">Browse</a></li>
-                                <li><a href="details.html">Genre</a></li>
-                                
-                                <%
-    Users user = (Users) session.getAttribute("account");
-    if (user != null && user.getRole()== 2 ) {
-%>
-        <li><a href="UploadGame">Upload Game</a></li>
-<%
-    }
-%>
-                               <li><a href="LogOutServlet">LOG OUT</a></li>
-
-                                <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
-
-                            </ul>   
+                        <%
+                            Users user = (Users) session.getAttribute("account");
+                            if (user != null) {
+                                if (user.getRole() == 2) {
+                        %>
+                                    <li><a href="UploadGame">Upload Game</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 1) {
+                        %>
+                                    <li><a href="PublishGameServlet">Verify Game</a></li>
+                                    <li><a href="ManageUser.jsp">Manage User</a></li>
+                                    <li><a href="ReportServlet">Respond Report</a></li>
+                                       <li><a href="LogOutServlet">LOG OUT</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 2 || user.getRole() == 3) {
+                        %>
+                                     <li><a href="BestSellerServlet">Game</a></li>
+                                    <li><a href="DisplayGenreServlet">Genre</a></li>
+                                    <li><a href="CallSupport.jsp">Report</a></li>
+                                       <li><a href="LogOutServlet">LOG OUT</a></li>
+                                    <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                        <%
+                                }
+                        %>
+                        <%
+                            } else {
+                        %>
+                                <li><a href="Login.jsp">LOG IN</a></li>
+                                <li><a href="Register.jsp">REGISTER</a></li>
+                        <%
+                            }
+                        %>
+                    </ul>
                             <a class='menu-trigger'>
                                 <span>Menu</span>
                             </a>
@@ -130,7 +152,6 @@
                 </div>
             </div>
         </header>
-
         <!-- Header Area End -->
 
         <div class="container">
@@ -166,31 +187,38 @@
                                 <div class="col-lg-12">
                                     <h2><%= game.getName()%> Details</h2>
                                 </div>
-                                <div class="col-lg-6">
-                                    <div class="left-info">
-                                        <div class="left">
-                                            <h4><%= game.getName()%></h4>
+                                
+<div class="row">
+    <div class="col-lg-6">
+        <div class="genres" style="padding-right: 20px; color: #F0F5FF; padding-top: 50px; padding-bottom: 50px;">
+            <h3>Genres:</h3>
+            <div class="genre-buttons">
+                <% for (Genre genre : genres) { %>
+                <form action="DisplayGenreServlet" method="post" style="display: inline;">
+                    <input type="hidden" name="selectedGenre" value="<%= genre.getType() %>">
+                    <button type="submit" class="btn btn-outline-primary btn-sm genre-button"><%= genre.getType() %></button>
+                </form>
+                <% if (genres.indexOf(genre) < genres.size() - 1) { %>
+                <span>, </span>
+                <% } %>
+                <% } %>
+            </div>
+        </div>
+    </div>
 
-
-                                            <div class="genre-container" style="color : white">
-
-    Genres:
-    <%
-        for (Genre genre : genres) {
-    %>
-    <form action="DisplayGenreServlet" method="post" style="display:inline;">
-        <input type="hidden" name="selectedGenre" value="<%= genre.getType() %>">
-        <button type="submit" class="genre-button"><%= genre.getType() %></button>
-    </form>
-    <%
-        if (genres.indexOf(genre) < genres.size() - 1) {
-            out.print(", ");
-        }
-    }
-    %>
-    
-<a href="DisplayPublisherServlet?publisherName=<%= publisher.getName() %>" class="publisher-p">Game Publisher: <%= publisher.getName() %></a>
+    <div class="col-lg-6">
+        <div class="publisher" style="padding-left: 80px; color: #F0F5FF; padding-top: 50px; padding-bottom: 50px;">
+            <h3>Game Publisher:</h3>
+            <a href="DisplayPublisherServlet?publisherName=<%= publisher.getName() %>" class="publisher-link"><%= publisher.getName() %></a>
+        </div>
+    </div>
 </div>
+
+
+
+
+
+
                                        <%
 // Check if logged-in user is the publisher
 Users loggedInUser = (Users) session.getAttribute("account");
@@ -206,7 +234,7 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
 <% } else { %>
     <% if (loggedInUser.getRole() != 1) { %> <!-- Skip this block for admins -->
         <% if (!hasBuy) { %>
-            <a id="buyNowButton" class="btn btn-primary" href="PayProcessServlet?gameId=<%= game.getId() %>">Buy Now</a>
+            <a id="buyNowButton" class="btn btn-outline-primary" href="PayProcessServlet?gameId=<%= game.getId() %>">Buy Now</a>
         <% } %>
 
         <% if (!isPublisher) { %>
@@ -262,8 +290,7 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
 <% } %>
 
 
-                                    </div>
-                                </div>
+                              
                                 <div class="col-lg-6">
                                     <div class="right-info " style="color: #F0F5FF">
                                         <ul>
@@ -380,7 +407,7 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <p>Copyright � 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
+                        <p>Copyright ? 2036 <a href="#">Cyborg Gaming</a> Company. All rights reserved. 
 
                             <br>Design: <a href="https://templatemo.com" target="_blank" title="free CSS templates">TemplateMo</a></p>
                     </div>

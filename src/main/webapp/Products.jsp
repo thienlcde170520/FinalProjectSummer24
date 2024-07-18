@@ -4,6 +4,7 @@
     Author     : LENOVO
 --%>
 
+<%@page import="Model.Users"%>
 <%@page import="java.util.Random"%>
 <%@page import="Model.Game"%>
 <%@page import="java.util.ArrayList"%>
@@ -84,8 +85,8 @@ https://templatemo.com/tm-579-cyborg-gaming
   </div>
   <!-- ***** Preloader End ***** -->
 
-  <!-- ***** Header Area Start ***** -->
-  <header class="header-area header-sticky">
+        <!-- ***** Header Area Start ***** -->
+        <header class="header-area header-sticky">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -97,29 +98,59 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Search End ***** -->
                     <div class="search-input">
-                      <form id="search" action="#">
-                        <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                        <i class="fa fa-search"></i>
-                      </form>
+                        <form id="search" action="SearchGameServlet" method="get">
+                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <i class="fa fa-search"></i>
+                        </form>
                     </div>
                     <!-- ***** Search End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
                         <li><a href="Home.jsp" class="active">Home</a></li>
-                        <li><a href="browse.html">Browse</a></li>
-                        <li><a href="details.html">Details</a></li>
-                        <li><a href="streams.html">Streams</a></li>
-                        <li><a href="profile.html">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
-                    </ul>   
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
-                    <!-- ***** Menu End ***** -->
-                </nav>
+                          <li><a href="BestSellerServlet">Game</a></li>
+                                    <li><a href="DisplayGenreServlet">Genre</a></li>
+                        <%
+                            Users user = (Users) session.getAttribute("account");
+                            if (user != null) {
+                                if (user.getRole() == 2) {
+                        %>
+                                    <li><a href="UploadGame">Upload Game</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 1) {
+                        %>
+                                    <li><a href="PublishGameServlet">Verify Game</a></li>
+                                    <li><a href="ManageUser.jsp">Manage User</a></li>
+                                    <li><a href="ReportServlet">Respond Report</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 2 || user.getRole() == 3) {
+                        %>
+                                  
+                                    <li><a href="CallSupport.jsp">Report</a></li>
+                                    <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                        <%
+                                }
+                        %>
+                                <li><a href="LogOutServlet">LOG OUT</a></li>
+                        <%
+                            } else {
+                        %>
+                                <li><a href="Login.jsp">LOG IN</a></li>
+                                <li><a href="Register.jsp">REGISTER</a></li>
+                        <%
+                            }
+                        %>
+                    </ul>
+                            <a class='menu-trigger'>
+                                <span>Menu</span>
+                            </a>
+                            <!-- ***** Menu End ***** -->
+                        </nav>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-  </header>
+        </header>
   <!-- ***** Header Area End ***** -->
   <div class="container">
     <div class="row">
@@ -164,18 +195,9 @@ https://templatemo.com/tm-579-cyborg-gaming
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-    
-   
-              
- <!-- ***** Games Area Starts ***** -->
+                     <!-- ***** Games Area Starts ***** -->
 <section class="section" id="games">
-    <div class="container">
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="section-heading">
@@ -225,6 +247,16 @@ https://templatemo.com/tm-579-cyborg-gaming
         </div>
     </div>
 </section>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    
+   
+              
 
 
 

@@ -68,14 +68,14 @@ public class profileServlet extends HttpServlet {
 @Override
 protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-    String gamerId = request.getParameter("gamerid");
+    String userid = request.getParameter("userid");
     HttpSession session = request.getSession();
     Users user = (Users) session.getAttribute("account");
     
-    if (gamerId == null) {
+    if (userid == null) {
         handleUserProfile(request, response, user);
     } else {
-        handleGamerProfile(request, response, gamerId);
+        handleInputProfile(request, response, userid, user);
     }
 }
 
@@ -83,39 +83,64 @@ private void handleUserProfile(HttpServletRequest request, HttpServletResponse r
         throws ServletException, IOException {
     if (user != null) {
         int role = user.getRole();
-        if (role == 3) {
-            handleGamerProfileByEmail(request, response, user.getGmail());
-        } else if (role == 2) {
-            handlePublisherProfile(request, response, user.getGmail());
-        } else {
-            showErrorPage(response, "Invalid user role");
+        switch (role) {
+            case 3:
+                handleGamerProfileByEmail(request, response, user.getGmail());
+                break;
+            case 2:
+                handlePublisherProfile(request, response, user.getGmail());
+                break;
+            default:
+                showErrorPage(response, "Invalid user role");
+                break;
         }
     } else {
         showErrorPage(response, "User not logged in");
     }
 }
 
-private void handleGamerProfile(HttpServletRequest request, HttpServletResponse response, String gamerId)
+private void handleInputProfile(HttpServletRequest request, HttpServletResponse response, String userId, Users user)
         throws ServletException, IOException {
     try {
-        Gamers gamer = GamerDAO.getGamerByGamerId(gamerId);
-        ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(gamer.getId());
-        ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
-        HttpSession session = request.getSession();
-Users user = (Users) session.getAttribute("account");
-boolean isUpdateable = false; // Default to false
-boolean isAdmin = false; // Default to false
-if (user != null && user.getRole() == 1) { // Assuming role 1 means admin
-    isAdmin = true;
-    isUpdateable = true;
-}
-     request.setAttribute("isUpdateable", isUpdateable);
-        
-             request.setAttribute("isAdmin", isAdmin);
-        request.setAttribute("gamer", gamer);
-        request.setAttribute("games", games);
-        request.setAttribute("transactionHistory", transactionHistory);
-        request.getRequestDispatcher("profile.jsp").forward(request, response);
+        boolean isAdmin = user != null && user.getRole() == 1;
+        boolean isUpdateable = false;
+
+        Gamers gamer = GamerDAO.getGamerByGamerId(userId);
+        if (gamer != null) {
+            ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(gamer.getId());
+            ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
+
+            if (user != null && (isAdmin || user.getId().equals(gamer.getId()))) {
+                isUpdateable = true;
+            }
+
+            request.setAttribute("isUpdateable", isUpdateable);
+            request.setAttribute("isAdmin", isAdmin);
+            request.setAttribute("gamer", gamer);
+            request.setAttribute("games", games);
+            request.setAttribute("transactionHistory", transactionHistory);
+            request.getRequestDispatcher("profile.jsp").forward(request, response);
+        } else {
+            Publishers pub = PublisherDAO.getPublisherByPublisherId(userId);
+            if (pub != null) {
+                ArrayList<Game> publishgames = GameDAO.getGamesByPublisherName(pub.getName());
+              
+                ArrayList<Review> reviews = ReviewDAO.getReviewsByPublisherName(pub.getName());
+
+                if (user != null && (isAdmin || user.getId().equals(pub.getId()))) {
+                    isUpdateable = true;
+                }
+
+                request.setAttribute("publisher", pub);
+                request.setAttribute("isUpdateable", isUpdateable);
+                request.setAttribute("isAdmin", isAdmin);
+                request.setAttribute("games", publishgames);
+                request.setAttribute("reviews", reviews);
+                request.getRequestDispatcher("PublisherProfile.jsp").forward(request, response);
+            } else {
+                showErrorPage(response, "User not found");
+            }
+        }
     } catch (Exception ex) {
         showErrorPage(response, ex.getMessage());
     }
@@ -149,10 +174,17 @@ private void handlePublisherProfile(HttpServletRequest request, HttpServletRespo
          ArrayList<Game> publishgames = GameDAO.getGamesByPublisherName(pub.getName());
          ArrayList<Game> unpublishgames = GameDAO.getUnpublishableGamesByPublisher(pub);
             ArrayList<Review> reviews = ReviewDAO.getReviewsByPublisherName(pub.getName());
+                  HttpSession session = request.getSession();
+Users user = (Users) session.getAttribute("account");
+             boolean isUpdateable = false; // Default to false
+if (    user.getId() == null ? pub.getId() == null : user.getId().equals(pub.getId())  ){
+     isUpdateable = true;
+}
         if (pub != null) {
            
             request.setAttribute("publisher", pub);
-        
+              request.setAttribute("isUpdateable", isUpdateable);
+          
                  request.setAttribute("publishgames", publishgames);
                       request.setAttribute("unpublishgames", unpublishgames);
                     request.setAttribute("reviews", reviews);
@@ -166,19 +198,20 @@ private void handlePublisherProfile(HttpServletRequest request, HttpServletRespo
 }
 
 private void showErrorPage(HttpServletResponse response, String message) throws IOException {
-   try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet profile 9</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet profileServlet at " + message + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+    response.setContentType("text/html");
+    try (PrintWriter out = response.getWriter()) {
+        out.println("<!DOCTYPE html>");
+        out.println("<html>");
+        out.println("<head>");
+        out.println("<title>Error</title>");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("<h1>" + message + "</h1>");
+        out.println("</body>");
+        out.println("</html>");
+    }
 }
+
     /** 
      * Handles the HTTP <code>POST</code> method.
      * @param request servlet request

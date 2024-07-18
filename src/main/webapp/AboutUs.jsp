@@ -5,6 +5,7 @@
 --%>
 
 
+<%@page import="Model.Users"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%><!DOCTYPE html>
 <html lang="en">
 
@@ -55,40 +56,77 @@ https://templatemo.com/tm-579-cyborg-gaming
 
   <!-- ***** Header Area Start ***** -->
   <header class="header-area header-sticky">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <nav class="main-nav">
-                    <!-- ***** Logo Start ***** -->
-                    <a href="Home.jsp" class="logo">
-                        <img src="assets/images/logo.png" alt="">
-                    </a>
-                    <!-- ***** Logo End ***** -->
-                    <!-- ***** Search End ***** -->
-                    <div class="search-input">
-                      <form id="search" action="#">
-                        <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                        <i class="fa fa-search"></i>
-                      </form>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <nav class="main-nav">
+                            <!-- ***** Logo Start ***** -->
+                            <a href="Home.jsp" class="logo">
+                                <img src="assets/images/logo.png" alt="">
+                            </a>
+                            <!-- ***** Logo End ***** -->
+                            <!-- ***** Search End ***** -->
+                            <div class="search-input">
+                                <form id="search" action="SearchGameServlet" method="get">
+                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                                    <i class="fa fa-search"></i>
+                                </form>
+                            </div>
+                            <!-- ***** Search End ***** -->
+                            <!-- ***** Menu Start ***** -->
+                            <ul class="nav">
+                                <li><a href="Home.jsp" class="active">Home</a></li>
+
+                            
+                           
+                
+                                <%    Users user = (Users) session.getAttribute("account");
+%>
+                                <%
+    
+    if (user != null && user.getRole()== 2 ) {
+%>
+        <li><a href="UploadGame">Upload Game</a></li>
+   
+<%
+    }
+%>
+
+                <%
+    if (user != null && user.getRole()== 1 ) {
+%>
+        <li><a href="PublishGameServlet">Verify Game</a></li>
+          <li><a href="ManageUser.jsp"> Manage User</a></li>
+           <li><a href="ReportServlet">Respond Report </a></li>
+<%
+    }
+%>
+        
+           <li><a href="LogOutServlet">LOG OUT</a></li>
+       <%
+                               
+                               if (user != null && user.getRole()== 2 ||  user.getRole()== 3 ) {
+%>    <li><a href="BestSellerServlet">Game</a></li>
+
+                                <li><a href="DisplayGenreServlet">Genre</a></li>
+                    <li><a href="CallSupport.jsp">Report </a></li>
+            <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+<%
+    }
+%>
+                            
+                            </ul>   
+                            <a class='menu-trigger'>
+                                <span>Menu</span>
+                            </a>
+                            <!-- ***** Menu End ***** -->
+                        </nav>
                     </div>
-                    <!-- ***** Search End ***** -->
-                    <!-- ***** Menu Start ***** -->
-                    <ul class="nav">
-                        <li><a href="Home.jsp" class="active">Home</a></li>
-                        <li><a href="browse.html">Browse</a></li>
-                        <li><a href="details.html">Details</a></li>
-                        <li><a href="streams.html">Streams</a></li>
-                        <li><a href="profile.html">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
-                    </ul>   
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
-                    <!-- ***** Menu End ***** -->
-                </nav>
+                </div>
             </div>
-        </div>
-    </div>
-  </header>
+        </header>
+
   <!-- ***** Header Area End ***** -->
 
      <div class="container">
@@ -111,15 +149,7 @@ https://templatemo.com/tm-579-cyborg-gaming
               </div>
             </div>
           </div>
-        
-        </div>
-      </div>
-    </div>
-    </div>
-    <!-- ***** Banner End ***** -->
-
- <!-- ***** Main Banner Area Start ***** -->
-    <div class="page-heading about-page-heading" id="top">
+           <div class="page-heading about-page-heading" id="top">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -162,7 +192,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <div class="col-lg-12">
                     <div class="section-heading">
                         <h2>Our Amazing Team</h2>
-                        <span>Details to details is what makes Hexashop different from the other themes.</span>
+                       
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -246,28 +276,21 @@ https://templatemo.com/tm-579-cyborg-gaming
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h2>Contact Us</h2>
-                <form id="contactForm">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="Your Name">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" placeholder="Your Email">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea class="form-control" id="message" rows="4" placeholder="Your Message"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                </form>
+       <h2><a href="https://drive.google.com/drive/folders/1-z6zxKSTvoBcAN_4iTabjzvHC7bZICJt">Link to Using our game package</a></h2>
+
+                
             </div>
         </div>
     </div>
 </section>
+        </div>
+      </div>
+    </div>
+    </div>
+    <!-- ***** Banner End ***** -->
+
+ <!-- ***** Main Banner Area Start ***** -->
+ 
 <!-- ***** Contact Us End ***** -->
 
        <footer>

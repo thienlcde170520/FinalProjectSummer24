@@ -62,8 +62,10 @@ public class ForgetPassServlet extends HttpServlet {
                             codeValue = rand.nextInt(1255650);
 
 
+
                             final String from = "cyborggameplatform@gmail.com";
                             final String password ="qcwy silx xumu gsng";
+
                             // Get the session object
                             Properties props = new Properties();
                             props.put("mail.smtp.host","smtp.gmail.com");

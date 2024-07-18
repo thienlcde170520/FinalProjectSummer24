@@ -1,3 +1,4 @@
+<%@page import="Model.Users"%>
 <%@page import="java.util.List"%>
 <%@page import="DAO.GenreDAO"%>
 <%@page import="DAO.PublisherDAO"%>
@@ -48,43 +49,73 @@
   </div>
   <!-- ***** Preloader End ***** -->
 
-  <!-- ***** Header Area Start ***** -->
-  <header class="header-area header-sticky">
+         <!-- ***** Header Area Start ***** -->
+        <header class="header-area header-sticky">
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
-                    <a href="index.html" class="logo">
+                    <a href="Home.jsp" class="logo">
                         <img src="assets/images/logo.png" alt="">
                     </a>
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Search End ***** -->
                     <div class="search-input">
-                      <form id="search" action="#">
-                        <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                        <i class="fa fa-search"></i>
-                      </form>
+                        <form id="search" action="SearchGameServlet" method="get">
+                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <i class="fa fa-search"></i>
+                        </form>
                     </div>
                     <!-- ***** Search End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="browse.html">Browse</a></li>
-                        <li><a href="details.html">Details</a></li>
-                        <li><a href="streams.html" class="active">Streams</a></li>
-                        <li><a href="profile.html">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
-                    </ul>   
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
-                    <!-- ***** Menu End ***** -->
-                </nav>
-            </div>
-        </div>
-    </div>
-  </header>
-  <!-- ***** Header Area End ***** -->
+                        <li><a href="Home.jsp" class="active">Home</a></li>
+                          <li><a href="BestSellerServlet">Game</a></li>
+                                    <li><a href="DisplayGenreServlet">Genre</a></li>
+                        <%
+                            Users user = (Users) session.getAttribute("account");
+                            if (user != null) {
+                                if (user.getRole() == 2) {
+                        %>
+                                    <li><a href="UploadGame">Upload Game</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 1) {
+                        %>
+                                    <li><a href="PublishGameServlet">Verify Game</a></li>
+                                    <li><a href="ManageUser.jsp">Manage User</a></li>
+                                    <li><a href="ReportServlet">Respond Report</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 2 || user.getRole() == 3) {
+                        %>
+                                  
+                                    <li><a href="CallSupport.jsp">Report</a></li>
+                                    <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                        <%
+                                }
+                        %>
+                                <li><a href="LogOutServlet">LOG OUT</a></li>
+                        <%
+                            } else {
+                        %>
+                                <li><a href="Login.jsp">LOG IN</a></li>
+                                <li><a href="Register.jsp">REGISTER</a></li>
+                        <%
+                            }
+                        %>
+                    </ul>
+                            <a class='menu-trigger'>
+                                <span>Menu</span>
+                            </a>
+                            <!-- ***** Menu End ***** -->
+                        </nav>
+                    </div>
+                </div>
+            </div>  
+        </header>
+                        
 <%  ArrayList<Game> games = (ArrayList<Game>) request.getAttribute("games");%>
   <div class="container">
     <div class="row">
@@ -134,7 +165,7 @@
 <div class="col-lg-4">
   <div class="top-streamers">
     <div class="heading-section">
-      <h4><em>Top</em> Streamers</h4>
+      <h4><em>Top</em> Publishers</h4>
     </div>
     <ul>
       <% 
@@ -243,7 +274,7 @@
       </div>
     </div>
   </div>
-  
+  </div>
   <footer>
     <div class="container">
       <div class="row">

@@ -261,7 +261,6 @@ public class PublisherDAO {
                     .append("Email", email)
                     .append("Role", role);
             usersCollection.insertOne(user);
-
             Document gamer = new Document("ID", id)
                     .append("Name", name)
                     .append("Password", password)

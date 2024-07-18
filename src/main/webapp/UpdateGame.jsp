@@ -20,16 +20,19 @@
     <title>Cyborg - Awesome HTML5 Template</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+   <!-- Bootstrap core CSS -->
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
-    <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
-    <link rel="stylesheet" href="assets/css/owl.css">
-    <link rel="stylesheet" href="assets/css/animate.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
-    <link rel="stylesheet" href="assets/css/Style.css">
+        <!-- Additional CSS Files -->
+         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/fontawesome.css">
+        <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
+        <link rel="stylesheet" href="assets/css/owl.css">
+        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+        <link rel="stylesheet" href="assets/css/Style.css">
+         <link rel="stylesheet" href="assets/css/style.css">
     <!--
     
     TemplateMo 579 Cyborg Gaming
@@ -53,7 +56,7 @@
 </div>
 <!-- ***** Preloader End ***** -->
 <!-- ***** Header Area Start ***** -->
-<header class="header-area header-sticky">
+ <header class="header-area header-sticky">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -74,21 +77,46 @@
                             <!-- ***** Menu Start ***** -->
                             <ul class="nav">
                                 <li><a href="Home.jsp" class="active">Home</a></li>
-                                <li><a href="browse.html">Browse</a></li>
-                                <li><a href="details.html">Genre</a></li>
-                                
+
+                            
+                           
+                
+                                <%    Users user = (Users) session.getAttribute("account");
+%>
                                 <%
-    Users user = (Users) session.getAttribute("account");
+    
     if (user != null && user.getRole()== 2 ) {
 %>
         <li><a href="UploadGame">Upload Game</a></li>
+   
 <%
     }
 %>
-                               <li><a href="LogOutServlet">LOG OUT</a></li>
 
-                                <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                <%
+    if (user != null && user.getRole()== 1 ) {
+%>
+        <li><a href="PublishGameServlet">Verify Game</a></li>
+          <li><a href="ManageUser.jsp"> Manage User</a></li>
+           <li><a href="ReportServlet">Respond Report </a></li>
+<%
+    }
+%>
+        
+           <li><a href="LogOutServlet">LOG OUT</a></li>
+       <%
+                               
+                               if (user != null && user.getRole()== 2 ||  user.getRole()== 3 ) {
+%>    <li><a href="BestSellerServlet">Game</a></li>
 
+                                <li><a href="DisplayGenreServlet">Genre</a></li>
+                    <li><a href="CallSupport.jsp">Report </a></li>
+            <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+<%
+    }
+%>
+                            
                             </ul>   
                             <a class='menu-trigger'>
                                 <span>Menu</span>
@@ -110,11 +138,15 @@
 
 
 <%-- Game Input Form Section --%>
-<section class="game-input-form" style="background-color: #000; color: #F0F5FF">
+
     <div class="container">
         <div class="row">
             <!-- Form Section -->
             <div class="col-12">
+                     <div class="page-content">
+                
+                <section class="game-input-form" style="background-color: #000; color: #F0F5FF">
+                    <h2>Update Game</h2>
                 <form action="UpdateGameServlet" method="post"  enctype="multipart/form-data" >
 
                     <div class="form-group">
@@ -251,10 +283,12 @@
                     </div>
 
                 </form>
+                     </section>
+
+                     </div>
             </div>
         </div>
     </div>
-</section>
 <!-- ***** Game Input Form End ***** -->
 <footer>
     <div class="container">
@@ -290,11 +324,26 @@
                                 });
 
 </script>
-<script src="assets/js/isotope.min.js"></script>
-<script src="assets/js/owl-carousel.js"></script>
-<script src="assets/js/tabs.js"></script>
-<script src="assets/js/popup.js"></script>
-<script src="assets/js/custom.js"></script>
+ <script src="assets/js/jquery-2.1.0.min.js"></script>
+
+        <!-- Bootstrap -->
+        <script src="assets/js/popper.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Plugins -->
+        <script src="assets/js/owl-carousel.js"></script>
+        <script src="assets/js/accordions.js"></script>
+        <script src="assets/js/datepicker.js"></script>
+        <script src="assets/js/scrollreveal.min.js"></script>
+        <script src="assets/js/waypoints.min.js"></script>
+        <script src="assets/js/jquery.counterup.min.js"></script>
+        <script src="assets/js/imgfix.min.js"></script>
+        <script src="assets/js/slick.js"></script>
+        <script src="assets/js/lightbox.js"></script>
+        <script src="assets/js/isotope.js"></script>
+
+        <!-- Global Init -->
+        <script src="assets/js/custom.js"></script>
 
 
 

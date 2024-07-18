@@ -10,8 +10,12 @@ import static Common.CheckValid.CheckEmailVSId;
 import static Controller.DriveQuickstart.APPLICATION_NAME;
 import static Controller.DriveQuickstart.JSON_FACTORY;
 import static Controller.JavaMongo.updateProfile;
+import DAO.GameDAO;
 import DAO.GamerDAO;
 import DAO.PublisherDAO;
+import DAO.TransactionBillDAO;
+import Model.BankTransactions;
+import Model.Game;
 import Model.Gamers;
 import Model.Publishers;
 import Model.Users;
@@ -36,6 +40,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -175,6 +180,11 @@ public class UpdateProfileServlet extends HttpServlet {
                         Gamers gamer = GamerDAO.getGamerByEmail(newEM);
                             if(gamer != null){
                                 request.setAttribute("gamer", gamer);
+                                 ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(gamer.getId());
+            ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
+            request.setAttribute("games", games); 
+        
+            request.setAttribute("transactionHistory", transactionHistory);
                                 request.getRequestDispatcher("profile.jsp").forward(request, response);                     
                             }else{
                                  try (PrintWriter out = response.getWriter()) {

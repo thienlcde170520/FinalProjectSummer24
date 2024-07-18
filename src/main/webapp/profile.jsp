@@ -57,8 +57,8 @@ https://templatemo.com/tm-579-cyborg-gaming
   <!-- ***** Header Area Start ***** -->
 
    <!-- ***** Header Area Start ***** -->
+      <!-- ***** Header Area Start ***** -->
         <header class="header-area header-sticky">
-
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -79,21 +79,46 @@ https://templatemo.com/tm-579-cyborg-gaming
                             <!-- ***** Menu Start ***** -->
                             <ul class="nav">
                                 <li><a href="Home.jsp" class="active">Home</a></li>
-                                <li><a href="browse.html">Browse</a></li>
-                                <li><a href="details.html">Genre</a></li>
-                                
+
+                            
+                           
+                
+                                <%    Users user = (Users) session.getAttribute("account");
+%>
                                 <%
-    Users user = (Users) session.getAttribute("account");
+    
     if (user != null && user.getRole()== 2 ) {
 %>
         <li><a href="UploadGame">Upload Game</a></li>
+   
 <%
     }
 %>
-                               <li><a href="LogOutServlet">LOG OUT</a></li>
 
-                                <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                <%
+    if (user != null && user.getRole()== 1 ) {
+%>
+        <li><a href="PublishGameServlet">Verify Game</a></li>
+          <li><a href="ManageUser.jsp"> Manage User</a></li>
+           <li><a href="ReportServlet">Respond Report </a></li>
+<%
+    }
+%>
+        
+           <li><a href="LogOutServlet">LOG OUT</a></li>
+       <%
+                               
+                               if (user != null && user.getRole()== 2 ||  user.getRole()== 3 ) {
+%>    <li><a href="BestSellerServlet">Game</a></li>
 
+                                <li><a href="DisplayGenreServlet">Genre</a></li>
+                    <li><a href="CallSupport.jsp">Report </a></li>
+            <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+
+<%
+    }
+%>
+                            
                             </ul>   
                             <a class='menu-trigger'>
                                 <span>Menu</span>
@@ -104,7 +129,6 @@ https://templatemo.com/tm-579-cyborg-gaming
                 </div>
             </div>
         </header>
-
   <!-- ***** Header Area End ***** -->
 
   <div class="container">
@@ -159,9 +183,9 @@ https://templatemo.com/tm-579-cyborg-gaming
 
  <div class="d-flex justify-content-start align-items-center">
             <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>
-            <a href="transaction.jsp" class="btn btn-primary">Transaction</a>
+            <a href="NewTransaction.jsp" class="btn btn-primary">Transaction</a>
             <a href="RespondReportServlet?UserId=<%=user.getId() %>" class="btn btn-primary">Send Report</a>
-                <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary">Delete Account</a>
+            <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary">Delete Account</a>
         </div>
 <%
 }
