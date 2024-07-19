@@ -135,7 +135,7 @@ form{
     display: flex;
     justify-content: space-between;
     margin: 20px 0;
-    padding: 15px;
+    padding: 15px 0;
 }
 .role-selection input{
     cursor: pointer;

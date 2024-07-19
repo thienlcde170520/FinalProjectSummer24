@@ -91,67 +91,54 @@ public class SignUpServlet extends HttpServlet {
     @Override
  protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-    // processRequest(request, response);
-    String n = request.getParameter("name");
-    String em = request.getParameter("email");
-    String p = request.getParameter("password");
-    String rp = request.getParameter("confirm_password");
-    String role = request.getParameter("role");
 
-    boolean hasErrors = false;
+        //processRequest(request, response);
+        String n = request.getParameter("name");
+        String em = request.getParameter("email");
+        String p = request.getParameter("password");
+        String rp = request.getParameter("confirm_password");
+        String role = request.getParameter("role");
+        
+        boolean hasErrors = false;
+        
+        
+        // Generate the current date and time
+        String regex = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // yeu cau pass có it nhat 1 so 1 chu
+        String emailPattern = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
+        
+        // Kiểm tra tên người dùng
+        if (n == null || n.trim().isEmpty()) {
+            request.setAttribute("namemess", "Username cannot be empty");
+            hasErrors = true;
+        }
 
-    // Generate the current date and time
-    String regex = "^(?=.*[A-Za-z])(?=.*\\d).+$"; // Password must have at least one letter and one number
-    String emailPattern = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
+        // Kiểm tra email
+        if (em == null || em.trim().isEmpty()) {
+            request.setAttribute("emailmess", "Email cannot be empty");
+            hasErrors = true;
+        } else if (!em.matches(emailPattern)) {
+            request.setAttribute("emailmess", "Email format is not correct");
+            hasErrors = true;
+        }
 
-    // Validate username
-    if (n == null || n.trim().isEmpty()) {
-        request.setAttribute("namemess", "Tên người dùng không được để trống.");
-        hasErrors = true;
-    }
+        // Kiểm tra mật khẩu
+        if (p == null || p.trim().isEmpty()) {
+            request.setAttribute("passmess", "Password cannot be empty");
+            hasErrors = true;
+        } else if (p.length() < 5 || !p.matches(regex)) {
+            request.setAttribute("passmess", "Password format is wrong");
+            hasErrors = true;
+        }
 
-    // Validate email
-    if (em == null || em.trim().isEmpty()) {
-        request.setAttribute("emailmess", "Email không được để trống.");
-        hasErrors = true;
-    } else if (!em.matches(emailPattern)) {
-        request.setAttribute("emailmess", "Email không đúng mẫu.");
-        hasErrors = true;
-    }
+        // Kiểm tra xác nhận mật khẩu
+        if (rp == null || !rp.equals(p)) {
+            request.setAttribute("conpassmess", "Confirm password is wrong");
+            hasErrors = true;
+        }
+        if(role == null){
+            request.setAttribute("rolemess","Role cannot be empty");
+            hasErrors =true;
 
-    // Validate password
-    if (p == null || p.trim().isEmpty()) {
-        request.setAttribute("passmess", "Mật khẩu không được để trống.");
-        hasErrors = true;
-    } else if (p.length() < 5 || !p.matches(regex)) {
-        request.setAttribute("passmess", "Mật khẩu phải có ít nhất 5 ký tự.");
-        hasErrors = true;
-    }
-
-    // Validate confirm password
-    if (rp == null || !rp.equals(p)) {
-        request.setAttribute("conpassmess", "Xác nhận mật khẩu không đúng.");
-        hasErrors = true;
-    }
-
-    if (role == null) {
-        request.setAttribute("rolemess", "Role không được trống.");
-        hasErrors = true;
-    }
-
-    if (hasErrors) {
-        request.getRequestDispatcher("Register.jsp").forward(request, response);
-    } else {
-        int roleValue;
-
-        if ("gamer".equals(role)) {
-            roleValue = 3;
-        } else if ("publisher".equals(role)) {
-            roleValue = 2;
-        } else {
-            request.setAttribute("mess", "Invalid role selected!");
-            request.getRequestDispatcher("Register.jsp").forward(request, response);
-            return;
         }
 
         try {

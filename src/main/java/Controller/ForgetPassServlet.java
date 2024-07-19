@@ -53,7 +53,7 @@ public class ForgetPassServlet extends HttpServlet {
                         int codeValue = 0;
                         HttpSession mySession = request.getSession();
                         if(a == null) {
-                            request.setAttribute("message", "email khong ton tai");
+                            request.setAttribute("message", "Email not exist");
                             request.getRequestDispatcher("ForgetPass.jsp").forward(request, response);                   
                         }               		
                         else{
@@ -62,8 +62,10 @@ public class ForgetPassServlet extends HttpServlet {
                             codeValue = rand.nextInt(1255650);
 
 
-                            final String from = "thienle2105@gmail.com";
-                            final String password ="hiuj ggrb wvng fvip";
+
+                            final String from = "cyborggameplatform@gmail.com";
+                            final String password ="qcwy silx xumu gsng";
+
                             // Get the session object
                             Properties props = new Properties();
                             props.put("mail.smtp.host","smtp.gmail.com");

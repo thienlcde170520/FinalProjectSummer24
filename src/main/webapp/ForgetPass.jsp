@@ -55,8 +55,10 @@ body {
     color: red;
     font-weight: bold;
     background-color: #ffcccc;
-    margin: 10px;
+    margin: 10px 20px;
     border-radius: 2px;
+	text-align: center;
+	font-size: 18px;
 }
 .logo_container{
     display: flex;

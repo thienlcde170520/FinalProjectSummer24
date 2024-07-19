@@ -10,7 +10,7 @@
         
         <!--bonus-->
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 
 
 
@@ -31,6 +31,7 @@
                 background-color: #ffcccc;
                 margin: 17px 0;
                 border-radius: 2px;
+                text-align: center;
             }
             .Inputerror{
                 font-size: small;
@@ -200,38 +201,6 @@
             conpassToggleBtn.className = passconInput.type === "password" ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
             passconInput.type = passconInput.type === "password" ? "text" : "password";
         });
-
-        passwordInput.addEventListener('focus', () => {
-            passwordMessage.style.display = 'block';
-        });
-
-        passwordInput.addEventListener('blur', () => {
-            if (passwordInput.value === "") {
-                passwordMessage.style.display = 'none';
-                passwordInput.classList.remove('input-error');
-                passwordInput.classList.remove('input-success');
-            } else {
-                validatePassword();
-            }
-        });
-
-        passwordInput.addEventListener('input', () => {
-            validatePassword();
-        });
-
-        function validatePassword() {
-            const passwordcheck = passwordInput.value;
-            const isValid = passwordcheck.length >= 5 && /[a-zA-Z]/.test(passwordcheck) && /\d/.test(passwordcheck);
-            if (isValid) {
-                passwordMessage.style.display = 'none';
-                passwordInput.classList.remove('input-error');
-                passwordInput.classList.add('input-success');
-            } else {
-                passwordMessage.style.display = 'block';
-                passwordInput.classList.remove('input-success');
-                passwordInput.classList.add('input-error');
-            }
-        }
         </script>
     </body>
 

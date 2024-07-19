@@ -195,19 +195,20 @@ a.google span{
     background-color: #0171d3;
     border-radius: 6px;
 }
-.text-danger{
+.text_danger{
     font-size: 16px;
     background-color: #ffcccc;
     margin: 17px 0;
+    text-align: center;  
     color: red;
-    border-radius: 2px;
 }
 .text_success{
     font-size: 16px;
-    background-color: #ccffe6;
+    background-color: #e6ffe6;
     margin: 17px 0;
-    color: #00ff99;
+    color: #00cc00;
     border-radius: 2px;
+    text-align: center;
 }
 @media screen and (max-width: 400px) {
     .form{
