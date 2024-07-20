@@ -1,13 +1,23 @@
-<%-- 
-    Document   : error
-    Created on : Jun 18, 2024, 11:55:46 PM
-    Author     : tuanh
+    <%-- 
+    Document   : Home
+    Created on : May 28, 2024, 12:58:34 PM
+    Author     : LENOVO
 --%>
+<%@page import="DAO.ReviewDAO"%>
+<%@page import="DAO.GenreDAO"%>
+<%@page import="DAO.GameDAO" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Arrays" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="Model.Genre" %>
+<%@ page import="Model.Game" %>
+<%@ page import="Model.Users" %>
+<%@ page import="Controller.JavaMongo" %>
+<%@ page import="jakarta.servlet.http.HttpSession" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%><!DOCTYPE html>
+<html lang="en">
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
+     <head>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -21,29 +31,19 @@
 
 
         <!-- Additional CSS Files -->
+         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="assets/css/fontawesome.css">
         <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css">
         <link rel="stylesheet" href="assets/css/owl.css">
         <link rel="stylesheet" href="assets/css/animate.css">
         <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
         <link rel="stylesheet" href="assets/css/Style.css">
-        <!--
-        
-        TemplateMo 579 Cyborg Gaming
-        
-        https://templatemo.com/tm-579-cyborg-gaming
-        
-        -->
-        
-        <!--<link rel="stylesheet" type="text/css" href="assets/css/register.css">-->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <style>
-            .container{
-                background: #1f2122;
-            }
-        </style>
+    
     </head>
+
+
     <body>
+
         <!-- ***** Preloader Start ***** -->
         <div id="js-preloader" class="js-preloader">
             <div class="preloader-inner">
@@ -59,35 +59,65 @@
 
         <!-- ***** Header Area Start ***** -->
         <header class="header-area header-sticky">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <nav class="main-nav">
-                            <!-- ***** Logo Start ***** -->
-                            <a href="Home.jsp" class="logo">
-                                <img src="assets/images/logo.png" alt="">
-                            </a>
-                            <!-- ***** Logo End ***** -->
-                            <!-- ***** Search End ***** -->
-                            <div class="search-input">
-                                <form id="search" action="#">
-                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                                    <i class="fa fa-search"></i>
-                                </form>
-                            </div>
-                            <!-- ***** Search End ***** -->
-                            <!-- ***** Menu Start ***** -->
-                            <ul class="nav">
-                                <li><a href="Home.jsp" class="active">Home</a></li>
-                                <li><a href="browse.html">Browse</a></li>
-                                <li><a href="details.html">Genre</a></li>
-                                
-                               
-                               <li><a href="LogOutServlet">LOG OUT</a></li>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="Home.jsp" class="logo">
+                        <img src="assets/images/logo.png" alt="">
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Search End ***** -->
+                    <div class="search-input">
+                        <form id="search" action="SearchGameServlet" method="get">
+                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <i class="fa fa-search"></i>
+                        </form>
+                    </div>
+                    <!-- ***** Search End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li><a href="Home.jsp" class="active">Home</a></li>
+                       
+                                                                 
 
-                                <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
-
-                            </ul>   
+                        <%
+                            Users user = (Users) session.getAttribute("account");
+                            if (user != null) {
+                                if (user.getRole() == 2) {
+                        %>
+                                    <li><a href="UploadGame">Upload Game</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 1) {
+                        %>
+                                    <li><a href="PublishGameServlet">Verify Game</a></li>
+                                    <li><a href="ManageUser.jsp">Manage User</a></li>
+                                    <li><a href="ReportServlet">Respond Report</a></li>
+                                              <li><a href="Statistic.jsp">View Profit </a></li>
+                                       <li><a href="LogOutServlet">LOG OUT</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 2 || user.getRole() == 3) {
+                        %>
+                                     <li><a href="BestSellerServlet">Game</a></li>
+                                    <li><a href="DisplayGenreServlet">Genre</a></li>
+                                    <li><a href="CallSupport.jsp">Report</a></li>
+                                       <li><a href="LogOutServlet">LOG OUT</a></li>
+                                    <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                        <%
+                                }
+                        %>
+                        <%
+                            } else {
+                        %>
+                                <li><a href="Login.jsp">LOG IN</a></li>
+                                <li><a href="Register.jsp">REGISTER</a></li>
+                        <%
+                            }
+                        %>
+                    </ul>
                             <a class='menu-trigger'>
                                 <span>Menu</span>
                             </a>
@@ -97,60 +127,27 @@
                 </div>
             </div>
         </header>
-                               
-        <section class="main forms">
-        <!-- Signup Form -->
-            <div class="form signup">
-                <div class="form-content">
-                    <header>Register</header>
-                    <%
-                        String mess = (String) request.getAttribute("mess");
-                        Boolean blue = (Boolean) request.getAttribute("blue");
-                        if (blue != null && blue) {
-                    %>
-                        <p class="mess"><%= mess %></p>
-                    <%
-                        }
-                    %>
+        <!-- ***** Header Area End ***** -->
 
-                    <form action="SignUpServlet" method="POST">
-                        <div class="field input-field">
-                            <label for="name">Username</label>
-                            <input type="text" placeholder="Name" name="name" class="input">
-                        </div>
-                        <div class="field input-field">
-                            <label for="email">Email Address</label>
-                            <input type="email" placeholder="Email" name="email" class="input">
-                        </div>
-                        <div class="field input-field">
-                            <label for="password">Password</label>
-                            <input type="password" placeholder="Create password" name="password" class="password">
-                            <i class='bx bx-hide eye-icon'></i>
-                        </div>
-                        <div class="field input-field">
-                            <label for="password">Confirm Password</label>
-                            <input type="password" placeholder="Confirm password" name="confirm_password" class="password">
-                            <i class='bx bx-hide eye-icon'></i>
-                        </div>
-                        <div class="role-selection">
-                            <p class="roleText"><label for="role">Choose your role:</label></p>
-                            <label for="gamer">Gamer</label>
-                            <input type="radio" id="gamer" name="role" value="gamer">
-                            <label for="publisher">Publisher</label>
-                            <input type="radio" id="publisher" name="role" value="publisher">
-                        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-content">
+                        <% String  message = (String) request.getParameter("message");  %>
+                      <h2>Error, go Back to the previous action to change </h2>
+                    <div class="alert alert-success" role="alert">
+                       
+                        <p> <%= message %></p>
+                    </div>
 
-                        <div class="field button-field">
-                            <button>Register</button>
-                        </div>
-                    </form>
-                    
+
+                     
+                    </div>
                 </div>
-                
             </div>
-        </section>
-        
-        <footer>
+        </div>
+
+      <footer>
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
@@ -187,5 +184,8 @@
 
         <!-- Global Init -->
         <script src="assets/js/custom.js"></script>
+
     </body>
+
 </html>
+

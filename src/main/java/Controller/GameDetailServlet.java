@@ -76,7 +76,7 @@ public class GameDetailServlet extends HttpServlet {
     
     if (user == null) {
         // Handle case where user is not logged in
-        response.sendRedirect("login.jsp");
+        response.sendRedirect("Login.jsp");
         return;
     }
     

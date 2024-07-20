@@ -101,7 +101,11 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     Gamers gamer = (Gamers) session.getAttribute("account");
 
     // Convert gamePrice to int (assuming rounding down for whole numbers)
-   
+   if (gamer.getMoney() < game.getPrice()){
+       String message = "You do not have enough money to buy this game";
+         request.setAttribute("message", message);
+       request.getRequestDispatcher("error.jsp").forward(request, response);
+   }
 
     // Add purchase details to MongoDB
     TransactionBillDAO.addPurchase(billId, gamer.getId(), gameId, buyTime, gamePrice);

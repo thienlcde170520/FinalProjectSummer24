@@ -95,7 +95,7 @@ private void handleUserProfile(HttpServletRequest request, HttpServletResponse r
                 break;
         }
     } else {
-        showErrorPage(response, "User not logged in");
+          response.sendRedirect("Login.jsp");
     }
 }
 

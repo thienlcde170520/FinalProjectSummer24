@@ -141,26 +141,20 @@ public class LoginServlet extends HttpServlet {
                         }
                         */
                         
-                        Cookie ce = new Cookie("email",e);
-                        Cookie cp = new Cookie("pass",p);
-                        Cookie cr = new Cookie("remember",r);
-                        if (r == null){
-                            
-                            ce.setMaxAge(0);
-                            cp.setMaxAge(0);
-                            cr.setMaxAge(0);
+                        Cookie ce = new Cookie("emailC",e);
+                        Cookie cp = new Cookie("passC",p);
+                        //Cookie cr = new Cookie("remember",r);
+                        ce.setMaxAge(60*60);
+                        if (r != null){                                                
+                            cp.setMaxAge(60*60);                                                                             
                         }
-                        else {
-                            
-                            ce.setMaxAge(60*60);
-                            cp.setMaxAge(60*60);
-                            cr.setMaxAge(60*60);
-                            
+                        else {                                                       
+                            cp.setMaxAge(0);                                                      
                         }
                         
                         response.addCookie(ce);
                         response.addCookie(cp);
-                        response.addCookie(cr);
+                        //response.addCookie(cr);
                         // response.sendRedirect("Home.jsp");
                         response.sendRedirect("Home.jsp");
                     }

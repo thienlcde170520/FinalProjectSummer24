@@ -7,6 +7,7 @@ package Controller;
 
 import static Controller.DriveQuickstart.APPLICATION_NAME;
 import static Controller.DriveQuickstart.JSON_FACTORY;
+import static Controller.UploadGame.isGameNameExists;
 import DAO.GameDAO;
 import DAO.GenreDAO;
 import Model.Game;
@@ -115,11 +116,15 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
             // Optionally, set a default value or show an error message to the user
         }
     }
-
+  
     // Handle file uploads for game avatar and game file
     String gameFileUrl = game.getGameLink(); // Initialize with existing URL
     String gameAvatarUrl = game.getAvatarLink(); // Initialize with existing URL
-
+if (isGameNameExists(gameName)){
+            String message = "Already have game with the same name";
+            request.setAttribute("message", message);
+             request.getRequestDispatcher("error.jsp").forward(request, response);
+        }
     try {
         Part gameAvatarPart = request.getPart("gameAvatar");
         if (gameAvatarPart != null && gameAvatarPart.getSize() > 0) {
@@ -143,18 +148,44 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     }
 
     // Update the Game object with new details
+   // Update the Game object with new details if they are not null
+if (gameName != null) {
     game.setName(gameName);
+}
+if (trailerLink != null) {
     game.setLinkTrailer(trailerLink);
+}
+if (description != null) {
     game.setDescription(description);
+}
+if (minCpu != null) {
     game.setMinimumCPU(minCpu);
+}
+if (minRam != null) {
     game.setMinimumRAM(minRam);
+}
+if (minGpu != null) {
     game.setMinimumGPU(minGpu);
+}
+if (maxCpu != null) {
     game.setMaximumCPU(maxCpu);
+}
+if (maxRam != null) {
     game.setMaximumRAM(maxRam);
+}
+if (maxGpu != null) {
     game.setMaximumGPU(maxGpu);
+}
+if (price <=0 ) {
     game.setPrice(price);
+}
+if (gameAvatarUrl != null) {
     game.setAvatarLink(gameAvatarUrl);
+}
+if (gameFileUrl != null) {
     game.setGameLink(gameFileUrl);
+}
+
 
     // Update the game in the database
     GameDAO.updateGame(game);
@@ -284,7 +315,7 @@ public String uploadFileToDrive(String fileName, java.io.File file, String mimeT
     // Return the regular file URL
     return "https://drive.google.com/file/d/" + uploadedFile.getId() + "/view?usp=sharing";
 }
-
+ 
 
     /** 
      * Returns a short description of the servlet.
