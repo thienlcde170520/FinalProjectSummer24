@@ -48,30 +48,41 @@ public class ReportDAO {
 
         return reports;
     }
-      public static List<Report> searchReportsByProblemName(String problemName) {
-        List<Report> reports = new ArrayList<>();
+public static List<Report> searchReportsByCriteria(String problemName, String responseStatus, boolean isSearchable) {
+    List<Report> reports = new ArrayList<>();
 
-        MongoClientSettings settings = getConnectionLocal();
+    MongoClientSettings settings = getConnectionLocal();
 
-        try (MongoClient mongoClient = MongoClients.create(settings)) {
-            MongoDatabase database = mongoClient.getDatabase("FPT");
-            MongoCollection<Document> collection = database.getCollection("Reports");
+    try (MongoClient mongoClient = MongoClients.create(settings)) {
+        MongoDatabase database = mongoClient.getDatabase("FPT");
+        MongoCollection<Document> collection = database.getCollection("Reports");
 
-            Bson filter = Filters.and(
-                Filters.regex("ProblemName", ".*" + problemName + ".*", "i"),
-                Filters.eq("IsSearchable", true)
-            );
-
-            for (Document doc : collection.find(filter)) {
-                Report report = convertDocumentToReport(doc);
-                reports.add(report);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        List<Bson> filters = new ArrayList<>();
+        if (problemName != null && !problemName.isEmpty()) {
+            filters.add(Filters.regex("ProblemName", ".*" + problemName + ".*", "i"));
+        }
+        if (isSearchable) {
+            filters.add(Filters.eq("IsSearchable", true));
+        }
+        if ("notResponded".equals(responseStatus)) {
+            filters.add(Filters.or(Filters.eq("Respond", null), Filters.eq("Respond", "")));
+        } else if ("responded".equals(responseStatus)) {
+            filters.add(Filters.and(Filters.ne("Respond", null), Filters.ne("Respond", "")));
         }
 
-        return reports;
+        Bson filter = filters.isEmpty() ? new Document() : Filters.and(filters);
+
+        for (Document doc : collection.find(filter)) {
+            Report report = convertDocumentToReport(doc);
+            reports.add(report);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return reports;
+}
+
 
      public static void addReport(String description, String problemName, String userId) {
         MongoClientSettings settings = getConnectionLocal();

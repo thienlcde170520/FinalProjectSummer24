@@ -34,22 +34,18 @@ public class ReportServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+  protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-       ArrayList<Report> reports = (ArrayList<Report>) ReportDAO.getAllReports();
-           HttpSession session = request.getSession();
+    HttpSession session = request.getSession();
     Users user = (Users) session.getAttribute("account");
-    if (user.getRole() == 1 ){
-        request.setAttribute("isAdmin", true); 
-    }else {
-             request.setAttribute("isAdmin", false); 
-    }
-             // Assuming you set isAdmin somewhere
-            request.setAttribute("reports", reports);
-        request.getRequestDispatcher("RespondReport.jsp").forward(request, response);
-       
-       
-    } 
+    boolean isAdmin = user != null && user.getRole() == 1;
+    
+    ArrayList<Report> reports = (ArrayList<Report>) ReportDAO.getAllReports();
+    request.setAttribute("isAdmin", isAdmin);
+    request.setAttribute("reports", reports);
+    request.getRequestDispatcher("RespondReport.jsp").forward(request, response);
+}
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -59,20 +55,30 @@ public class ReportServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
+ protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    String action = request.getParameter("action");
+    HttpSession session = request.getSession();
+    Users user = (Users) session.getAttribute("account");
+    boolean isAdmin = user != null && user.getRole() == 1;
 
-        if ("search".equals(action)) {
-            String problemName = request.getParameter("problemName");
-            List<Report> reports = ReportDAO.searchReportsByProblemName(problemName);
-            request.setAttribute("reports", reports);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("RespondReport.jsp");
-            dispatcher.forward(request, response);
-        } else {
-            processRequest(request,response);
-        }
+    if ("search".equals(action)) {
+        String problemName = request.getParameter("problemName");
+        String responseStatus = request.getParameter("responseStatus"); // new parameter for filtering by response status
+        boolean isSearchable = !isAdmin; // Only set isSearchable to true for non-admin users
+
+        List<Report> reports = ReportDAO.searchReportsByCriteria(problemName, responseStatus, isSearchable);
+        request.setAttribute("reports", reports);
+    } else {
+        processRequest(request, response);
+        return;
     }
+    
+    request.setAttribute("isAdmin", isAdmin);
+    RequestDispatcher dispatcher = request.getRequestDispatcher("RespondReport.jsp");
+    dispatcher.forward(request, response);
+}
+
+
 
     /** 
      * Handles the HTTP <code>POST</code> method.
