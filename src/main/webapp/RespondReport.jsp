@@ -139,96 +139,110 @@
 
         <!-- ***** Game Presentation Start ***** -->
 
-     
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="section-heading">
-                    
-                    <h1>Report List</h1>
-                </div>
+ <div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="section-heading">
+                <h1>Report List</h1>
+            </div>
+            
+            <section class="game-presentation">
+                <div class="container mt-5">
+                    <form action="ReportServlet" method="get">
+                        <input type="hidden" name="action" value="search">
+                        <div class="form-group">
+                            <label for="problemName">Problem Name:</label>
+                            <input type="text" id="problemName" name="problemName" class="form-control">
+                        </div>
                        
-                 <section class="game-presentation">
-                  <div class="container mt-5">
-       
-                     <form action="ReportServlet" method="get">
-        <input type="hidden" name="action" value="search">
-        <div class="form-group">
-            <label for="problemName">Problem Name:</label>
-            <input type="text" id="problemName" name="problemName" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
-    </div>
-             <div class="game-results">
-    <%
-        Boolean isAdmin = (Boolean) request.getAttribute("isAdmin");
-        if (isAdmin == null) {
-            isAdmin = false;
-        }
+                        <button type="submit"name="responseStatus" value="responded" class="btn btn-primary">Search</button>
+                    </form>
 
-        ArrayList<Report> reports = (ArrayList<Report>) request.getAttribute("reports");
-        if (reports != null && !reports.isEmpty()) {
-            for (Report report : reports) {
-    %>
-    <div class="game-box">
-        <div class="game-description">
-            <h2><%= report.getProblemName() %></h2>
-            <p><%= report.getDescription() %></p>
-            <p>Report Time: <%= report.getTimestamp() %></p>
-            <p>Reporter: <a href="profileServlet?userid=<%= report.getUserId() %>"><%= report.getUserId() %></a></p>
-            <% if (isAdmin) { %>
-                <!-- Form for responding to the report -->
-                <div class="form-container">
-                    <form action="RespondReportServlet" method="post">
-                        <input type="hidden" name="reportId" value="<%= report.getReportId() %>">
-                        <div class="form-group">
-                            <label for="respondText">Respond:</label>
-                            <textarea class="form-control" id="respondText" name="respondText" rows="3" placeholder="Write your response here..."><%= report.getRespond() != null ? report.getRespond() : "" %></textarea>
-                        </div>
-                        <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="isSearchable" name="isSearchable" <%= report.isIsSearchable() ? "checked" : "" %>>
-                            <label class="form-check-label" for="isSearchable">Mark as Searchable</label>
-                        </div>
-                        <button type="submit" name="action" value="respond" class="btn btn-primary">Submit Response</button>
-                        <button type="submit" name="action" value="delete" class="btn btn-danger">Delete Report</button>
+                    <% 
+                    Boolean isAdmin = (Boolean) request.getAttribute("isAdmin");
+                    if (isAdmin == null) {
+                        isAdmin = false;
+                    }
+
+                    if (isAdmin) { %>
+                    <form action="ReportServlet" method="get">
+                        <input type="hidden" name="action" value="search">
+                        <input type="hidden" name="responseStatus" value="notResponded">
+                        <button type="submit" class="btn btn-warning">View Not Responded Reports</button>
                     </form>
-                </div>
-            <% } else { %>
-                <div class="form-container">
-                    <form>
-                        <input type="hidden" name="reportId" value="<%= report.getReportId() %>">
-                        <div class="form-group">
-                            <label for="respondText">Respond:</label>
-                            <textarea class="form-control" readonly id="respondText" name="respondText" rows="3" placeholder="Write your response here..."><%= report.getRespond() != null ? report.getRespond() : "" %></textarea>
-                        </div>
-                        <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="isSearchable" name="isSearchable" <%= report.isIsSearchable() ? "checked" : "" %> disabled>
-                            <label class="form-check-label" for="isSearchable">Mark as Searchable</label>
-                        </div>
-                            <button type="submit" name="action" value="respond" class="btn btn-primary" hidden disabled>Submit Response</button>
-                        <button type="submit" name="action" value="delete" class="btn btn-danger" hidden disabled>Delete Report</button>
+                    <form action="ReportServlet" method="get">
+                        <input type="hidden" name="action" value="search">
+                        <input type="hidden" name="responseStatus" value="responded">
+                        <button type="submit" class="btn btn-success">View Responded Reports</button>
                     </form>
+                    <form action="ReportServlet" method="get">
+                        <input type="hidden" name="action" value="search">
+                        <button type="submit" class="btn btn-primary">View All Reports</button>
+                    </form>
+                    <% } %>
+
+                    <div class="game-results">
+                        <%
+                        ArrayList<Report> reports = (ArrayList<Report>) request.getAttribute("reports");
+                        if (reports != null && !reports.isEmpty()) {
+                            for (Report report : reports) {
+                        %>
+                        <div class="game-box">
+                            <div class="game-description">
+                                <h2><%= report.getProblemName() %></h2>
+                                <p><%= report.getDescription() %></p>
+                                <p>Report Time: <%= report.getTimestamp() %></p>
+                                <p>Reporter: <a href="profileServlet?userid=<%= report.getUserId() %>"><%= report.getUserId() %></a></p>
+                                <% if (isAdmin) { %>
+                                <div class="form-container">
+                                    <form action="RespondReportServlet" method="post">
+                                        <input type="hidden" name="reportId" value="<%= report.getReportId() %>">
+                                        <div class="form-group">
+                                            <label for="respondText">Respond:</label>
+                                            <textarea class="form-control" id="respondText" name="respondText" rows="3" placeholder="Write your response here..."><%= report.getRespond() != null ? report.getRespond() : "" %></textarea>
+                                        </div>
+                                        <div class="form-group form-check">
+                                            <input type="checkbox" class="form-check-input" id="isSearchable" name="isSearchable" <%= report.isIsSearchable() ? "checked" : "" %>>
+                                            <label class="form-check-label" for="isSearchable">Mark as Searchable</label>
+                                        </div>
+                                        <button type="submit" name="action" value="respond" class="btn btn-primary">Submit Response</button>
+                                        <button type="submit" name="action" value="delete" class="btn btn-danger">Delete Report</button>
+                                    </form>
+                                </div>
+                                <% } else { %>
+                                <div class="form-container">
+                                    <form>
+                                        <input type="hidden" name="reportId" value="<%= report.getReportId() %>">
+                                        <div class="form-group">
+                                            <label for="respondText">Respond:</label>
+                                            <textarea class="form-control" readonly id="respondText" name="respondText" rows="3" placeholder="Write your response here..."><%= report.getRespond() != null ? report.getRespond() : "" %></textarea>
+                                        </div>
+                                        <div class="form-group form-check">
+                                            <input type="checkbox" class="form-check-input" id="isSearchable" name="isSearchable" <%= report.isIsSearchable() ? "checked" : "" %> disabled>
+                                            <label class="form-check-label" for="isSearchable">Mark as Searchable</label>
+                                        </div>
+                                        <button type="submit" name="action" value="respond" class="btn btn-primary" hidden disabled>Submit Response</button>
+                                        <button type="submit" name="action" value="delete" class="btn btn-danger" hidden disabled>Delete Report</button>
+                                    </form>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        <%
+                            }
+                        } else {
+                        %>
+                        <p>No report history found.</p>
+                        <%
+                        }
+                        %>
+                    </div>
                 </div>
-            <% } %>
+            </section>
         </div>
     </div>
-    <%
-            }
-        } else {
-    %>
-    <p>No report history found.</p>
-    <%
-        }
-    %>
 </div>
 
-                </section>
-
-            </div>
-        </div>
-    </div>
- 
 
 
         <footer>
