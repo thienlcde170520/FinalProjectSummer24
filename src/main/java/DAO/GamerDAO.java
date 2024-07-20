@@ -354,6 +354,66 @@ public class GamerDAO {
         
     }
         
+   
+    public static void updateDefaultGamer(String Name, String AvartaLink, String Id) {
+        try ( MongoClient mongoClient = MongoClients.create(getConnection())) {
+
+            // Truy cập cơ sở dữ liệu "FPT"
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+
+            // Tạo một bộ lọc để truy vấn người dùng dựa trên ID
+            BasicDBObject query = new BasicDBObject();
+            query.put("ID", Id);
+
+            // Tạo một document mới chứa thông tin  mới
+            Document updateNameDoc = new Document("$set", new Document("Name", Name));
+            Document updateAvtarDoc = new Document ("$set", new Document("AvatarLink", AvartaLink));
+
+            // Truy cập bộ sưu tập "Users" và thực hiện cập nhật
+            MongoCollection<Document> usersCollection = fpteamDB.getCollection("Users");
+            usersCollection.updateOne(query, updateNameDoc);
+
+             // Truy cập bộ sưu tập "Gamers" và thực hiện cập nhật
+            MongoCollection<Document> gamersCollection = fpteamDB.getCollection("Gamers");
+            gamersCollection.updateOne(query, updateNameDoc);
+            gamersCollection.updateOne(query, updateAvtarDoc);
+
+            
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+         try ( MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
+
+            // Truy cập cơ sở dữ liệu "FPT"
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+
+            // Tạo một bộ lọc để truy vấn người dùng dựa trên ID
+            BasicDBObject query = new BasicDBObject();
+            query.put("ID", Id);
+
+            // Tạo một document mới chứa thông tin  mới
+            Document updatePasswordDoc = new Document("$set", new Document("Name", Name));
+            Document updateAvatarDoc = new Document ("$set", new Document("AvatarLink", AvartaLink));
+            // Truy cập bộ sưu tập "Users"
+            MongoCollection<Document> usersCollection = fpteamDBLocal.getCollection("Users");
+
+            // Thực hiện update vào MongoDB trong collection "Users"
+            usersCollection.updateOne(query, updatePasswordDoc);
+
+            // Truy cập bộ sưu tập "Gamers"
+            MongoCollection<Document> gamersCollection = fpteamDBLocal.getCollection("Gamers");
+
+            // Thực hiện update vào MongoDB trong collection "Gamers"
+            gamersCollection.updateOne(query, updatePasswordDoc);
+            gamersCollection.updateOne(query, updateAvatarDoc);
+
+            
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
         
     }
 
