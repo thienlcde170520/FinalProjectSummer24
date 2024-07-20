@@ -132,7 +132,7 @@
             
             
         </div>
-                            </div>
+                     
         <!-- JavaScript -->
         <script src="assets/js/emailAlert.js"></script>
         <script src="assets/js/passwordAlert.js"></script>
