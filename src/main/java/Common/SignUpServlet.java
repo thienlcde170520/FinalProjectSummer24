@@ -138,10 +138,26 @@ public class SignUpServlet extends HttpServlet {
         if(role == null){
             request.setAttribute("rolemess","Role cannot be empty");
             hasErrors =true;
-
         }
-
-        try {
+        
+        
+        if (hasErrors) {           
+                request.getRequestDispatcher("Register.jsp").forward(request, response);
+            
+        }else{
+            
+            int roleValue;
+            
+            if("gamer".equals(role)){
+                roleValue = 3;
+            }else if("publisher".equals(role)){
+                roleValue = 2;
+            }else{
+                request.setAttribute("mess", "Invalid role selected!");
+                request.getRequestDispatcher("Register.jsp").forward(request, response);
+                return;
+            }
+            try {
             Gamers g = new Gamers();
             String idG;
             do {
@@ -204,11 +220,11 @@ public class SignUpServlet extends HttpServlet {
             Logger.getLogger(SignUpServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-}
+ }
  
  //check if ID is existed?
  
- private boolean  isGamerIdExists (String idG){
+  private boolean  isGamerIdExists (String idG){
      ArrayList<Gamers> gamers = getAllGamers();
      for (Gamers g : gamers){
          if (g.getId().equals(idG))

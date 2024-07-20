@@ -142,129 +142,99 @@
             <!-- Form Section -->
             <div class="col-12">
                    <div class="page-content">
-                       <section class="game-input-form" style="background-color: #000; color: #F0F5FF">
-                <form action="UploadGame" method="post"  enctype="multipart/form-data" >
+                    <section class="game-input-form" style="background-color: #000; color: #F0F5FF">
+                        <<h2>Upload Game</h2>
+    <form action="UploadGame" method="post" enctype="multipart/form-data">
 
-                    <div class="form-group">
-                        <label for="gameName">Game Name</label>
-                        <input type="text" class="form-control" id="gameName" name="gameName" placeholder="Enter game name">
-                    </div>
+        <div class="form-group">
+            <label for="gameName">Game Name</label>
+            <input type="text" class="form-control" id="gameName" name="gameName" placeholder="Enter game name" required>
+        </div>
 
-                    <div class="form-group">
-                        <label for="gameFile">Game File</label>
-                        <input type="file" class="form-control-file" id="gameFile" name="gameFile" multiple>
-                    </div>
+        <div class="form-group">
+            <label for="gameFile">Game File</label>
+            <input type="file" class="form-control-file" id="gameFile" name="gameFile" multiple required>
+        </div>
 
-                    <div class="form-group">
-                        <label for="gameAvatar">Game Avatar</label>
-                    <input type="file" class="form-control-file" id="gameAvatar" name="gameAvatar" multiple>
+        <div class="form-group">
+            <label for="gameAvatar">Game Avatar</label>
+            <input type="file" class="form-control-file" id="gameAvatar" name="gameAvatar" multiple required>
+        </div>
 
-                    </div>
+        <div class="form-group">
+            <label for="language">Game Trailer link</label>
+            <input type="text" class="form-control" id="Trailer" name="trailerLink" placeholder="Enter link of the trailer game" required>
+        </div>
 
-                    <div class="form-group">
-                        <label for="language">Game Trailer link</label>
-                        <input type="text" class="form-control" id="Trailer" name="trailerLink" placeholder="Enter link of the trailer game">
-                    </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter game description" required></textarea>
+        </div>
 
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea class="form-control" id="description" name ="description" rows="3" placeholder="Enter game description"></textarea>
-                    </div>
+        <div class="form-group">
+            <label>Minimum Configuration</label>
+            <div class="row">
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Minimum CPU" id="minCpu" name="minCpu" required>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Minimum RAM" id="minRam" name="minRam" required>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Minimum GPU" id="minGpu" name="minGpu" required>
+                </div>
+            </div>
+        </div>
 
-                    <div class="form-group">
-                        <label>Minimum Configuration</label>
-                        <div class="row">
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Minimum CPU" id="minCpu" name="minCpu">
-                            </div>
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Minimum RAM" id="minRam" name="minRam">
-                            </div>
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Minimum GPU" id="minGpu" name="minGpu">
-                            </div>
-                        </div>
-                    </div>
+        <div class="form-group">
+            <label>Maximum Configuration</label>
+            <div class="row">
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Maximum CPU" id="maxCpu" name="maxCpu" required>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Maximum RAM" id="maxRam" name="maxRam" required>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Maximum GPU" id="maxGpu" name="maxGpu" required>
+                </div>
+            </div>
+        </div>
 
-                    <div class="form-group">
-                        <label>Maximum Configuration</label>
-                        <div class="row">
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Maximum CPU" id="maxCpu" name="maxCpu">
-                            </div>
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Maximum RAM" id="maxRam" name="maxRam">
-                            </div>
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Maximum GPU" id="maxGpu" name="maxGpu">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="priceAmount">Price</label>
-                        <div class="input-group">
-                            <input type="number" class="form-control" id="priceAmount" name="priceAmount" placeholder="Enter price">
-                        </div>
-                    </div>
+        <div class="form-group">
+            <label for="priceAmount">Price</label>
+            <div class="input-group">
+                <input type="number" class="form-control" id="priceAmount" name="priceAmount" placeholder="Enter price" required>
+            </div>
+        </div>
 
+        <div class="form-group">
+            <label>Genres</label>
+            <% 
+                ArrayList<Genre> genres = (ArrayList<Genre>) request.getAttribute("genres");
+                if (genres != null) {
+                    for (Genre genre : genres) {
+            %>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="selectedGenres" value="<%= genre.getType() %>">
+                <label class="form-check-label"><%= genre.getType() %></label>
+            </div>
+            <% 
+                    }
+                }
+            %>
+        </div>
 
-                    <!-- Genre Checkboxes -->
-                    <div class="form-group">
-                        <!-- <label>Category</label>
-                                       <div id="relatedGameSearch" class="form-group" style="display: none;">
-                                           <label for="relatedGame">Search Related Game</label>
-                                           <input type="text" class="form-control" id="relatedGame" placeholder="Search related game">
-                                       </div>
-                                       <div class="form-check">
-                                           <input class="form-check-input" type="radio" name="category" id="original" value="original">
-                                           <label class="form-check-label" for="original">Original</label>
-                                       </div>
-                                       <div class="form-check">
-                                           <input class="form-check-input" type="radio" name="category" id="prequel" value="prequel">
-                                           <label class="form-check-label" for="prequel">Prequel</label>
-                                       </div>
-                                       <div class="form-check">
-                                           <input class="form-check-input" type="radio" name="category" id="sequel" value="sequel">
-                                           <label class="form-check-label" for="sequel">Sequel</label>
-                                       </div>
-                                       <div class="form-check">
-                                           <input class="form-check-input" type="radio" name="category" id="reboot" value="reboot">
-                                           <label class="form-check-label" for="reboot">Reboot</label>
-                                       </div>
-                                       <div class="form-check">
-                                           <input class="form-check-input" type="radio" name="category" id="remake" value="remake">
-                                           <label class="form-check-label" for="remake">Remake</label>
-                                       </div>
-                        -->
-                        <label>Genres</label>
-                        <% 
-                            ArrayList<Genre> genres = (ArrayList<Genre>) request.getAttribute("genres");
-                            if (genres != null) {
-                                for (Genre genre : genres) {
-                        %>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="selectedGenres" value="<%= genre.getType() %>">
-                            <label class="form-check-label"><%= genre.getType() %></label>
-                        </div>
-                        <% 
-                                }
-                            }
-                        %>
-                    </div>
+        <!-- Submit Button -->
+        <div class="row">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
 
+    </form>
+</section>
 
-
-
-
-                    <!-- Submit Button -->
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
-                    </div>
-
-                </form>
-                       </section>
                    </div>
             </div>
         </div>

@@ -251,7 +251,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                                                             <li><h4>Rating: <%= review.getRating() %></h4></li>
                                                             <li><h4>Description</h4><span><%= review.getDescription() %></span></li>
                                                             <li><h4>Game Name</h4><span><a href="GameDetailServlet?gameid=<%= GameDAO.getGameByReview(review).getId() %>"><%= GameDAO.getGameByReview(review).getName() %></a></span></li>
-                                                            <li><div class="main-border-button border-no-active"><a href="profileServlet?gamerid=<%= GamerDAO.getGamerByReview(review).getId() %>"><%= GamerDAO.getGamerByReview(review).getName() %></a></div></li>
+                                                            <li><div class="main-border-button border-no-active"><a href="profileServlet?userid=<%= GamerDAO.getGamerByReview(review).getId() %>"><%= GamerDAO.getGamerByReview(review).getName() %></a></div></li>
                                                         </ul>
                                                     </div>
                                             <%

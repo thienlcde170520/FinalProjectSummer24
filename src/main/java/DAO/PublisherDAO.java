@@ -353,19 +353,22 @@ public class PublisherDAO {
 
         try (MongoClient mongoClient = MongoClients.create(settingsLocal)) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+             MongoCollection<Document> userCollection = fpteamDB.getCollection("Users");
             MongoCollection<Document> publisherCollection = fpteamDB.getCollection("GamePublishers");
-        
+          MongoCollection<Document> reportCollection = fpteamDB.getCollection("Reports");
             ArrayList<Game> games = GameDAO.getGamesByPublisherName(publisher.getName());
             for (Game game : games){
                    GameDAO.deleteGame(game.getId());
                    
             }
            
-             MongoCollection<Document> userCollection = fpteamDB.getCollection("Users");
-            Bson gamerfilter = Filters.eq("ID", publisher.getId());
-            publisherCollection.deleteMany(gamerfilter);        
+            
+            Bson  publisherfilter = Filters.eq("ID", publisher.getId());
+            publisherCollection.deleteMany(publisherfilter);        
             Bson  userfilter = Filters.eq("ID", publisher.getId());
             userCollection.deleteMany(userfilter);
+             Bson  reportfilter = Filters.eq("UserID", publisher.getId());
+               reportCollection.deleteMany(reportfilter);        
             
              
         } catch (MongoException e) {

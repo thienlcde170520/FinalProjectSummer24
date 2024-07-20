@@ -310,6 +310,7 @@ public class GamerDAO {
             MongoCollection<Document> followCollection = fpteamDB.getCollection("Follow");
             MongoCollection<Document> reviewCollection = fpteamDB.getCollection("Reviews");
              MongoCollection<Document> userCollection = fpteamDB.getCollection("Users");
+               MongoCollection<Document> reportCollection = fpteamDB.getCollection("Reports");
             Bson gamerfilter = Filters.eq("ID", gamer.getId());
             gamersCollection.deleteMany(gamerfilter);
             Bson  transactionfilter = Filters.eq("payerId", gamer.getId());
@@ -322,6 +323,8 @@ public class GamerDAO {
             reviewCollection.deleteMany(reviewfilter);
             Bson  userfilter = Filters.eq("ID", gamer.getId());
             userCollection.deleteMany(userfilter);
+             Bson  reportfilter = Filters.eq("UserID", gamer.getId());
+            reportCollection.deleteMany(reportfilter);
             
              
         } catch (MongoException e) {

@@ -1,4 +1,3 @@
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -61,7 +60,7 @@
             
         <div class="loginMain forms">
             <div class="form login">
-                <div class="form-content">
+<div class="form-content">
                     <p>Login</p>
                     <%
                         if(request.getAttribute("status")!=null)
@@ -80,7 +79,7 @@
                             <div class="field input-field">
                                 <div class="input-container">
                                 <label for="email">Email Address</label>
-                                <input type="email" id="emailInput" placeholder="Email" name="email">
+                                <input type="email" value="${cookie.emailC.value}" id="emailInput" placeholder="Email" name="email" >
                                 </div>
                                 <div id="message"></div>
                             </div>
@@ -88,7 +87,7 @@
                             <div class="field input-field">   
                                 <div class="input-container pass">                          
                                 <label for="password">Password</label>
-                                <input type="password" id="password" placeholder="Password" name="pass">
+                                <input type="password" value="${cookie.passC.value}" id="password" placeholder="Password" name="pass" >
                                 <i id="pass-toggle-btn" class="fa-solid fa-eye"></i>   
                                 </div>   
                                 <div id="passwordMessage"></div>                               
@@ -117,7 +116,7 @@
                    
                     <div class="media-options">
                         <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:9999/FPTeam/loginGG&response_type=code
-                            &client_id=507196321849-krfc104j5mdadoum3q5vcl1fapv607qb.apps.googleusercontent.com&approval_prompt=force" class="field google">
+&client_id=507196321849-krfc104j5mdadoum3q5vcl1fapv607qb.apps.googleusercontent.com&approval_prompt=force" class="field google">
     
                             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6WwgH7Nl5_AW9nDCnR2Ozb_AU3rkIbSJdAg&s" alt="" class="google-img">
                             <span>Login with Google</span>
@@ -133,7 +132,7 @@
             
             
         </div>
-                            </div>
+                     
         <!-- JavaScript -->
         <script src="assets/js/emailAlert.js"></script>
         <script src="assets/js/passwordAlert.js"></script>
