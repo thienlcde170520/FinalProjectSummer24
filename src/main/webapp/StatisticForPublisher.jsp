@@ -74,6 +74,7 @@
                             if (user.getRole() == 2) {
                         %>
                         <li><a href="UploadGame">Upload Game</a></li>
+                        <li><a href="<%=request.getContextPath()%>/StatisticForPublisher.jsp">View your profit</a></li>
                         <%
                             }
                         %>
@@ -83,6 +84,7 @@
                         <li><a href="PublishGameServlet">Verify Game</a></li>
                         <li><a href="ManageUser.jsp"> Manage User</a></li>
                         <li><a href="ReportServlet">Respond Report </a></li>
+                        <li><a href="<%=request.getContextPath()%>/Statistic.jsp">View profit</a></li>
                         <%
                             }
                         %>
@@ -132,20 +134,16 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <label for="btn_select_game">Choose game</label>
-                                            <button style="width: 100%" id="btn_select_game" class="btn btn-success" data-toggle="modal" data-target="#select_games_modal">
+                                            <button style="width: 100%" id="btn_select_game" class="btn btn-success"
+                                                    data-toggle="modal" data-target="#select_games_modal">
                                                 Select games
                                             </button>
                                         </div>
                                         <div class="col-4">
                                             <label for="btn_select_genre">Choose genre</label>
-                                            <button style="width: 100%" id="btn_select_genre" class="btn btn-success" data-toggle="modal" data-target="#select_genre_modal">
+                                            <button style="width: 100%" id="btn_select_genre" class="btn btn-success"
+                                                    data-toggle="modal" data-target="#select_genre_modal">
                                                 Select genre
-                                            </button>
-                                        </div>
-                                        <div class="col-4">
-                                            <label for="btn_select_genre">Choose publisher</label>
-                                            <button style="width: 100%" id="btn_select_publisher" class="btn btn-success" data-toggle="modal" data-target="#select_publisher_modal">
-                                                Select publisher
                                             </button>
                                         </div>
                                     </div>
@@ -183,10 +181,16 @@
                             </div>
                             <div class="row">
                                 <div class="col-6">
-                                    <button type="button" v-on:click="is_bar_chart_age = !is_bar_chart_age" :class="is_bar_chart_age ? 'btn btn-success float-end' : 'btn btn-outline-success float-end'">Bar chart</button>
+                                    <button type="button" v-on:click="is_bar_chart_age = !is_bar_chart_age"
+                                            :class="is_bar_chart_age ? 'btn btn-success float-end' : 'btn btn-outline-success float-end'">
+                                        Bar chart
+                                    </button>
                                 </div>
                                 <div class="col-6">
-                                    <button type="button" v-on:click="is_bar_chart_age = !is_bar_chart_age" :class="!is_bar_chart_age ? 'btn btn-success' : 'btn btn-outline-success'">Pie chart</button>
+                                    <button type="button" v-on:click="is_bar_chart_age = !is_bar_chart_age"
+                                            :class="!is_bar_chart_age ? 'btn btn-success' : 'btn btn-outline-success'">
+                                        Pie chart
+                                    </button>
                                 </div>
                             </div>
                             <div class="row">
@@ -213,58 +217,86 @@
                                 <div class="col-5">
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn mt-1" style="background-color: #36A2EB;width: 38px;height: 38px">&nbsp&nbsp&nbsp</button>
+                                            <button type="button" class="btn mt-1"
+                                                    style="background-color: #36A2EB;width: 38px;height: 38px">
+                                                &nbsp&nbsp&nbsp
+                                            </button>
                                         </div>
                                         <div class="col-10">
-                                            <p class="mt-2" style="color: white">{{pie_info_label[0]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[0]}}&nbsp&nbsp({{pie_info_data[0]/pie_info_data_sum*100}}%)</p>
+                                            <p class="mt-2" style="color: white">
+                                                {{pie_info_label[0]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[0]}}&nbsp&nbsp({{pie_info_data[0]/pie_info_data_sum*100}}%)</p>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn mt-1" style="background-color: #FF6384;width: 38px;height: 38px">&nbsp&nbsp&nbsp</button>
+                                            <button type="button" class="btn mt-1"
+                                                    style="background-color: #FF6384;width: 38px;height: 38px">
+                                                &nbsp&nbsp&nbsp
+                                            </button>
                                         </div>
                                         <div class="col-10">
-                                            <p class="mt-2" style="color: white">{{pie_info_label[1]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[1]}}&nbsp&nbsp({{pie_info_data[1]/pie_info_data_sum*100}}%)</p>
+                                            <p class="mt-2" style="color: white">
+                                                {{pie_info_label[1]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[1]}}&nbsp&nbsp({{pie_info_data[1]/pie_info_data_sum*100}}%)</p>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn mt-1" style="background-color: #FF9F40;width: 38px;height: 38px">&nbsp&nbsp&nbsp</button>
+                                            <button type="button" class="btn mt-1"
+                                                    style="background-color: #FF9F40;width: 38px;height: 38px">
+                                                &nbsp&nbsp&nbsp
+                                            </button>
                                         </div>
                                         <div class="col-10">
-                                            <p class="mt-2" style="color: white">{{pie_info_label[2]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[2]}}&nbsp&nbsp({{pie_info_data[2]/pie_info_data_sum*100}}%)</p>
+                                            <p class="mt-2" style="color: white">
+                                                {{pie_info_label[2]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[2]}}&nbsp&nbsp({{pie_info_data[2]/pie_info_data_sum*100}}%)</p>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn mt-1" style="background-color: #FFCD56;width: 38px;height: 38px">&nbsp&nbsp&nbsp</button>
+                                            <button type="button" class="btn mt-1"
+                                                    style="background-color: #FFCD56;width: 38px;height: 38px">
+                                                &nbsp&nbsp&nbsp
+                                            </button>
                                         </div>
                                         <div class="col-10">
-                                            <p class="mt-2" style="color: white">{{pie_info_label[3]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[3]}}&nbsp&nbsp({{pie_info_data[3]/pie_info_data_sum*100}}%)</p>
+                                            <p class="mt-2" style="color: white">
+                                                {{pie_info_label[3]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[3]}}&nbsp&nbsp({{pie_info_data[3]/pie_info_data_sum*100}}%)</p>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn mt-1" style="background-color: #4BC0C0;width: 38px;height: 38px">&nbsp&nbsp&nbsp</button>
+                                            <button type="button" class="btn mt-1"
+                                                    style="background-color: #4BC0C0;width: 38px;height: 38px">
+                                                &nbsp&nbsp&nbsp
+                                            </button>
                                         </div>
                                         <div class="col-10">
-                                            <p class="mt-2" style="color: white">{{pie_info_label[4]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[4]}}&nbsp&nbsp({{pie_info_data[4]/pie_info_data_sum*100}}%)</p>
+                                            <p class="mt-2" style="color: white">
+                                                {{pie_info_label[4]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[4]}}&nbsp&nbsp({{pie_info_data[4]/pie_info_data_sum*100}}%)</p>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn mt-1" style="background-color: #9966FF;width: 38px;height: 38px">&nbsp&nbsp&nbsp</button>
+                                            <button type="button" class="btn mt-1"
+                                                    style="background-color: #9966FF;width: 38px;height: 38px">
+                                                &nbsp&nbsp&nbsp
+                                            </button>
                                         </div>
                                         <div class="col-10">
-                                            <p class="mt-2" style="color: white">{{pie_info_label[5]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[5]}}&nbsp&nbsp({{pie_info_data[5]/pie_info_data_sum*100}}%)</p>
+                                            <p class="mt-2" style="color: white">
+                                                {{pie_info_label[5]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[5]}}&nbsp&nbsp({{pie_info_data[5]/pie_info_data_sum*100}}%)</p>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-2">
-                                            <button type="button" class="btn mt-1" style="background-color: #C9CBCF;width: 38px;height: 38px">&nbsp&nbsp&nbsp</button>
+                                            <button type="button" class="btn mt-1"
+                                                    style="background-color: #C9CBCF;width: 38px;height: 38px">
+                                                &nbsp&nbsp&nbsp
+                                            </button>
                                         </div>
                                         <div class="col-10">
-                                            <p class="mt-2" style="color: white">{{pie_info_label[6]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[6]}}&nbsp&nbsp({{pie_info_data[6]/pie_info_data_sum*100}}%)</p>
+                                            <p class="mt-2" style="color: white">
+                                                {{pie_info_label[6]}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{pie_info_data[6]}}&nbsp&nbsp({{pie_info_data[6]/pie_info_data_sum*100}}%)</p>
                                         </div>
                                     </div>
                                 </div>
@@ -407,31 +439,6 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="select_publisher_modal" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-dark" id="exampleModalLongTitleGenre">Select publisher</h5>
-                    <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <template v-for="(value, key) in publishers">
-                        <button v-on:click="select_publisher(key)" type="button"
-                                :class="value.selected == false ? 'btn col-12 m-1' : 'btn btn-success col-12 m-1'"
-                                >{{value.name}}
-                        </button>
-                    </template>
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal fade" id="select_genre_modal" tabindex="-1" role="dialog"
          aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -551,14 +558,12 @@
             ],
             bar_chart_age: null,
             pie_chart_age: null,
-            is_bar_chart_age : true,
+            is_bar_chart_age: true,
             pie_info_label: [],
-            pie_info_data : [],
-            pie_info_data_sum : 0,
+            pie_info_data: [],
+            pie_info_data_sum: 0,
             genres: [],
-            publishers: [],
             gameHasGenres: [],
-            publishes: []
         },
         created() {
             this.getData();
@@ -573,15 +578,13 @@
         },
         methods: {
             getData() {
-                axios.get('<%=request.getContextPath()%>' + "/get-statistic-data")
+                axios.get('<%=request.getContextPath()%>' + "/get-statistic-data-for-publisher")
                     .then((res) => {
                         this.bills = res.data.bills
                         this.gamers = res.data.gamers
                         this.games = res.data.games
                         this.genres = res.data.genres
-                        this.publishers = res.data.publishers
                         this.gameHasGenres = res.data.gameHasGenres
-                        this.publishes = res.data.publishes
                         for (let i = 0; i < this.games.length; i++) {
                             this.games[i].selected = false
                         }
@@ -592,9 +595,6 @@
                         this.is_selecting_all_games = false;
                         for (let i = 0; i < this.genres.length; i++) {
                             this.genres[i].selected = false
-                        }
-                        for (let i = 0; i < this.publishers.length; i++) {
-                            this.publishers[i].selected = false
                         }
                         this.init_chart_1();
                         this.count_age_ranges();
@@ -713,7 +713,7 @@
                 }
                 this.games_age[index].selected = true
                 this.key = !this.key
-                if (this.is_bar_chart_age){
+                if (this.is_bar_chart_age) {
                     this.init_bar_chat_age();
                 } else {
                     this.init_pie_chart_age();
@@ -723,19 +723,21 @@
                 this.resetAgeCounts();
                 let game_id = null;
                 for (let i = 0; i < this.games.length; i++) {
-                    if (this.games_age[i].selected){
+                    if (this.games_age[i].selected) {
                         game_id = this.games_age[i].id
                         break
                     }
                 }
                 for (let j = 0; j < this.bills.length; j++) {
-                    if (this.bills[j].gameId === game_id){
+                    if (this.bills[j].gameId === game_id) {
                         let gamer_id = this.bills[j].gamerId
                         let age = this.getAgeFromDate(this.gamers.find(gamer => gamer.id === gamer_id).DOB)
                         this.incrementAgeCount(age)
                     }
                 }
-                this.pie_info_label = this.age_ranges.map(function(item) { return item.range + '(' + item.label + ')'; });
+                this.pie_info_label = this.age_ranges.map(function (item) {
+                    return item.range + '(' + item.label + ')';
+                });
                 this.pie_info_data = this.age_ranges.map(item => item.count);
                 this.pie_info_data_sum = this.pie_info_data.reduce((a, b) => a + b, 0)
             },
@@ -774,12 +776,14 @@
             },
             init_bar_chat_age() {
                 this.count_age_ranges();
-                if (this.bar_chart_age === null){
-                    const labels = this.age_ranges.map(function(item) { return item.range + '(' + item.label + ')'; });
+                if (this.bar_chart_age === null) {
+                    const labels = this.age_ranges.map(function (item) {
+                        return item.range + '(' + item.label + ')';
+                    });
                     const data = this.age_ranges.map(item => item.count);
                     this.bar_chart_age = new Chart('bar_chart_age', {
                         type: 'bar',
-                        data:{
+                        data: {
                             labels: labels,
                             datasets: [{
                                 label: 'Age ranges',
@@ -808,10 +812,12 @@
                     this.bar_chart_age.update();
                 }
             },
-            init_pie_chart_age(){
+            init_pie_chart_age() {
                 this.count_age_ranges();
-                if (this.pie_chart_age === null){
-                    const labels = this.age_ranges.map(function(item) { return item.range + '(' + item.label + ')'; });
+                if (this.pie_chart_age === null) {
+                    const labels = this.age_ranges.map(function (item) {
+                        return item.range + '(' + item.label + ')';
+                    });
                     const data = this.age_ranges.map(item => item.count);
                     this.pie_chart_age = new Chart("pie_chart_age", {
                         type: "pie",
@@ -833,7 +839,7 @@
                     this.pie_chart_age.update();
                 }
             },
-            select_genre(index){
+            select_genre(index) {
                 this.is_selecting_all_games = false
                 for (let i = 0; i < this.genres.length; i++) {
                     this.genres[i].selected = false
@@ -845,33 +851,16 @@
                 let genre = this.genres[index].type
                 this.key = !this.key
                 for (let i = 0; i < this.gameHasGenres.length; i++) {
-                    if (this.gameHasGenres[i].Type_of_genres === genre){
+                    if (this.gameHasGenres[i].Type_of_genres === genre) {
                         const game = this.games.find(game => game.id === this.gameHasGenres[i].ID_Game);
                         if (game) {
-                          game.selected = true;
+                            game.selected = true;
                         }
                         this.is_selecting_all_games = false
                     }
                 }
                 this.init_chart_1();
             },
-            select_publisher(index){
-                this.is_selecting_all_games = false
-                for (let i = 0; i < this.publishers.length; i++) {
-                    this.publishers[i].selected = false
-                }
-                for (let i = 0; i < this.games.length; i++) {
-                    this.games[i].selected = false
-                }
-                this.publishers[index].selected = true;
-                this.key = !this.key
-                for (let i = 0; i < this.publishes.length; i++) {
-                    if (this.publishes[i].ID_Game_Publisher === this.publishers[index].id){
-                        this.games.find(game => game.id === this.publishes[i].ID_Game).selected = true
-                    }
-                }
-                this.init_chart_1();
-            }
         },
         watch: {
             from_date_str(new_value, old_value) {

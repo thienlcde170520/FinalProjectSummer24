@@ -153,64 +153,66 @@
                         </div>
                         <!-- ***** Banner End ***** -->
 
-                        <!-- ***** Most Popular Start ***** -->
-                        <div class="most-popular">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="heading-section">
-                                        <h4><em>Most Popular</em> Right Now</h4>
-                                    </div>
-                                    <div class="row">
-                                        <% 
-                                          ArrayList<Game> Games = (ArrayList<Game>) GameDAO.getAllGames();
-                                          if (Games != null) {
-                                            for (Game game : Games) {
-                                        %>
-                                       <div class="col-lg-3 col-sm-6">
-    <div class="item">
-        <a href="GameDetailServlet?gameid=<%= game.getId() %>">
-            <img src="<%= game.getAvatarLink()%>?usp=sharing" alt="">
-            <h4><%= game.getName() %><br></h4>
-            <ul>
-                <li><i class="fa fa-star"></i> <%= ReviewDAO.getAverageRatingByGame(game) %></li>
-                <li><i class="fa fa-download"></i> <%= game.getNumberOfBuyers() %></li>
-            </ul>
-        </a>
+                       <!-- ***** Most Popular Start ***** -->
+<div class="most-popular">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="heading-section">
+                <h4><em>Most Popular</em> Right Now</h4>
+            </div>
+            <div class="row">
+                <% 
+                  ArrayList<Game> Games = (ArrayList<Game>) GameDAO.getAllGames();
+                  if (Games != null) {
+                    int count = 0; // Initialize counter
+                    for (Game game : Games) {
+                        if (count >= 8) break; // Exit loop if 8 games have been displayed
+                %>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="item">
+                        <a href="GameDetailServlet?gameid=<%= game.getId() %>">
+                            <img src="<%= game.getAvatarLink()%>?usp=sharing" alt="">
+                            <h4><%= game.getName() %><br></h4>
+                            <ul>
+                                <li><i class="fa fa-star"></i> <%= ReviewDAO.getAverageRatingByGame(game) %></li>
+                                <li><i class="fa fa-download"></i> <%= game.getNumberOfBuyers() %></li>
+                            </ul>
+                        </a>
+                    </div>
+                </div>
+                <% 
+                        count++; // Increment counter
+                    }
+                  }
+                %>
+            </div>
+            <div class="col-lg-12">
+                <div class="main-button">
+                    <a href="BestSellerServlet">Discover Popular</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
-                                        <% 
-                                            }
-                                          }
-                                        %>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="main-button">
-                                            <a href="BestSellerServlet">Discover Popular</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- ***** Most Popular End ***** -->
+<!-- ***** Most Popular End ***** -->
 
 
 
 
                         <!-- ***** Genres Start ***** -->
-    <div class="most-popular">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="heading-section">
-                <h4><em>Genres</em></h4>
-            </div>
-            <div class="row">
-                <%
-                    ArrayList<Genre> genres = GenreDAO.getAllGenres();
-                    if (genres != null) {
-                        for (Genre genre : genres) {
-                %>
-                <div class="col-lg-3 col-sm-6">
+                        <div class="most-popular">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="heading-section">
+                                        <h4><em>Genres</em></h4>
+                                    </div>
+                                    <div class="row">
+                                        <% 
+                                              ArrayList<Genre> genres = (ArrayList<Genre>) GenreDAO.getAllGenres();
+                                          if (genres != null) {
+                                            for (Genre genre : genres) {
+                                        %>
+                                         <div class="col-lg-3 col-sm-6">
                     <div class="item">
                         <form action="DisplayGenreServlet" method="post">
                             <input type="hidden" name="selectedGenre" value="<%= genre.getType() %>">
@@ -218,17 +220,14 @@
                         </form>
                     </div>
                 </div>
-                <%
-                        }
-                    }
-                %>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
+                                        <% 
+                                            }
+                                          }
+                                        %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <!-- ***** Genres End ***** -->
 
                         
@@ -238,7 +237,7 @@
 
 
 
-                        
+                      
 
                         <!-- ***** Social Area Starts ***** -->
                         <section class="section" id="social">
@@ -300,6 +299,50 @@
                             </div>
                         </section>
                         <!-- ***** Social Area Ends ***** -->
+
+
+
+
+
+
+
+
+                        <!-- ***** Gaming Library Start ***** -->
+                        <div class="gaming-library profile-library">
+                            <div class="col-md-12">
+                                <div class="heading-section">
+                                    <h4><em>Transaction History</em> </h4>
+                                </div>
+                                <div class="item">
+                                    <ul>
+
+                                        <li><h4>MB bank</h4></li>
+                                        <li><h4>Content</h4><span>ID:123</span></li>
+                                        <li><h4>Date Added</h4><span>24/08/2036</span></li>
+                                        <li><div class="main-border-button border-no-active"><a href="#">120.000</a></div></li>
+                                    </ul>
+                                </div>
+                                <div class="item">
+                                    <ul>
+                                        <li><h4>MB bank</h4></li>
+
+                                        <li><h4>Content</h4><span>ID:123</span></li>
+                                        <li><h4>Date Added</h4><span>22/06/2036</span></li>
+                                        <li><div class="main-border-button border-no-active"><a href="#">200.000</a></div></li>
+                                    </ul>
+                                </div>
+                                <div class="item last-item">
+                                    <ul>
+                                        <li><h4>MB bank</h4></li>
+
+                                        <li><h4>Content</h4><span>ID:123</span></li>
+                                        <li><h4>Date Added</h4><span>21/04/2022</span></li>
+                                        <li><div class="main-border-button border-no-active"><a href="#">120.000</a></div></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ***** Gaming Library End ***** -->
                     </div>
                 </div>
             </div>

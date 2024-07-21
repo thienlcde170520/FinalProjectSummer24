@@ -128,6 +128,7 @@ public class UpdateProfileServlet extends HttpServlet {
                 Logger.getLogger(UpdateProfileServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+       
         //start
         if(!newEM.isEmpty()){
             String emailCheck = "^[^ ]+@[^ ]+\\.[a-z]{2,3}$";
@@ -195,8 +196,9 @@ public class UpdateProfileServlet extends HttpServlet {
             request.setAttribute("games", games); 
         
             request.setAttribute("transactionHistory", transactionHistory);
-                                //request.getRequestDispatcher("profile.jsp").forward(request, response);       
-                                response.sendRedirect("profileServlet");
+
+                                  response.sendRedirect("profileServlet");                 
+
                             }else{
                                  try (PrintWriter out = response.getWriter()) {
                                     /* TODO output your page here. You may use following sample code. */

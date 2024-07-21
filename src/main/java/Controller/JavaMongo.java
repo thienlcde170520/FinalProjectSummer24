@@ -64,6 +64,7 @@ public class JavaMongo {
         return settings;
     }
 
+
     public static void main(String[] args) {
 
         
@@ -90,6 +91,7 @@ public class JavaMongo {
 
 
     }
+
 
     /*publisher*/
  /*----------------------------*/
@@ -342,7 +344,9 @@ public class JavaMongo {
             if (AvatarLink != null && !AvatarLink.isEmpty()) {
                 gamerUpdateFields.append("AvatarLink", AvatarLink);
             }
-            if(DOB != null && !DOB.isEmpty()){
+
+             if(DOB != null && !DOB.isEmpty()){
+
                 gamerUpdateFields.append("Date of Birth",DOB);
             }
             // Tạo một document mới chứa thông tin cập nhật cho Users
@@ -361,6 +365,9 @@ public class JavaMongo {
             Document publisherUpdateFields = new Document();
             if (name != null && !name.isEmpty()) {
                 publisherUpdateFields.append("Name", name);
+            }
+             if (AvatarLink != null && !AvatarLink.isEmpty()) {
+                publisherUpdateFields.append("AvatarLink", AvatarLink);
             }
             if (email != null && !email.isEmpty()) {
                 publisherUpdateFields.append("Email", email);

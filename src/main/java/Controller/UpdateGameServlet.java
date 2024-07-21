@@ -88,7 +88,7 @@ public class UpdateGameServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
+  @Override
 protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
     // Retrieve parameters from the form
@@ -96,16 +96,16 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     Game game = GameDAO.getGameByGameID(gameId); // Retrieve the existing game by its ID
 
     // Update game details from form inputs
-    String gameName = getParameterOrDefault(request, "gameName", game.getName());
-    String trailerLink = getParameterOrDefault(request, "trailerLink", game.getLinkTrailer());
-    String description = getParameterOrDefault(request, "description", game.getDescription());
-    String minCpu = getParameterOrDefault(request, "minCpu", game.getMinimumCPU());
-    String minRam = getParameterOrDefault(request, "minRam", game.getMinimumRAM());
-    String minGpu = getParameterOrDefault(request, "minGpu", game.getMinimumGPU());
-    String maxCpu = getParameterOrDefault(request, "maxCpu", game.getMaximumCPU());
-    String maxRam = getParameterOrDefault(request, "maxRam", game.getMaximumRAM());
-    String maxGpu = getParameterOrDefault(request, "maxGpu", game.getMaximumGPU());
-    String priceStr = getParameterOrDefault(request, "priceAmount", Double.toString(game.getPrice()));
+    String gameName = request.getParameter("gameName");
+    String trailerLink = request.getParameter("trailerLink");
+    String description = request.getParameter("description");
+    String minCpu = request.getParameter("minCpu");
+    String minRam = request.getParameter("minRam");
+    String minGpu = request.getParameter("minGpu");
+    String maxCpu = request.getParameter("maxCpu");
+    String maxRam = request.getParameter("maxRam");
+    String maxGpu = request.getParameter("maxGpu");
+    String priceStr = request.getParameter("priceAmount");
 
     double price = game.getPrice();
     if (priceStr != null && !priceStr.trim().isEmpty()) {
@@ -116,15 +116,11 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
             // Optionally, set a default value or show an error message to the user
         }
     }
-  
+
     // Handle file uploads for game avatar and game file
     String gameFileUrl = game.getGameLink(); // Initialize with existing URL
     String gameAvatarUrl = game.getAvatarLink(); // Initialize with existing URL
-if (isGameNameExists(gameName)){
-            String message = "Already have game with the same name";
-            request.setAttribute("message", message);
-             request.getRequestDispatcher("error.jsp").forward(request, response);
-        }
+
     try {
         Part gameAvatarPart = request.getPart("gameAvatar");
         if (gameAvatarPart != null && gameAvatarPart.getSize() > 0) {
@@ -147,45 +143,49 @@ if (isGameNameExists(gameName)){
         return; // Exit the method if file upload fails
     }
 
-    // Update the Game object with new details
-   // Update the Game object with new details if they are not null
-if (gameName != null) {
-    game.setName(gameName);
-}
-if (trailerLink != null) {
-    game.setLinkTrailer(trailerLink);
-}
-if (description != null) {
-    game.setDescription(description);
-}
-if (minCpu != null) {
-    game.setMinimumCPU(minCpu);
-}
-if (minRam != null) {
-    game.setMinimumRAM(minRam);
-}
-if (minGpu != null) {
-    game.setMinimumGPU(minGpu);
-}
-if (maxCpu != null) {
-    game.setMaximumCPU(maxCpu);
-}
-if (maxRam != null) {
-    game.setMaximumRAM(maxRam);
-}
-if (maxGpu != null) {
-    game.setMaximumGPU(maxGpu);
-}
-if (price <=0 ) {
-    game.setPrice(price);
-}
-if (gameAvatarUrl != null) {
-    game.setAvatarLink(gameAvatarUrl);
-}
-if (gameFileUrl != null) {
-    game.setGameLink(gameFileUrl);
-}
-
+    // Update the Game object with new details if they are not null or empty
+    if (gameName != null && !gameName.trim().isEmpty()) {
+        if (isGameNameExists(gameName)) {
+            String message = "A game with the same name already exists";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("error.jsp").forward(request, response);
+            return;
+        }
+        game.setName(gameName);
+    }
+    if (trailerLink != null && !trailerLink.trim().isEmpty()) {
+        game.setLinkTrailer(trailerLink);
+    }
+    if (description != null && !description.trim().isEmpty()) {
+        game.setDescription(description);
+    }
+    if (minCpu != null && !minCpu.trim().isEmpty()) {
+        game.setMinimumCPU(minCpu);
+    }
+    if (minRam != null && !minRam.trim().isEmpty()) {
+        game.setMinimumRAM(minRam);
+    }
+    if (minGpu != null && !minGpu.trim().isEmpty()) {
+        game.setMinimumGPU(minGpu);
+    }
+    if (maxCpu != null && !maxCpu.trim().isEmpty()) {
+        game.setMaximumCPU(maxCpu);
+    }
+    if (maxRam != null && !maxRam.trim().isEmpty()) {
+        game.setMaximumRAM(maxRam);
+    }
+    if (maxGpu != null && !maxGpu.trim().isEmpty()) {
+        game.setMaximumGPU(maxGpu);
+    }
+    if (price > 0) {
+        game.setPrice(price);
+    }
+    if (gameAvatarUrl != null && !gameAvatarUrl.trim().isEmpty()) {
+        game.setAvatarLink(gameAvatarUrl);
+    }
+    if (gameFileUrl != null && !gameFileUrl.trim().isEmpty()) {
+        game.setGameLink(gameFileUrl);
+    }
 
     // Update the game in the database
     GameDAO.updateGame(game);
@@ -209,14 +209,9 @@ if (gameFileUrl != null) {
     }
 
     // Optionally, redirect to a success page or perform other actions
-    response.sendRedirect("Home.jsp");
+    response.sendRedirect("GameDetailServlet?gameid=" + game.getId());
 }
 
-// Utility method to get a parameter or a default value if the parameter is null or empty
-private String getParameterOrDefault(HttpServletRequest request, String paramName, String defaultValue) {
-    String paramValue = request.getParameter(paramName);
-    return (paramValue != null && !paramValue.trim().isEmpty()) ? paramValue : defaultValue;
-}
 
 
     private java.io.File saveFileFromPart(Part part, String fileName) throws IOException {

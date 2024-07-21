@@ -21,7 +21,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>Cyborg - Awesome HTML5 Template</title>
+    <title>Profile </title>
 
     <!-- Bootstrap core CSS -->
       <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -59,72 +59,69 @@ https://templatemo.com/tm-579-cyborg-gaming
   </div>
   <!-- ***** Preloader End ***** -->
 
-  <!-- ***** Header Area Start ***** -->
+  <header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="Home.jsp" class="logo">
+                        <img src="assets/images/logo.png" alt="">
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Search End ***** -->
+                    <div class="search-input">
+                        <form id="search" action="SearchGameServlet" method="get">
+                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <i class="fa fa-search"></i>
+                        </form>
+                    </div>
+                    <!-- ***** Search End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                       
+                                                                 
 
-   <!-- ***** Header Area Start ***** -->
-      <!-- ***** Header Area Start ***** -->
-        <header class="header-area header-sticky">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <nav class="main-nav">
-                            <!-- ***** Logo Start ***** -->
-                            <a href="Home.jsp" class="logo">
-                                <img src="assets/images/logo.png" alt="">
-                            </a>
-                            <!-- ***** Logo End ***** -->
-                            <!-- ***** Search End ***** -->
-                            <div class="search-input">
-                                <form id="search" action="SearchGameServlet" method="get">
-                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                                    <i class="fa fa-search"></i>
-                                </form>
-                            </div>
-                            <!-- ***** Search End ***** -->
-                            <!-- ***** Menu Start ***** -->
-                            <ul class="nav">
-                                <li><a href="Home.jsp" class="active">Home</a></li>
-
-                            
+                        <%
+                            Users user = (Users) session.getAttribute("account");
+                            if (user != null) {
+                                if (user.getRole() == 2) {
+                        %>
                            
-                
-                                <%    Users user = (Users) session.getAttribute("account");
-%>
-                                <%
-    
-    if (user != null && user.getRole()== 2 ) {
-%>
-        <li><a href="UploadGame">Upload Game</a></li>
-   
-<%
-    }
-%>
-
-                <%
-    if (user != null && user.getRole()== 1 ) {
-%>
-        <li><a href="PublishGameServlet">Verify Game</a></li>
-          <li><a href="ManageUser.jsp"> Manage User</a></li>
-           <li><a href="ReportServlet">Respond Report </a></li>
-<%
-    }
-%>
-        
-           <li><a href="LogOutServlet">LOG OUT</a></li>
-       <%
-                               
-                               if (user != null && user.getRole()== 2 ||  user.getRole()== 3 ) {
-%>    <li><a href="BestSellerServlet">Game</a></li>
-
-                                <li><a href="DisplayGenreServlet">Genre</a></li>
-                    <li><a href="CallSupport.jsp">Report </a></li>
-            <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
-
-<%
-    }
-%>
-                            
-                            </ul>   
+                        <li><a href="UploadGame">Upload Game</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 1) {
+                        %>
+                                  
+                        <li><a href="PublishGameServlet">Verify Game</a></li>
+                                    <li><a href="ManageUser.jsp">Manage User</a></li>
+                                    <li><a href="ReportServlet">Respond Report</a></li>
+                                              <li><a href="Statistic.jsp">View Profit </a></li>
+                                       <li><a href="LogOutServlet">LOG OUT</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 2 || user.getRole() == 3) {
+                        %>
+                                     <li><a href="BestSellerServlet"> Best Game</a></li>
+                                    <li><a href="DisplayGenreServlet">Genre</a></li>
+                                    <li><a href="CallSupport.jsp">Report</a></li>
+                                       <li><a href="LogOutServlet">LOG OUT</a></li>
+                                    <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                        <%
+                                }
+                        %>
+                        <%
+                            } else {
+                        %>
+                              <li><a href="BestSellerServlet"> Best Game</a></li>
+                                    <li><a href="DisplayGenreServlet">Genre</a></li>
+                                    <li><a href="Login.jsp">LOG IN</a></li>
+                                <li><a href="Register.jsp">REGISTER</a></li>
+                        <%
+                            }
+                        %>
+                    </ul>
                             <a class='menu-trigger'>
                                 <span>Menu</span>
                             </a>
@@ -134,7 +131,8 @@ https://templatemo.com/tm-579-cyborg-gaming
                 </div>
             </div>
         </header>
-  <!-- ***** Header Area End ***** -->
+        <!-- ***** Header Area End ***** -->
+
 
   <div class="container">
     <div class="row">
@@ -160,43 +158,39 @@ https://templatemo.com/tm-579-cyborg-gaming
                   <div class="col-lg-4">
                     <img src="<%=gamer.getAvatarLink() %>" alt="" style="border-radius: 23px;">
                   </div>
-                  <div class="col-lg-4 align-self-center">
-                    <div class="main-info header-text">
-                      <h4><%=gamer.getName() %></h4>
-                      <p>Email: <%=gamer.getGmail()%></p>
-                      <p>Date of Birth: <%=gamer.getDOB()%></p>
-                      <p>Join Since : <%=gamer.getRegistrationDate()%></p>
-                      <div class="main-border-button">
-                      </div>
-                    </div>
-                  </div>
-          <div class="col-lg-4 align-self-center">
-    <ul>
-           <li>Balance <span><%= gamer.getMoney() %> VNĐ</span></li>
-                <li><a href="FollowServlet?gamerid=<%= gamer.getId() %>">Wish Lists</a></li>
-       <% if (!isAdmin && !isUpdateable) { %>
-      
-        </ul>
-        
-        <% } else if ( isAdmin) { %>
-        <div class="d-flex justify-content-start align-items-center">
-        
-                <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary" onclick="return confirmDelete()">Delete Account</a>
-                <a href="UpdateGamerByAdmin?UserId=<%= gamer.getId() %>" class="btn btn-primary" onclick="return confirmUpdate()">Default Info</a>   
-        </div>
-      
-        <% } else if (isUpdateable) {
-%>
 
- <div class="d-flex justify-content-start align-items-center">              
-            <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>            
-            <a href="NewTransaction.jsp" class="btn btn-primary">Transaction</a>
-            <a href="RespondReportServlet?UserId=<%=user.getId() %>" class="btn btn-primary">Send Report</a>
-            <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary"onclick="return confirmDelete()">Delete Account</a>
+                 <div class="col-lg-4 align-self-center">
+    <div class="main-info header-text">
+        <h4><%= gamer.getName() %></h4>
+        <p>Email: <%= gamer.getGmail() %></p>
+        <p>Date of Birth: <%= gamer.getDOB() %></p>
+        <p>Join since : <%= gamer.getRegistrationDate() %></p>
+        <% if (isAdmin == true || isUpdateable == true ){%>
+        <p>Id : <%= gamer.getId() %></p>
+        <p>Balance : <%= gamer.getMoney() %> VNĐ</p>
+        <%}%>
+        <div class="main-border-button">
         </div>
-<%
-}
-%>
+    </div>
+</div>
+<div class="col-lg-4 align-self-center">
+    <ul>
+        <li><a href="FollowServlet?gamerid=<%= gamer.getId() %>">Wish Lists</a></li>
+    </ul>
+    <% if (isAdmin) { %>
+    <div class="d-flex justify-content-start align-items-center">
+        <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary" onclick="return confirmDelete()">Delete Account</a>
+        <a href="UpdateGamerByAdmin?UserId=<%= gamer.getId() %>" class="btn btn-primary" onclick="return confirmUpdate()">Default Info</a>
+    </div>
+    <% } else if (isUpdateable) { %>
+    <div class="d-flex justify-content-start align-items-center">
+        <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>
+        <a href="NewTransaction.jsp" class="btn btn-primary">Transaction</a>
+        <a href="RespondReportServlet?UserId=<%= user.getId() %>" class="btn btn-primary">Send Report</a>
+        <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary" onclick="return confirmDelete()" >Delete Account</a>
+    </div>
+    <% } %>
+
 </div>
 
                 </div>
@@ -231,11 +225,7 @@ https://templatemo.com/tm-579-cyborg-gaming
 </div>
 
 
-                        <div class="col-lg-12">
-                          <div class="main-button">
-                            <a href="#">Load More Games</a>
-                          </div>
-                        </div>
+                        
                       </div>
                     </div>
                   </div>
@@ -250,6 +240,7 @@ https://templatemo.com/tm-579-cyborg-gaming
 
    
      <!-- ***** Gaming Library Start ***** -->
+     <%if (isAdmin || isUpdateable ){ %>
           <div class="gaming-library profile-library">
             <div class="col-md-12">
               <div class="heading-section">
@@ -276,6 +267,7 @@ https://templatemo.com/tm-579-cyborg-gaming
     </div>
             </div>
           </div>
+    <%}%>
           <!-- ***** Gaming Library End ***** -->
             <!-- ***** Gaming Library Start ***** -->
                                 <div class="gaming-library profile-library">
@@ -307,6 +299,8 @@ https://templatemo.com/tm-579-cyborg-gaming
                                 
                                 
                                     <!-- ***** Gaming Library Start ***** -->
+                                    
+                                      <%if (isAdmin || isUpdateable ){ %>
                                 <div class="gaming-library profile-library">
                                     <div class="col-md-12">
                                         <div class="heading-section">
@@ -336,6 +330,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                                         </div>
                                     </div>
                                 </div>
+                                        <%}%>
                                 <!-- ***** Gaming Library End ***** -->
         </div>
       </div>

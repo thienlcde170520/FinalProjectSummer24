@@ -14,7 +14,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Fortnite - Game Details</title>
+        <%  Game game = (Game) request.getAttribute("game");%>
+        <title><%= game.getName()%> - Game Details</title>
        <!-- Bootstrap core CSS -->
       <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -65,7 +66,7 @@
         <%
             // Retrieve attributes from request
             ArrayList<Genre> genres = (ArrayList<Genre>) request.getAttribute("genres");
-            Game game = (Game) request.getAttribute("game");
+          
             ArrayList<Review> reviews = (ArrayList<Review>) request.getAttribute("reviews");
             Double rating = (Double) request.getAttribute("rating");
             Publishers publisher = (Publishers) request.getAttribute("publisher");
@@ -83,8 +84,7 @@
         <!-- Header Area Start -->
 
         <!-- ***** Header Area Start ***** -->
-                 <!-- ***** Header Area Start ***** -->
-        <header class="header-area header-sticky">
+                <header class="header-area header-sticky">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -104,7 +104,6 @@
                     <!-- ***** Search End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <li><a href="Home.jsp" class="active">Home</a></li>
                        
                                                                  
 
@@ -113,20 +112,23 @@
                             if (user != null) {
                                 if (user.getRole() == 2) {
                         %>
-                                    <li><a href="UploadGame">Upload Game</a></li>
+                           
+                        <li><a href="UploadGame">Upload Game</a></li>
                         <%
                                 }
                                 if (user.getRole() == 1) {
                         %>
-                                    <li><a href="PublishGameServlet">Verify Game</a></li>
+                                  
+                        <li><a href="PublishGameServlet">Verify Game</a></li>
                                     <li><a href="ManageUser.jsp">Manage User</a></li>
                                     <li><a href="ReportServlet">Respond Report</a></li>
+                                              <li><a href="Statistic.jsp">View Profit </a></li>
                                        <li><a href="LogOutServlet">LOG OUT</a></li>
                         <%
                                 }
                                 if (user.getRole() == 2 || user.getRole() == 3) {
                         %>
-                                     <li><a href="BestSellerServlet">Game</a></li>
+                                     <li><a href="BestSellerServlet"> Best Game</a></li>
                                     <li><a href="DisplayGenreServlet">Genre</a></li>
                                     <li><a href="CallSupport.jsp">Report</a></li>
                                        <li><a href="LogOutServlet">LOG OUT</a></li>
@@ -137,7 +139,9 @@
                         <%
                             } else {
                         %>
-                                <li><a href="Login.jsp">LOG IN</a></li>
+                              <li><a href="BestSellerServlet"> Best Game</a></li>
+                                    <li><a href="DisplayGenreServlet">Genre</a></li>
+                                    <li><a href="Login.jsp">LOG IN</a></li>
                                 <li><a href="Register.jsp">REGISTER</a></li>
                         <%
                             }
@@ -152,7 +156,8 @@
                 </div>
             </div>
         </header>
-        <!-- Header Area End -->
+        <!-- ***** Header Area End ***** -->
+
 
         <div class="container">
             <div class="row">
@@ -374,19 +379,23 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
                     
                     // Display review details
             %>
-            <li>
-                <strong><%= gamer.getName()%>:</strong> "<%= review.getDescription()%>" 
-                <br> Rating: <%= review.getRating()%>
-                
-                <!-- Delete button form (display only if logged-in user is the author of the review) -->
-                <% if (isReviewOwner || loggedInUser.getRole() == 1 ) { %>
-                    <form action="ReviewGameServlet" method="get" style="display: inline;">
-                        <input type="hidden" name="reviewGameId" value="<%= review.getIdGame()%>">
-                        <input type="hidden" name="reviewGamerId" value="<%= review.getIdGamer()%>">
-                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
-                <% } %>
-            </li>
+           <li>
+    <strong>
+        <a href="profileServlet?userid=<%= gamer.getId() %>"><%= gamer.getName() %></a>
+    </strong>:
+    "<%= review.getDescription() %>" 
+    <br> Rating: <%= review.getRating() %>
+    
+    <!-- Delete button form (display only if logged-in user is the author of the review or an admin) -->
+    <% if (isReviewOwner || loggedInUser.getRole() == 1) { %>
+        <form action="ReviewGameServlet" method="get" style="display: inline;">
+            <input type="hidden" name="reviewGameId" value="<%= review.getIdGame() %>">
+            <input type="hidden" name="reviewGamerId" value="<%= review.getIdGamer() %>">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+        </form>
+    <% } %>
+</li>
+
             <% } %>
         </ul>
     </div>

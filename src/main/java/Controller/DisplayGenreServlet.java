@@ -66,7 +66,8 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
     String selectedGenre = request.getParameter("selectedGenre");
     ArrayList<Genre> genres = GenreDAO.getAllGenres();
-    ArrayList<Game> games = GameDAO.searchGames("", "", "", "", "", new String[]{selectedGenre});
+    
+    ArrayList<Game> games = GameDAO.searchGames("", "", "", "", "", new String[]{selectedGenre},"","");
     
     Genre genre = GenreDAO.getGenreByType(selectedGenre);
     request.setAttribute("genres", genres);

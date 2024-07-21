@@ -6,6 +6,7 @@
 package Controller;
 
 import DAO.GameDAO;
+import DAO.GamerDAO;
 import DAO.TransactionBillDAO;
 import static DAO.TransactionBillDAO.getBillsByGameID;
 import Model.Bill;
@@ -99,7 +100,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     Game game = GameDAO.getGameByGameID(gameId);
     HttpSession session = request.getSession();
     Gamers gamer = (Gamers) session.getAttribute("account");
-
+    gamer = GamerDAO.getGamerByGamerId(gamer.getId());
     // Convert gamePrice to int (assuming rounding down for whole numbers)
    if (gamer.getMoney() < game.getPrice()){
        String message = "You do not have enough money to buy this game";
@@ -111,7 +112,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     TransactionBillDAO.addPurchase(billId, gamer.getId(), gameId, buyTime, gamePrice);
 
     // Forward to payment confirmation page or another view
-  request.getRequestDispatcher("Home.jsp").forward(request, response);
+    response.sendRedirect("GameDetailServlet?gameid=" + gameId);  
 }
 
 

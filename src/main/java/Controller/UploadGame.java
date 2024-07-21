@@ -213,8 +213,8 @@ public class UploadGame extends HttpServlet {
                 GenreDAO.addGenreToGame(gameId, genre);
             }
         }
-        // Optionally, you can redirect to a success page or do other actions
-        response.sendRedirect("Home.jsp");
+        // Optionally, you can redirect gameIdto a success page or do other actions
+     response.sendRedirect("GameDetailServlet?gameid=" + game.getId());      
     }
 
     private java.io.File saveFileFromPart(Part part, String fileName) throws IOException {

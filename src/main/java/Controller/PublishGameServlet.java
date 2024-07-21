@@ -67,7 +67,7 @@ public class PublishGameServlet extends HttpServlet {
 
     if ("accept".equalsIgnoreCase(action)) {
         if (GameDAO.publishGame(gameId, session)) {
-            response.sendRedirect("Home.jsp"); // Redirect to success page
+              response.sendRedirect("GameDetailServlet?gameid=" + gameId);   // Redirect to success page
         } else {
             response.sendRedirect("error.jsp"); // Redirect to error page
         }
