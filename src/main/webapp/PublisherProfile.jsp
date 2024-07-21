@@ -178,15 +178,15 @@ https://templatemo.com/tm-579-cyborg-gaming
         <% } else if ( isAdmin) { %>
         <div class="d-flex justify-content-start align-items-center">
                 
-            <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>
-            <a href="RespondReportServlet?UserId=<%=pub.getId() %>" class="btn btn-primary">Send Report</a>
+          
             <a href="DeleteAccountServlet?UserId=<%= pub.getId() %>" class="btn btn-primary">Delete Account</a>
         </div>
                
       
         <% } else if (isUpdateable) {
 %>
-
+  <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>
+            <a href="RespondReportServlet?UserId=<%=pub.getId() %>" class="btn btn-primary">Send Report</a>
  
 <%
 }
@@ -224,11 +224,7 @@ https://templatemo.com/tm-579-cyborg-gaming
 </div>
 
 
-                        <div class="col-lg-12">
-                          <div class="main-button">
-                            <a href="#">Load More Games</a>
-                          </div>
-                        </div>
+                     
                       </div>
                     </div>
                   </div>

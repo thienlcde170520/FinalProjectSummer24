@@ -379,7 +379,7 @@ boolean isPublisher = loggedInUser != null && loggedInUser.getId().equals(publis
                 <br> Rating: <%= review.getRating()%>
                 
                 <!-- Delete button form (display only if logged-in user is the author of the review) -->
-                <% if (isReviewOwner) { %>
+                <% if (isReviewOwner || loggedInUser.getRole() == 1 ) { %>
                     <form action="ReviewGameServlet" method="get" style="display: inline;">
                         <input type="hidden" name="reviewGameId" value="<%= review.getIdGame()%>">
                         <input type="hidden" name="reviewGamerId" value="<%= review.getIdGamer()%>">
