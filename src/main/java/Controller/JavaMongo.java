@@ -257,7 +257,7 @@ public class JavaMongo {
     }
 
 
-   public static void updateProfile(String id, String name, String email, String password, String AvatarLink, String DOB , int role){
+   public static void updateProfile(String id, String name, String email, String password, String AvatarLink, String DOB , int role, String Bank, String Description){
 
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
@@ -353,6 +353,12 @@ public class JavaMongo {
             }
             if (password != null && !password.isEmpty()) {
                 publisherUpdateFields.append("Password", password);
+            }
+            if (Bank != null && !Bank.isEmpty()) {
+                publisherUpdateFields.append("Bank_account", Bank);
+            }
+            if (Description != null && !Description.isEmpty()) {
+                publisherUpdateFields.append("Description", Description);
             }
 
             if (!gamerUpdateFields.isEmpty() || !userUpdateFields.isEmpty() || !publisherUpdateFields.isEmpty()) {
