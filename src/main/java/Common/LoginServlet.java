@@ -143,10 +143,11 @@ public class LoginServlet extends HttpServlet {
                         
                         Cookie ce = new Cookie("emailC",e);
                         Cookie cp = new Cookie("passC",p);
-                        //Cookie cr = new Cookie("remember",r);
+                        Cookie cr = new Cookie("remember",r);
                         ce.setMaxAge(60*60);
                         if (r != null){                                                
-                            cp.setMaxAge(60*60);                                                                             
+                            cp.setMaxAge(60*60);
+                            cr.setMaxAge(60*60);
                         }
                         else {                                                       
                             cp.setMaxAge(0);                                                      
@@ -154,7 +155,7 @@ public class LoginServlet extends HttpServlet {
                         
                         response.addCookie(ce);
                         response.addCookie(cp);
-                        //response.addCookie(cr);
+                        response.addCookie(cr);
                         // response.sendRedirect("Home.jsp");
                         response.sendRedirect("Home.jsp");
                     }

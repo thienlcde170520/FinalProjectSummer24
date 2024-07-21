@@ -147,7 +147,7 @@
                     <div class="page-content">
                    
                         <section class="game-input-form" style="background-color: #000; color: #F0F5FF">
-                                 <<h2>Update Profile</h2>
+                                 <h2>Update Profile</h2>
                             <form action="UpdateProfileServlet" method="POST"   enctype="multipart/form-data">
                                 <%
                                     String mess = (String) request.getAttribute("mess");

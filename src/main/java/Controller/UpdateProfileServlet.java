@@ -114,7 +114,7 @@ public class UpdateProfileServlet extends HttpServlet {
         String gamerAvatarUrl = null;
         boolean hasErrors = false; //them       
         // Upload game file to Google Drive if provided
-         Part gamerAvatarPart = request.getPart("gamerAvatar"); // Assuming "gameAvatar" is the name of the file input field
+        Part gamerAvatarPart = request.getPart("gamerAvatar"); // Assuming "gameAvatar" is the name of the file input field
         if (  gamerAvatarPart != null && gamerAvatarPart.getSize() > 0) {
             String mimeType = gamerAvatarPart.getContentType();
             String fileName = newN + "_avatar.jpg"; // Example: "MyGame_avatar.jpg"
