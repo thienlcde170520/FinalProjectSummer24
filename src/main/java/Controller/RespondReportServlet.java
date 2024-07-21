@@ -94,11 +94,11 @@ public class RespondReportServlet extends HttpServlet {
             ReportDAO.respondToReport(reportId, respondText, adminId, isSearchable);
 
             // Redirect back to the report list
-            response.sendRedirect("Home.jsp");
+            response.sendRedirect("ReportServlet");
         }else if ("delete".equals(action)) {
             String reportId = request.getParameter("reportId");
             ReportDAO.deleteReport(reportId);
-            response.sendRedirect("Home.jsp"); // Redirect to the reports page
+            response.sendRedirect("ReportServlet"); // Redirect to the reports page
         }
     }
     

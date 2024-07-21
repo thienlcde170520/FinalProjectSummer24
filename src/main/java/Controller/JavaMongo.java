@@ -348,6 +348,9 @@ PublisherDAO.updateDefaultPublisher("123", "https://i.pinimg.com/736x/bc/43/98/b
             if (name != null && !name.isEmpty()) {
                 publisherUpdateFields.append("Name", name);
             }
+             if (AvatarLink != null && !AvatarLink.isEmpty()) {
+                publisherUpdateFields.append("AvatarLink", AvatarLink);
+            }
             if (email != null && !email.isEmpty()) {
                 publisherUpdateFields.append("Email", email);
             }

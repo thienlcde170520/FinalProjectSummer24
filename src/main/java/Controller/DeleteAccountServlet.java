@@ -9,6 +9,7 @@ import DAO.GamerDAO;
 import DAO.PublisherDAO;
 import Model.Gamers;
 import Model.Publishers;
+import Model.Users;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,6 +17,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -42,8 +44,15 @@ public class DeleteAccountServlet extends HttpServlet {
         if (publisher !=null){
            PublisherDAO.deletePublisher(publisher);
        }
+        HttpSession session = request.getSession();
+        Users a = (Users) session.getAttribute("account");
+        if (a!= null && a.getRole()!= 1 ){
+            session.removeAttribute("account");
+            response.sendRedirect("Login.jsp");
+        } else {
        request.getRequestDispatcher("Home.jsp").forward(request, response);
     } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 

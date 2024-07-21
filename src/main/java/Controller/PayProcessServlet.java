@@ -111,7 +111,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     TransactionBillDAO.addPurchase(billId, gamer.getId(), gameId, buyTime, gamePrice);
 
     // Forward to payment confirmation page or another view
-  request.getRequestDispatcher("Home.jsp").forward(request, response);
+    response.sendRedirect("GameDetailServlet?gameid=" + gameId);  
 }
 
 

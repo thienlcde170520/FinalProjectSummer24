@@ -56,8 +56,7 @@
   </div>
   <!-- ***** Preloader End ***** -->
 
-    <!-- ***** Header Area Start ***** -->
-        <header class="header-area header-sticky">
+    <header class="header-area header-sticky">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -131,6 +130,7 @@
         </header>
         <!-- ***** Header Area End ***** -->
 
+
  <div class="container">
     <div class="row">
         <div class="col-lg-12">
@@ -165,6 +165,7 @@
                                                 if (user != null && (user.getRole()== 1 || user.getRole() == 2 )) {
                                             %>
                                             <p>Bank Account: <%= pub.getBank_account() %></p>
+                                            <p>ID : <%= pub.getId() %> </p>
                                             <%}%>
                                             <div class="main-border-button">
                                                 <!-- Add button or other content here if needed -->
@@ -176,7 +177,7 @@
 
     <ul>
                  <li>Games Published <span><%= publishgames.size() %></span></li>
-                <li>Balance <span><%= pub.getMoney() %> VNĐ</span></li>
+                <li>Profit <span><%= pub.getProfit() %> VNĐ</span></li>
        <% if (!isUpdateable) { %>
         </ul>
         <% } else {

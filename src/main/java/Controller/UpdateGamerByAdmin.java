@@ -99,7 +99,7 @@ public class UpdateGamerByAdmin extends HttpServlet {
                             }        
             }
             //request.setAttribute("gamer", gamer);
-            request.getRequestDispatcher("Home.jsp").forward(request, response);
+            response.sendRedirect("profileServlet?userid="+ gamer.getId());  
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

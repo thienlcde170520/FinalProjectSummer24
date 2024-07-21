@@ -66,7 +66,7 @@ public class ReviewGameServlet extends HttpServlet {
             // Call a method to delete the review based on the IDs
              ReviewDAO.deleteReview( reviewGamerId, reviewGameId);
               
-            request.getRequestDispatcher("Home.jsp").forward(request, response);
+              response.sendRedirect("GameDetailServlet?gameid=" + reviewGameId);  
             
         }
     }
@@ -89,7 +89,7 @@ public class ReviewGameServlet extends HttpServlet {
          ReviewDAO.addReview(gamerId, gameId, rating, reviewDescription);
 
         // Redirect back to the page where the form was submitted from
-        response.sendRedirect("Home.jsp");
+          response.sendRedirect("GameDetailServlet?gameid=" + gameId);  
     }
 
     /** 

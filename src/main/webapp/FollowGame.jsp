@@ -60,8 +60,7 @@
         </div>
         <!-- ***** Preloader End ***** -->
 
-        <!-- ***** Header Area Start ***** -->
-        <header class="header-area header-sticky">
+       <header class="header-area header-sticky">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -135,9 +134,6 @@
         </header>
         <!-- ***** Header Area End ***** -->
 
-        <!-- ***** Game Presentation Start ***** -->
-
-        <!-- ***** Game Presentation End ***** -->
 
         <div class="container">
             <div class="row">

@@ -54,8 +54,7 @@ https://templatemo.com/tm-579-cyborg-gaming
   </div>
   <!-- ***** Preloader End ***** -->
 
-     <!-- ***** Header Area Start ***** -->
-        <header class="header-area header-sticky">
+     <header class="header-area header-sticky">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -128,6 +127,7 @@ https://templatemo.com/tm-579-cyborg-gaming
             </div>
         </header>
         <!-- ***** Header Area End ***** -->
+
 
      <div class="container">
     <div class="row">

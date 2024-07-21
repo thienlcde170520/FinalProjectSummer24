@@ -209,7 +209,7 @@ if (gameFileUrl != null) {
     }
 
     // Optionally, redirect to a success page or perform other actions
-    response.sendRedirect("Home.jsp");
+     response.sendRedirect("GameDetailServlet?gameid=" + game.getId());  
 }
 
 // Utility method to get a parameter or a default value if the parameter is null or empty

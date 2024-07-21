@@ -39,7 +39,7 @@ String gameId = request.getParameter("gameId");
             // Process the refund
             TransactionBillDAO.refundPurchase(billId, gamerId, gameId, refundNumber);
 
-      request.getRequestDispatcher("Home.jsp");
+         response.sendRedirect("GameDetailServlet?gameid=" + gameId);  
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -59,7 +59,7 @@ String gameId = request.getParameter("gameId");
       Double refundNumber = Double.valueOf(request.getParameter("refundnumber"));
             // Process the refund
             TransactionBillDAO.refundPurchase(billId, gamerId, gameId, refundNumber);
-      request.getRequestDispatcher("Home.jsp").forward(request, response);
+       response.sendRedirect("GameDetailServlet?gameid=" + gameId);  
     
     }
     /** 

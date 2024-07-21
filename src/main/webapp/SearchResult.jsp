@@ -10,7 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>Cyborg - Awesome HTML5 Template</title>
+    <title>Search Page</title>
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -40,7 +40,7 @@
         </div>
         <!-- ***** Preloader End ***** -->
         <!-- ***** Header Area Start ***** -->
-               <header class="header-area header-sticky">
+      <header class="header-area header-sticky">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -60,7 +60,6 @@
                     <!-- ***** Search End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <li><a href="Home.jsp" class="active">Home</a></li>
                        
                                                                  
 
@@ -69,12 +68,14 @@
                             if (user != null) {
                                 if (user.getRole() == 2) {
                         %>
-                                    <li><a href="UploadGame">Upload Game</a></li>
+                           
+                        <li><a href="UploadGame">Upload Game</a></li>
                         <%
                                 }
                                 if (user.getRole() == 1) {
                         %>
-                                    <li><a href="PublishGameServlet">Verify Game</a></li>
+                                  
+                        <li><a href="PublishGameServlet">Verify Game</a></li>
                                     <li><a href="ManageUser.jsp">Manage User</a></li>
                                     <li><a href="ReportServlet">Respond Report</a></li>
                                               <li><a href="Statistic.jsp">View Profit </a></li>
@@ -83,7 +84,7 @@
                                 }
                                 if (user.getRole() == 2 || user.getRole() == 3) {
                         %>
-                                     <li><a href="BestSellerServlet">Game</a></li>
+                                     <li><a href="BestSellerServlet"> Best Game</a></li>
                                     <li><a href="DisplayGenreServlet">Genre</a></li>
                                     <li><a href="CallSupport.jsp">Report</a></li>
                                        <li><a href="LogOutServlet">LOG OUT</a></li>
@@ -94,7 +95,7 @@
                         <%
                             } else {
                         %>
-                              <li><a href="BestSellerServlet">Game</a></li>
+                              <li><a href="BestSellerServlet"> Best Game</a></li>
                                     <li><a href="DisplayGenreServlet">Genre</a></li>
                                     <li><a href="Login.jsp">LOG IN</a></li>
                                 <li><a href="Register.jsp">REGISTER</a></li>
@@ -112,6 +113,7 @@
             </div>
         </header>
         <!-- ***** Header Area End ***** -->
+
 
         <!-- ***** Game Presentation Start ***** -->
        
