@@ -698,69 +698,91 @@ public class GameDAO {
         return games;
     }
 
-    public static ArrayList<Game> searchGames(String gameName, String gamePublisher, String year, String priceAmount, String priceCurrency, String[] selectedGenres) {
-        ArrayList<Game> filteredGames = new ArrayList<>();
-        ArrayList<Game> gamesByPublisherName = new ArrayList<>();
-        ArrayList<Game> gamesByGameName = new ArrayList<>();
-        ArrayList<Game> gamesByGenres = new ArrayList<>();
+   public static ArrayList<Game> searchGames(String gameName, String gamePublisher, String year, String priceAmount, String priceCurrency, String[] selectedGenres, String sortBy, String sortOrder) {
+    ArrayList<Game> filteredGames = new ArrayList<>();
+    ArrayList<Game> gamesByPublisherName = new ArrayList<>();
+    ArrayList<Game> gamesByGameName = new ArrayList<>();
+    ArrayList<Game> gamesByGenres = new ArrayList<>();
 
-        // Retrieve games by game name if provided
-        gamesByGameName = getGamesByGameName(gameName);
-        System.out.println("Games by Game Name: " + gamesByGameName); // Debugging statement
+    // Retrieve games by game name if provided
+    gamesByGameName = getGamesByGameName(gameName);
+    System.out.println("Games by Game Name: " + gamesByGameName); // Debugging statement
 
-        // Retrieve games by publisher name if provided
-        gamesByPublisherName = getGamesByPublisherName(gamePublisher);
-        System.out.println("Games by Publisher Name: " + gamesByPublisherName); // Debugging statement
+    // Retrieve games by publisher name if provided
+    gamesByPublisherName = getGamesByPublisherName(gamePublisher);
+    System.out.println("Games by Publisher Name: " + gamesByPublisherName); // Debugging statement
 
-        // Combine the games by game name and publisher name
-        // Find common games by ID from both lists
-        for (Game gameP : gamesByPublisherName) {
-            for (Game gameN : gamesByGameName) {
-                if (gameP.getId() != null && gameN.getId() != null && gameP.getId().equals(gameN.getId())) {
-                    filteredGames.add(gameN);
-                }
+    // Combine the games by game name and publisher name
+    // Find common games by ID from both lists
+    for (Game gameP : gamesByPublisherName) {
+        for (Game gameN : gamesByGameName) {
+            if (gameP.getId() != null && gameN.getId() != null && gameP.getId().equals(gameN.getId())) {
+                filteredGames.add(gameN);
             }
         }
+    }
 
-        // If no games are found after the initial filtering, return an empty list
-        if (filteredGames.isEmpty()) {
-            System.out.println("No games found after initial filters.");
-            return filteredGames;
-        }
-
-        System.out.println("Games after Publisher Filter: " + filteredGames); // Debugging statement
-
-        // Apply genre filter if provided
-        if (selectedGenres != null && selectedGenres.length > 0 && !Arrays.stream(selectedGenres).allMatch(String::isEmpty)) {
-            gamesByGenres = getGamesByGenres(selectedGenres);
-            System.out.println("Games by Genres: " + gamesByGenres); // Debugging statement   
-            ArrayList<Game> tempFilteredGames = new ArrayList<>();
-            for (Game gameG : gamesByGenres) {
-                for (Game gameN : filteredGames) {
-                    if (gameG.getId() != null && gameN.getId() != null && gameG.getId().equals(gameN.getId())) {
-                        tempFilteredGames.add(gameN);
-                    }
-                }
-            }
-            filteredGames = tempFilteredGames;
-        }
-
-        System.out.println("Games after Genre Filter: " + filteredGames); // Debugging statement
-
-        // Apply year filter if provided
-        if (year != null && !year.isEmpty()) {
-            filteredGames.removeIf(game -> !matchYear(game.getPublishDay(), year));
-            System.out.println("Games after Year Filter: " + filteredGames); // Debugging statement
-        }
-
-        // Apply price filter if provided
-        if (priceAmount != null && !priceAmount.isEmpty()) {
-            filteredGames.removeIf(game -> !matchPrice(game.getPrice(), priceAmount, priceCurrency));
-            System.out.println("Games after Price Filter: " + filteredGames); // Debugging statement
-        }
-
+    // If no games are found after the initial filtering, return an empty list
+    if (filteredGames.isEmpty()) {
+        System.out.println("No games found after initial filters.");
         return filteredGames;
     }
+
+    System.out.println("Games after Publisher Filter: " + filteredGames); // Debugging statement
+
+    // Apply genre filter if provided
+    if (selectedGenres != null && selectedGenres.length > 0 && !Arrays.stream(selectedGenres).allMatch(String::isEmpty)) {
+        gamesByGenres = getGamesByGenres(selectedGenres);
+        System.out.println("Games by Genres: " + gamesByGenres); // Debugging statement   
+        ArrayList<Game> tempFilteredGames = new ArrayList<>();
+        for (Game gameG : gamesByGenres) {
+            for (Game gameN : filteredGames) {
+                if (gameG.getId() != null && gameN.getId() != null && gameG.getId().equals(gameN.getId())) {
+                    tempFilteredGames.add(gameN);
+                }
+            }
+        }
+        filteredGames = tempFilteredGames;
+    }
+
+    System.out.println("Games after Genre Filter: " + filteredGames); // Debugging statement
+
+    // Apply year filter if provided
+    if (year != null && !year.isEmpty()) {
+        filteredGames.removeIf(game -> !matchYear(game.getPublishDay(), year));
+        System.out.println("Games after Year Filter: " + filteredGames); // Debugging statement
+    }
+
+    // Apply price filter if provided
+    if (priceAmount != null && !priceAmount.isEmpty()) {
+        filteredGames.removeIf(game -> !matchPrice(game.getPrice(), priceAmount, priceCurrency));
+        System.out.println("Games after Price Filter: " + filteredGames); // Debugging statement
+    }
+
+    // Sort the filtered games based on the provided criteria
+    if (sortBy != null && !sortBy.isEmpty()) {
+        switch (sortBy) {
+            case "name":
+                filteredGames.sort((g1, g2) -> sortOrder.equalsIgnoreCase("asc")
+                        ? g1.getName().compareToIgnoreCase(g2.getName())
+                        : g2.getName().compareToIgnoreCase(g1.getName()));
+                break;
+            case "year":
+                filteredGames.sort((g1, g2) -> sortOrder.equalsIgnoreCase("asc")
+                        ? g1.getPublishDay().compareTo(g2.getPublishDay())
+                        : g2.getPublishDay().compareTo(g1.getPublishDay()));
+                break;
+            case "price":
+                filteredGames.sort((g1, g2) -> sortOrder.equalsIgnoreCase("asc")
+                        ? Double.compare(g1.getPrice(), g2.getPrice())
+                        : Double.compare(g2.getPrice(), g1.getPrice()));
+                break;
+        }
+    }
+
+    return filteredGames;
+}
+
 
 // Helper method to match game publish year based on publishDay and year
     public static boolean matchYear(String publishDay, String year) {
