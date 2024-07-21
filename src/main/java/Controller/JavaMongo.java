@@ -64,7 +64,34 @@ public class JavaMongo {
         return settings;
     }
 
-  
+
+    public static void main(String[] args) {
+
+        
+//   ArrayList<Game> searchedGames = searchGames("", "", "2024", "", "", new String[]{"", ""});
+//
+//    // Print the results
+//    System.out.println("\nSearched Games:");
+//    for (Game game : searchedGames) {
+//        System.out.println(game.getName() + " Year: " + game.getPublishDay() + " | Price: " + game.getPrice());
+//    }
+
+        String id = "gamer_4409249271";
+        String name = "thiencajca";
+        String email = "thienle2105@gmail.com";
+        String password = "lecongthien1";
+        String avatarLink = "https://drive.google.com/thumbnail?id=14MhZYp0uLsyJ2aE6LVHDmeSM7beHtNd-&sz=w1000";
+        String dob = "01/01/2000";
+        int role = 3;
+        String bank = "";
+        String description = "";
+
+        // Gọi phương thức cập nhật
+        updateProfile(id, name, email, password, avatarLink, dob, role, bank, description);
+
+
+    }
+
 
     /*publisher*/
  /*----------------------------*/
@@ -317,7 +344,9 @@ public class JavaMongo {
             if (AvatarLink != null && !AvatarLink.isEmpty()) {
                 gamerUpdateFields.append("AvatarLink", AvatarLink);
             }
+
              if(DOB != null && !DOB.isEmpty()){
+
                 gamerUpdateFields.append("Date of Birth",DOB);
             }
             // Tạo một document mới chứa thông tin cập nhật cho Users

@@ -1,4 +1,4 @@
-
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -23,7 +23,7 @@
 		if(request.getAttribute("messageCode")!=null)
                 {
                     out.print("<p class='mess-success'>"+request.getAttribute("messageCode")+"</p>");
-                }
+                }          
 	%>
 
             <label for="Code">OTP</label>
@@ -42,19 +42,40 @@
         </form>
         
         
-         <script>
+       <script>
             document.addEventListener('DOMContentLoaded', function() {
-                var countdown = 60; // Th?i gian ??m ng??c (60 giây)
+                // Kiểm tra Local Storage để lấy thời gian đếm ngược
+                var endTime = localStorage.getItem('endTime');
+                var countdown;
+
+                if (!endTime) {
+                    // Nếu không có giá trị trong Local Storage, thiết lập thời gian mặc định
+                    countdown = 60;
+                    endTime = Date.now() + countdown * 1000;
+                    localStorage.setItem('endTime', endTime);
+                } else {
+                    countdown = Math.ceil((endTime - Date.now()) / 1000);
+                    if (countdown <= 0) {
+                        countdown = 0;
+                        localStorage.removeItem('endTime');
+                    }
+                }
+
+                var countdownElement = document.getElementById('countdown');
+                countdownElement.innerText = countdown + 's';
+
                 var timer = setInterval(function() {
                     countdown--;
                     if (countdown <= 0) {
                         clearInterval(timer);
-                        // X? lý khi h?t th?i gian ??m ng??c (ví d?: ?n ho?c làm gì ?ó)
+                        countdown = 0;
+                        localStorage.removeItem('endTime'); // Xóa thời gian khi kết thúc
                     }
-                    document.getElementById('countdown').innerText = countdown + `s`;
+                    countdownElement.innerText = countdown + 's';
                 }, 1000);
             });
         </script>
+
     </body>
     
 </html>

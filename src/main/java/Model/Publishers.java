@@ -22,12 +22,18 @@ public class Publishers extends Users{
 
     public Publishers(String id, String name, String gmail, String password, String bank_account, Double profit, String description, String AvatarLink, Double Money, int role, String RegistrationDate) {
         super(id, name, gmail, password, role);
+        /*
         this.bank_account = bank_account;
         this.profit = profit;
         this.description = description;
         this.Money = (Money != null) ? Money : 0;
         this.AvatarLink = (AvatarLink != null && !AvatarLink.isEmpty()) ? AvatarLink : "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
-    
+        */       
+        this.bank_account = bank_account;
+        this.profit = profit;
+        this.description = description;
+        this.Money = Money;
+        this.AvatarLink = AvatarLink; 
         this.RegistrationDate = RegistrationDate;
     }
     

@@ -158,6 +158,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                   <div class="col-lg-4">
                     <img src="<%=gamer.getAvatarLink() %>" alt="" style="border-radius: 23px;">
                   </div>
+
                  <div class="col-lg-4 align-self-center">
     <div class="main-info header-text">
         <h4><%= gamer.getName() %></h4>
@@ -189,6 +190,7 @@ https://templatemo.com/tm-579-cyborg-gaming
         <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary" onclick="return confirmDelete()" >Delete Account</a>
     </div>
     <% } %>
+
 </div>
 
                 </div>

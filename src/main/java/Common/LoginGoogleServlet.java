@@ -8,6 +8,7 @@ package Common;
 import static Common.CheckValid.CheckEmail;
 
 import static DAO.GamerDAO.CreateNewGamerAccount;
+import static DAO.GamerDAO.getGamerByEmail;
 import Model.Gamers;
 
 import Model.Users;
@@ -46,18 +47,18 @@ public class LoginGoogleServlet extends HttpServlet {
 
         Users a = CheckEmail(acc.getEmail());
 
-        Gamers g = new Gamers();
+        
         HttpSession session = request.getSession();
         
         
         if (a != null){
-            session.setAttribute("account", a);
+            session.setAttribute("account", getGamerByEmail(acc.getEmail()));
         }else {
             // If user does not exist, create a new account
-            CreateNewGamerAccount(acc.getId(),acc.getName(), acc.getPassword(), acc.getEmail(),role,0.0,acc.getAvatarLink(),acc.getRegistrationDate(),g.getDOB()); // Set yourRoleValue accordingly
-            // Retrieve the newly created user to set in session
-            a = CheckEmail(acc.getEmail()); // Check again after account creation
-            session.setAttribute("account", a);
+            CreateNewGamerAccount(acc.getId(),acc.getName(), acc.getPassword(), acc.getEmail(),role,0.0,acc.getAvatarLink(),acc.getRegistrationDate(),acc.getDOB()); // Set yourRoleValue accordingly
+                       
+            session.setAttribute("account", getGamerByEmail(acc.getEmail()));
+            
         }
         
         // Redirect to the homepage or dashboard after login

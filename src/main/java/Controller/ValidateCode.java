@@ -35,11 +35,20 @@ public class ValidateCode extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-
+//                String confirm = request.getParameter("code");
+//                Integer value = null;
+//                if(confirm != null || !confirm.trim().isEmpty())
+//                {
+//                    value = Integer.parseInt(confirm);
+//                }else {
+//                    request.setAttribute("message", "OTP cannot empty.");
+//                    request.getRequestDispatcher("EnterCode.jsp").forward(request, response);
+//                    
+//                }
 		int value=Integer.parseInt(request.getParameter("code"));
-		HttpSession session=request.getSession();
-		Integer code=(Integer)session.getAttribute("code");
-		Long otpTimestamp = (Long) session.getAttribute("otpTimestamp");
+		HttpSession mySession=request.getSession();
+		Integer code=(Integer)mySession.getAttribute("code");
+		Long otpTimestamp = (Long) mySession.getAttribute("otpTimestamp");
                 
                 if(code != null && otpTimestamp != null){
                     long currentTime = new Date().getTime();
@@ -52,7 +61,7 @@ public class ValidateCode extends HttpServlet {
                             request.getRequestDispatcher("EnterCode.jsp").forward(request, response);
                         }
                     }else {
-                        session.removeAttribute("code");
+                        mySession.removeAttribute("code");
                         request.setAttribute("message", "OTP has expired.");
                         request.getRequestDispatcher("ForgetPass.jsp").forward(request, response);
                     }

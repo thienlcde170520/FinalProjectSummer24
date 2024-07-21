@@ -15,10 +15,17 @@ public class Gamers extends Users{
 
         super(id, name, gmail, password, role);
         //if Money = null => this.Money = 0;
+        this.AvatarLink = AvatarLink;
+        this.DOB = DOB;
+        this.Money = Money;
+        this.RegistrationDate = RegistrationDate;
+        
+        /*
         this.Money = (Money != null) ? Money : 0;
         this.AvatarLink = (AvatarLink != null && !AvatarLink.isEmpty()) ? AvatarLink : "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
         this.RegistrationDate = RegistrationDate;
         this.DOB = (DOB != null) ? DOB : "";
+        */
     }
 
     // Hàm khởi tạo mặc định, thiết lập giá trị mặc định

@@ -164,7 +164,8 @@ public class UpdateProfileServlet extends HttpServlet {
             
             if(c.getRole() == 3){
                 Gamers g = (Gamers) session.getAttribute("account");
-                if(newDOB == null || newDOB.isEmpty()){newDOB = g.getDOB();}
+                if(newDOB == null || newDOB.isEmpty()){
+                    newDOB = g.getDOB();}
             }
             if(c.getRole() == 2){
                 Publishers p = (Publishers) session.getAttribute("account");
@@ -195,7 +196,9 @@ public class UpdateProfileServlet extends HttpServlet {
             request.setAttribute("games", games); 
         
             request.setAttribute("transactionHistory", transactionHistory);
+
                                   response.sendRedirect("profileServlet");                 
+
                             }else{
                                  try (PrintWriter out = response.getWriter()) {
                                     /* TODO output your page here. You may use following sample code. */
