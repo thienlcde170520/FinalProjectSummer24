@@ -115,6 +115,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                                 if (user.getRole() == 2) {
                         %>
                                     <li><a href="UploadGame">Upload Game</a></li>
+                        <li><a href="<%=request.getContextPath()%>/StatisticForPublisher.jsp">View your profit</a></li>
                         <%
                                 }
                                 if (user.getRole() == 1) {
@@ -122,6 +123,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                                     <li><a href="PublishGameServlet">Verify Game</a></li>
                                     <li><a href="ManageUser.jsp">Manage User</a></li>
                                     <li><a href="ReportServlet">Respond Report</a></li>
+                        <li><a href="<%=request.getContextPath()%>/Statistic.jsp">View profit</a></li>
                         <%
                                 }
                                 if (user.getRole() == 2 || user.getRole() == 3) {

@@ -69,12 +69,12 @@
                         <li><a href="Home.jsp" class="active">Home</a></li>
 
 
-                        <% Users user = session.getAttribute("account") == null ? (Users) session.getAttribute("account") : null; %>
-                        <% if (user != null) {%>
+                        <% Users user = (Users) session.getAttribute("account"); %>
                         <%
                             if (user.getRole() == 2) {
                         %>
                         <li><a href="UploadGame">Upload Game</a></li>
+                        <li><a href="<%=request.getContextPath()%>/StatisticForPublisher.jsp">View your profit</a></li>
                         <%
                             }
                         %>
@@ -84,6 +84,7 @@
                         <li><a href="PublishGameServlet">Verify Game</a></li>
                         <li><a href="ManageUser.jsp"> Manage User</a></li>
                         <li><a href="ReportServlet">Respond Report </a></li>
+                        <li><a href="<%=request.getContextPath()%>/Statistic.jsp">View profit</a></li>
                         <%
                             }
                         %>
@@ -102,7 +103,6 @@
                         <%
                             }
                         %>
-                        <% } %>
                     </ul>
                     <a class='menu-trigger'>
                         <span>Menu</span>

@@ -88,6 +88,7 @@
                                 if (user.getRole() == 2) {
                         %>
                                     <li><a href="UploadGame">Upload Game</a></li>
+                        <li><a href="<%=request.getContextPath()%>/StatisticForPublisher.jsp">View your profit</a></li>
                         <%
                                 }
                                 if (user.getRole() == 1) {

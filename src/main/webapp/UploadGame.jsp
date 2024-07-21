@@ -87,6 +87,7 @@
     if (user != null && user.getRole()== 2 ) {
 %>
         <li><a href="UploadGame">Upload Game</a></li>
+                                <li><a href="<%=request.getContextPath()%>/StatisticForPublisher.jsp">View your profit</a></li>
    
 <%
     }
@@ -98,6 +99,7 @@
         <li><a href="PublishGameServlet">Verify Game</a></li>
           <li><a href="ManageUser.jsp"> Manage User</a></li>
            <li><a href="ReportServlet">Respond Report </a></li>
+                                <li><a href="<%=request.getContextPath()%>/Statistic.jsp">View profit</a></li>
 <%
     }
 %>

@@ -86,6 +86,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                         <li><a href="browse.html">Browse</a></li>
                         <li><a href="details.html">Details</a></li>
                         <li><a href="UploadGame">Upload Game</a></li>
+                        <li><a href="<%=request.getContextPath()%>/StatisticForPublisher.jsp">View your profit</a></li>
                         <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
                     </ul>   
                     <a class='menu-trigger'>
