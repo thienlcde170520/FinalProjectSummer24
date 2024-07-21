@@ -182,7 +182,7 @@
       <% 
         // Check if the publishers list is not null and has elements
         if (publishers != null && !publishers.isEmpty()) {
-          int maxPublishersToShow = 5;
+          int maxPublishersToShow = 3;
           for (int i = 0; i < Math.min(maxPublishersToShow, publishers.size()); i++) {
             Publishers publisher = publishers.get(i);
             int rank = i + 1;
@@ -245,31 +245,37 @@
 </div>
 </div>
 <div class="row mt-3" id="games-container">
-   <%
+    <%
     List<Game> gamesSort = (List<Game>) request.getAttribute("gamesSort");
+    int maxGamesToShow = 8;
+    int gamesCount = 0;
+    
     if (gamesSort != null && !gamesSort.isEmpty()) {
         for (Game game : gamesSort) {
+            if (gamesCount >= maxGamesToShow) {
+                break; // Stop iterating if the limit is reached
+            }
+            gamesCount++;
     %>
-       <div class="col-lg-3 col-sm-6 game-item">
+        <div class="col-lg-3 col-sm-6 game-item">
             <div class="thumb">
                 <a href="GameDetailServlet?gameid=<%= game.getId() %>">
-    <img src="<%= game.getAvatarLink() %>" alt="<%= game.getName() %>">
-</a>
+                    <img src="<%= game.getAvatarLink() %>" alt="<%= game.getName() %>">
+                </a>
                 <div class="hover-effect">
                     <div class="content">
                         <ul>
-                  
-                            <li style="background-color:pink;  border-radius: 25px; "><%= game.getName() %> </li>
+                            <li style="background-color:pink; border-radius: 25px;"><%= game.getName() %></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="down-content">
                 <div class="avatar">
-                     <a href="profileServlet?userid=<%= PublisherDAO.getPublisherByGameId(game.getId()).getId() %>">
-                    <img src="<%= PublisherDAO.getPublisherByGameId(game.getId()).getAvatarLink() %>" alt="" style="max-width: 46px; border-radius: 0%; float: left;">
-                     </a>
-                    </div>
+                    <a href="profileServlet?userid=<%= PublisherDAO.getPublisherByGameId(game.getId()).getId() %>">
+                        <img src="<%= PublisherDAO.getPublisherByGameId(game.getId()).getAvatarLink() %>" alt="" style="max-width: 46px; border-radius: 0%; float: left;">
+                    </a>
+                </div>
                 <span> Genre : <%= GenreDAO.getGenresByGameID(game.getId()) %></span>
             </div>
         </div>
@@ -281,8 +287,8 @@
     <% 
     } 
     %>
-   
 </div>
+
 
 
         </div>

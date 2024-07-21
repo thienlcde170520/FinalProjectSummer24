@@ -225,7 +225,7 @@
                         
                         if (u != null) {
                             out.println(  u.getGmail()); 
-                            out.println(  u.getMoney()); //// Debug logging
+                           
                     %>
                
                     <% } else {

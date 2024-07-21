@@ -64,21 +64,7 @@ public class JavaMongo {
         return settings;
     }
 
-    public static void main(String[] args) {
-
-        
-//   ArrayList<Game> searchedGames = searchGames("", "", "2024", "", "", new String[]{"", ""});
-//
-//    // Print the results
-//    System.out.println("\nSearched Games:");
-//    for (Game game : searchedGames) {
-//        System.out.println(game.getName() + " Year: " + game.getPublishDay() + " | Price: " + game.getPrice());
-//    }
-
-PublisherDAO.updateDefaultPublisher("123", "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg", "pub_534407", "123");
-
-
-    }
+  
 
     /*publisher*/
  /*----------------------------*/
@@ -330,6 +316,9 @@ PublisherDAO.updateDefaultPublisher("123", "https://i.pinimg.com/736x/bc/43/98/b
             }
             if (AvatarLink != null && !AvatarLink.isEmpty()) {
                 gamerUpdateFields.append("AvatarLink", AvatarLink);
+            }
+             if(DOB != null && !DOB.isEmpty()){
+                gamerUpdateFields.append("Date of Birth",DOB);
             }
             // Tạo một document mới chứa thông tin cập nhật cho Users
             Document userUpdateFields = new Document();

@@ -590,69 +590,76 @@ public class GameDAO {
     }
 
     public static ArrayList<Game> getGamesByPublisherName(String publisherName) {
-        MongoClientSettings settings = getConnectionLocal();
-        ArrayList<Game> games = new ArrayList<>();
-        try (MongoClient mongoClient = MongoClients.create(settings)) {
-            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+    MongoClientSettings settings = getConnectionLocal();
+    ArrayList<Game> games = new ArrayList<>();
+    try (MongoClient mongoClient = MongoClients.create(settings)) {
+        MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
 
-            // Access the "Games" and "Publish" collections
-            MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
-            MongoCollection<Document> publishCollection = fpteamDB.getCollection("Publish");
-            MongoCollection<Document> gamePublishersCollection = fpteamDB.getCollection("GamePublishers");
+        // Access the "Games", "Publish", and "GamePublishers" collections
+        MongoCollection<Document> gamesCollection = fpteamDB.getCollection("Games");
+        MongoCollection<Document> publishCollection = fpteamDB.getCollection("Publish");
+        MongoCollection<Document> gamePublishersCollection = fpteamDB.getCollection("GamePublishers");
 
-            // Find the publisher document based on the provided publisher name
-            Document publisherDoc = gamePublishersCollection.find(Filters.regex("Name", ".*" + publisherName + ".*", "i")).first();
+        // Find all publisher documents that match the provided publisher name
+        List<Document> publisherDocs = gamePublishersCollection.find(Filters.regex("Name", ".*" + publisherName + ".*", "i")).into(new ArrayList<>());
 
-            if (publisherDoc != null) {
-                String publisherId = publisherDoc.getString("ID");
+        // Collect all publisher IDs
+        List<String> publisherIds = new ArrayList<>();
+        for (Document publisherDoc : publisherDocs) {
+            String publisherId = publisherDoc.getString("ID");
+            if (publisherId != null) {
+                publisherIds.add(publisherId);
+            }
+        }
 
-                // Create a filter to search for game documents with the matching publisher ID in the Publish collection
-                Bson filter = Filters.eq("ID_Game_Publisher", publisherId);
+        if (!publisherIds.isEmpty()) {
+            // Create a filter to search for game documents with the matching publisher IDs in the Publish collection
+            Bson filter = Filters.in("ID_Game_Publisher", publisherIds);
 
-                // Find all documents in the Publish collection that match the filter
-                FindIterable<Document> publishDocs = publishCollection.find(filter);
+            // Find all documents in the Publish collection that match the filter
+            FindIterable<Document> publishDocs = publishCollection.find(filter);
 
-                for (Document publishDoc : publishDocs) {
-                    String gameId = publishDoc.getString("ID_Game");
+            for (Document publishDoc : publishDocs) {
+                String gameId = publishDoc.getString("ID_Game");
 
-                    // Create a filter to find the game document in the Games collection based on gameId
-                    Bson gameFilter = Filters.eq("ID", gameId);
+                // Create a filter to find the game document in the Games collection based on gameId
+                Bson gameFilter = Filters.eq("ID", gameId);
 
-                    // Find the game document in the Games collection
-                    Document gameDoc = gamesCollection.find(gameFilter).first();
+                // Find the game document in the Games collection
+                Document gameDoc = gamesCollection.find(gameFilter).first();
 
-                    if (gameDoc != null) {
-                        // Extract game attributes from the document
-                        String id = gameDoc.getString("ID");
-                        String name = gameDoc.getString("Name");
-                        double price = gameDoc.getDouble("Price");
-                        String publishDay = gameDoc.getString("Publish_day");
-                        int numberOfBuyers = gameDoc.getInteger("Number_of_buyers");
-                        String linkTrailer = gameDoc.getString("LinkTrailer");
-                        String avatarLink = gameDoc.getString("AvatarLink");
-                        String gameLink = gameDoc.getString("GameLink");
-                        String description = gameDoc.getString("Description");
-                        String minimumCPU = gameDoc.getString("Minimum_CPU");
-                        String minimumRAM = gameDoc.getString("Minimum_RAM");
-                        String minimumGPU = gameDoc.getString("Minimum_GPU");
-                        String maximumCPU = gameDoc.getString("Maximum_CPU");
-                        String maximumRAM = gameDoc.getString("Maximum_RAM");
-                        String maximumGPU = gameDoc.getString("Maximum_GPU");
+                if (gameDoc != null) {
+                    // Extract game attributes from the document
+                    String id = gameDoc.getString("ID");
+                    String name = gameDoc.getString("Name");
+                    double price = gameDoc.getDouble("Price");
+                    String publishDay = gameDoc.getString("Publish_day");
+                    int numberOfBuyers = gameDoc.getInteger("Number_of_buyers");
+                    String linkTrailer = gameDoc.getString("LinkTrailer");
+                    String avatarLink = gameDoc.getString("AvatarLink");
+                    String gameLink = gameDoc.getString("GameLink");
+                    String description = gameDoc.getString("Description");
+                    String minimumCPU = gameDoc.getString("Minimum_CPU");
+                    String minimumRAM = gameDoc.getString("Minimum_RAM");
+                    String minimumGPU = gameDoc.getString("Minimum_GPU");
+                    String maximumCPU = gameDoc.getString("Maximum_CPU");
+                    String maximumRAM = gameDoc.getString("Maximum_RAM");
+                    String maximumGPU = gameDoc.getString("Maximum_GPU");
 
-                        // Create a Game object and add it to the list
-                        Game game = new Game(id, name, price, publishDay, numberOfBuyers, linkTrailer, avatarLink, gameLink, description, minimumCPU, minimumRAM, minimumGPU, maximumCPU, maximumRAM, maximumGPU);
-                        if (isGamePublishable(game.getId()) == true) {
-                            games.add(game);
-                        }
+                    // Create a Game object and add it to the list
+                    Game game = new Game(id, name, price, publishDay, numberOfBuyers, linkTrailer, avatarLink, gameLink, description, minimumCPU, minimumRAM, minimumGPU, maximumCPU, maximumRAM, maximumGPU);
+                    if (isGamePublishable(game.getId())) {
+                        games.add(game);
                     }
                 }
             }
-        } catch (MongoException e) {
-            e.printStackTrace();
         }
-
-        return games;
+    } catch (MongoException e) {
+        e.printStackTrace();
     }
+
+    return games;
+}
 
     public static ArrayList<Game> getGamesByGenres(String[] selectedGenres) {
         ArrayList<Game> games = new ArrayList<>();
@@ -698,69 +705,90 @@ public class GameDAO {
         return games;
     }
 
-    public static ArrayList<Game> searchGames(String gameName, String gamePublisher, String year, String priceAmount, String priceCurrency, String[] selectedGenres) {
-        ArrayList<Game> filteredGames = new ArrayList<>();
-        ArrayList<Game> gamesByPublisherName = new ArrayList<>();
-        ArrayList<Game> gamesByGameName = new ArrayList<>();
-        ArrayList<Game> gamesByGenres = new ArrayList<>();
+     public static ArrayList<Game> searchGames(String gameName, String gamePublisher, String year, String priceAmount, String priceCurrency, String[] selectedGenres, String sortBy, String sortOrder) {
+    ArrayList<Game> filteredGames = new ArrayList<>();
+    ArrayList<Game> gamesByPublisherName = new ArrayList<>();
+    ArrayList<Game> gamesByGameName = new ArrayList<>();
+    ArrayList<Game> gamesByGenres = new ArrayList<>();
 
-        // Retrieve games by game name if provided
-        gamesByGameName = getGamesByGameName(gameName);
-        System.out.println("Games by Game Name: " + gamesByGameName); // Debugging statement
+    // Retrieve games by game name if provided
+    gamesByGameName = getGamesByGameName(gameName);
+    System.out.println("Games by Game Name: " + gamesByGameName); // Debugging statement
 
-        // Retrieve games by publisher name if provided
-        gamesByPublisherName = getGamesByPublisherName(gamePublisher);
-        System.out.println("Games by Publisher Name: " + gamesByPublisherName); // Debugging statement
+    // Retrieve games by publisher name if provided
+    gamesByPublisherName = getGamesByPublisherName(gamePublisher);
+    System.out.println("Games by Publisher Name: " + gamesByPublisherName); // Debugging statement
 
-        // Combine the games by game name and publisher name
-        // Find common games by ID from both lists
-        for (Game gameP : gamesByPublisherName) {
-            for (Game gameN : gamesByGameName) {
-                if (gameP.getId() != null && gameN.getId() != null && gameP.getId().equals(gameN.getId())) {
-                    filteredGames.add(gameN);
-                }
+    // Combine the games by game name and publisher name
+    // Find common games by ID from both lists
+    for (Game gameP : gamesByPublisherName) {
+        for (Game gameN : gamesByGameName) {
+            if (gameP.getId() != null && gameN.getId() != null && gameP.getId().equals(gameN.getId())) {
+                filteredGames.add(gameN);
             }
         }
+    }
 
-        // If no games are found after the initial filtering, return an empty list
-        if (filteredGames.isEmpty()) {
-            System.out.println("No games found after initial filters.");
-            return filteredGames;
-        }
-
-        System.out.println("Games after Publisher Filter: " + filteredGames); // Debugging statement
-
-        // Apply genre filter if provided
-        if (selectedGenres != null && selectedGenres.length > 0 && !Arrays.stream(selectedGenres).allMatch(String::isEmpty)) {
-            gamesByGenres = getGamesByGenres(selectedGenres);
-            System.out.println("Games by Genres: " + gamesByGenres); // Debugging statement   
-            ArrayList<Game> tempFilteredGames = new ArrayList<>();
-            for (Game gameG : gamesByGenres) {
-                for (Game gameN : filteredGames) {
-                    if (gameG.getId() != null && gameN.getId() != null && gameG.getId().equals(gameN.getId())) {
-                        tempFilteredGames.add(gameN);
-                    }
-                }
-            }
-            filteredGames = tempFilteredGames;
-        }
-
-        System.out.println("Games after Genre Filter: " + filteredGames); // Debugging statement
-
-        // Apply year filter if provided
-        if (year != null && !year.isEmpty()) {
-            filteredGames.removeIf(game -> !matchYear(game.getPublishDay(), year));
-            System.out.println("Games after Year Filter: " + filteredGames); // Debugging statement
-        }
-
-        // Apply price filter if provided
-        if (priceAmount != null && !priceAmount.isEmpty()) {
-            filteredGames.removeIf(game -> !matchPrice(game.getPrice(), priceAmount, priceCurrency));
-            System.out.println("Games after Price Filter: " + filteredGames); // Debugging statement
-        }
-
+    // If no games are found after the initial filtering, return an empty list
+    if (filteredGames.isEmpty()) {
+        System.out.println("No games found after initial filters.");
         return filteredGames;
     }
+
+    System.out.println("Games after Publisher Filter: " + filteredGames); // Debugging statement
+
+    // Apply genre filter if provided
+    if (selectedGenres != null && selectedGenres.length > 0 && !Arrays.stream(selectedGenres).allMatch(String::isEmpty)) {
+        gamesByGenres = getGamesByGenres(selectedGenres);
+        System.out.println("Games by Genres: " + gamesByGenres); // Debugging statement   
+        ArrayList<Game> tempFilteredGames = new ArrayList<>();
+        for (Game gameG : gamesByGenres) {
+            for (Game gameN : filteredGames) {
+                if (gameG.getId() != null && gameN.getId() != null && gameG.getId().equals(gameN.getId())) {
+                    tempFilteredGames.add(gameN);
+                }
+            }
+        }
+        filteredGames = tempFilteredGames;
+    }
+
+    System.out.println("Games after Genre Filter: " + filteredGames); // Debugging statement
+
+    // Apply year filter if provided
+    if (year != null && !year.isEmpty()) {
+        filteredGames.removeIf(game -> !matchYear(game.getPublishDay(), year));
+        System.out.println("Games after Year Filter: " + filteredGames); // Debugging statement
+    }
+
+    // Apply price filter if provided
+    if (priceAmount != null && !priceAmount.isEmpty()) {
+        filteredGames.removeIf(game -> !matchPrice(game.getPrice(), priceAmount, priceCurrency));
+        System.out.println("Games after Price Filter: " + filteredGames); // Debugging statement
+    }
+
+    // Sort the filtered games based on the provided criteria
+    if (sortBy != null && !sortBy.isEmpty()) {
+        switch (sortBy) {
+            case "name":
+                filteredGames.sort((g1, g2) -> sortOrder.equalsIgnoreCase("asc")
+                        ? g1.getName().compareToIgnoreCase(g2.getName())
+                        : g2.getName().compareToIgnoreCase(g1.getName()));
+                break;
+            case "year":
+                filteredGames.sort((g1, g2) -> sortOrder.equalsIgnoreCase("asc")
+                        ? g1.getPublishDay().compareTo(g2.getPublishDay())
+                        : g2.getPublishDay().compareTo(g1.getPublishDay()));
+                break;
+            case "price":
+                filteredGames.sort((g1, g2) -> sortOrder.equalsIgnoreCase("asc")
+                        ? Double.compare(g1.getPrice(), g2.getPrice())
+                        : Double.compare(g2.getPrice(), g1.getPrice()));
+                break;
+        }
+    }
+
+    return filteredGames;
+}
 
 // Helper method to match game publish year based on publishDay and year
     public static boolean matchYear(String publishDay, String year) {

@@ -198,6 +198,39 @@
                                 </div>
                             </div>
                         </form>
+                                     <!-- Sorting Buttons -->
+                        <div class="sorting-buttons">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="sortByNameButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Sort by Name
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="sortByNameButton">
+                                    <a class="dropdown-item" id="sortByNameAsc"  onclick="sortGames('name', 'asc')">Ascending</a>
+                                    <a class="dropdown-item" id="sortByNameDesc"  onclick="sortGames('name', 'desc')">Descending</a>
+                                </div>
+                            </div>
+                             <!-- Sort by Year Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="sortByYearButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Sort by Year
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="sortByYearButton">
+                                <a class="dropdown-item" id="sortByYearAsc" onclick="sortGames('year', 'asc')">Ascending</a>
+                                <a class="dropdown-item" id="sortByYearDesc" onclick="sortGames('year', 'desc')">Descending</a>
+                            </div>
+                        </div>
+
+                        <!-- Sort by Price Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="sortByPriceButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Sort by Price
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="sortByPriceButton">
+                                <a class="dropdown-item" id="sortByPriceAsc" onclick="sortGames('price', 'asc')">Ascending</a>
+                                <a class="dropdown-item" id="sortByPriceDesc" onclick="sortGames('price', 'desc')">Descending</a>
+                            </div>
+                        </div>
+                    </div>
 
 
 
@@ -245,13 +278,17 @@
             </div>
         </footer>
 
-        <!-- Scripts -->
-        <!-- Bootstrap core JavaScript -->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+      <!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/isotope.min.js"></script>
+        <script src="assets/js/owl-carousel.js"></script>
+        <script src="assets/js/tabs.js"></script>
+        <script src="assets/js/popup.js"></script>
+        <script src="assets/js/custom.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                const filterForm = document.getElementById('filterForm');
+                 const filterForm = document.getElementById('filterForm');
                 const gameItems = document.querySelectorAll('.game-item');
 
                 filterForm.addEventListener('submit', function (e) {
@@ -267,9 +304,51 @@
                         }
                     });
                 });
+
+                function sortGames(sortBy, sortOrder) {
+                    const sortByInput = document.createElement('input');
+                    sortByInput.type = 'hidden';
+                    sortByInput.name = 'sortBy';
+                    sortByInput.value = sortBy;
+
+                    const sortOrderInput = document.createElement('input');
+                    sortOrderInput.type = 'hidden';
+                    sortOrderInput.name = 'sortOrder';
+                    sortOrderInput.value = sortOrder;
+
+                    filterForm.appendChild(sortByInput);
+                    filterForm.appendChild(sortOrderInput);
+
+                    filterForm.submit();
+                }
+
+                // Attach sorting functions to buttons
+                 document.getElementById('sortByNameAsc').addEventListener('click', function () {
+                    sortGames('name', 'asc');
+                });
+
+                document.getElementById('sortByNameDesc').addEventListener('click', function () {
+                    sortGames('name', 'desc');
+                });
+
+                document.getElementById('sortByYearAsc').addEventListener('click', function () {
+                    sortGames('year', 'asc');
+                });
+
+                document.getElementById('sortByYearDesc').addEventListener('click', function () {
+                    sortGames('year', 'desc');
+                });
+
+                document.getElementById('sortByPriceAsc').addEventListener('click', function () {
+                    sortGames('price', 'asc');
+                });
+
+                document.getElementById('sortByPriceDesc').addEventListener('click', function () {
+                    sortGames('price', 'desc');
+                });
             });
         </script>
-      <script>
+         <script>
     // JavaScript to handle applying filters
     document.getElementById('applyFiltersButton').addEventListener('click', function (event) {
         event.preventDefault(); // Prevent default link behavior
@@ -305,11 +384,5 @@
         window.location.href = href;
     });
 </script>
-
-        <script src="assets/js/isotope.min.js"></script>
-        <script src="assets/js/owl-carousel.js"></script>
-        <script src="assets/js/tabs.js"></script>
-        <script src="assets/js/popup.js"></script>
-        <script src="assets/js/custom.js"></script>
     </body>
 </html>

@@ -136,7 +136,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="page-content">
-                        <% String  message = (String) request.getParameter("message");  %>
+                        <% String  message = (String) request.getAttribute("message");  %>
                       <h2>Error, go Back to the previous action to change </h2>
                     <div class="alert alert-success" role="alert">
                        

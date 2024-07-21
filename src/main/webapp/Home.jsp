@@ -153,46 +153,48 @@
                         </div>
                         <!-- ***** Banner End ***** -->
 
-                        <!-- ***** Most Popular Start ***** -->
-                        <div class="most-popular">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="heading-section">
-                                        <h4><em>Most Popular</em> Right Now</h4>
-                                    </div>
-                                    <div class="row">
-                                        <% 
-                                          ArrayList<Game> Games = (ArrayList<Game>) GameDAO.getAllGames();
-                                          if (Games != null) {
-                                            for (Game game : Games) {
-                                        %>
-                                       <div class="col-lg-3 col-sm-6">
-    <div class="item">
-        <a href="GameDetailServlet?gameid=<%= game.getId() %>">
-            <img src="<%= game.getAvatarLink()%>?usp=sharing" alt="">
-            <h4><%= game.getName() %><br></h4>
-            <ul>
-                <li><i class="fa fa-star"></i> <%= ReviewDAO.getAverageRatingByGame(game) %></li>
-                <li><i class="fa fa-download"></i> <%= game.getNumberOfBuyers() %></li>
-            </ul>
-        </a>
+                       <!-- ***** Most Popular Start ***** -->
+<div class="most-popular">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="heading-section">
+                <h4><em>Most Popular</em> Right Now</h4>
+            </div>
+            <div class="row">
+                <% 
+                  ArrayList<Game> Games = (ArrayList<Game>) GameDAO.getAllGames();
+                  if (Games != null) {
+                    int count = 0; // Initialize counter
+                    for (Game game : Games) {
+                        if (count >= 8) break; // Exit loop if 8 games have been displayed
+                %>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="item">
+                        <a href="GameDetailServlet?gameid=<%= game.getId() %>">
+                            <img src="<%= game.getAvatarLink()%>?usp=sharing" alt="">
+                            <h4><%= game.getName() %><br></h4>
+                            <ul>
+                                <li><i class="fa fa-star"></i> <%= ReviewDAO.getAverageRatingByGame(game) %></li>
+                                <li><i class="fa fa-download"></i> <%= game.getNumberOfBuyers() %></li>
+                            </ul>
+                        </a>
+                    </div>
+                </div>
+                <% 
+                        count++; // Increment counter
+                    }
+                  }
+                %>
+            </div>
+            <div class="col-lg-12">
+                <div class="main-button">
+                    <a href="BestSellerServlet">Discover Popular</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
-                                        <% 
-                                            }
-                                          }
-                                        %>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="main-button">
-                                            <a href="BestSellerServlet">Discover Popular</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- ***** Most Popular End ***** -->
+<!-- ***** Most Popular End ***** -->
 
 
 

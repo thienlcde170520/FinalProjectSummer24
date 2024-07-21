@@ -156,7 +156,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                    
                    
                     <div class="form-group">
-                        <label for="gamerAvatar">Gamer Avatar</label>
+                        <label for="gamerAvatar">Publisher Avatar</label>
                         <input type="file" class="form-control-file" id="gamerAvatar" name="gamerAvatar" multiple>
 
                     </div>
