@@ -75,8 +75,7 @@ public class JavaMongo {
 //        System.out.println(game.getName() + " Year: " + game.getPublishDay() + " | Price: " + game.getPrice());
 //    }
 
-
- System.out.println(ReviewDAO.getReviewByGamerID("gamer_1"));
+PublisherDAO.updateDefaultPublisher("123", "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg", "pub_534407", "123");
 
 
     }

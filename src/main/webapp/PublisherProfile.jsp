@@ -162,7 +162,13 @@ https://templatemo.com/tm-579-cyborg-gaming
                                         <div class="main-info header-text">
                                             <h4><%= pub.getName() %></h4>
                                             <p>Email: <%= pub.getGmail() %></p>
-                                            <p>Tham gia từ: <%= pub.getRegistrationDate() %></p>
+                                            <p>Joined from: <%= pub.getRegistrationDate() %></p>
+                                            <p>Description: <%= pub.getDescription() %></p>
+                                            <%
+                                                if (user != null && (user.getRole()== 1 || user.getRole() == 2 )) {
+                                            %>
+                                            <p>Bank Account: <%= pub.getBank_account() %></p>
+                                            <%}%>
                                             <div class="main-border-button">
                                                 <!-- Add button or other content here if needed -->
                                             </div>
@@ -179,7 +185,8 @@ https://templatemo.com/tm-579-cyborg-gaming
         <div class="d-flex justify-content-start align-items-center">
                 
           
-            <a href="DeleteAccountServlet?UserId=<%= pub.getId() %>" class="btn btn-primary">Delete Account</a>
+            <a href="DeleteAccountServlet?UserId=<%= pub.getId() %>" class="btn btn-primary" onclick="return confirmDelete()">Delete Account</a>
+            <a href="UpdatePublisherByAdmin?UserId=<%= pub.getId() %>" class="btn btn-primary" onclick="return confirmUpdate()">Default Info</a>
         </div>
                
       
@@ -278,6 +285,15 @@ https://templatemo.com/tm-579-cyborg-gaming
 
 
   <!-- Scripts -->
+  <script>
+    function confirmDelete() {
+        return confirm('Are you sure you want to delete this account?');
+    }
+
+    function confirmUpdate() {
+        return confirm('Are you sure you want to update the default information for this account?');
+    }
+</script>
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.min.js"></script>

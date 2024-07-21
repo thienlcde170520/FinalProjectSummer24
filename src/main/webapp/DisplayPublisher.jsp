@@ -164,7 +164,7 @@
                                             <%
                                                 if (user != null && (user.getRole()== 1 || user.getRole() == 2 )) {
                                             %>
-                                            <p>Bank Account <%= pub.getBank_account() %></p>
+                                            <p>Bank Account: <%= pub.getBank_account() %></p>
                                             <%}%>
                                             <div class="main-border-button">
                                                 <!-- Add button or other content here if needed -->

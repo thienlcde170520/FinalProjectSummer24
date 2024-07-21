@@ -396,10 +396,44 @@ public class PublisherDAO {
         } catch (MongoException e) {
             e.printStackTrace();
         }
-        
-        
-    
-}
+
+    }
+   
+   public static void updateDefaultPublisher(String Name, String AvartaLink, String Id, String Description) {
+       
+         try ( MongoClient mongoClientLocal = MongoClients.create(getConnectionLocal())) {
+
+            // Truy cập cơ sở dữ liệu "FPT"
+            MongoDatabase fpteamDBLocal = mongoClientLocal.getDatabase("FPT");
+
+            // Tạo một bộ lọc để truy vấn người dùng dựa trên ID
+            BasicDBObject query = new BasicDBObject();
+            query.put("ID", Id);
+
+            // Tạo một document mới chứa thông tin  mới
+            Document updatePasswordDoc = new Document("$set", new Document("Name", Name));
+            Document updateAvatarDoc = new Document ("$set", new Document("AvatarLink", AvartaLink));
+            Document updateDes = new Document ("$set", new Document("Description", Description));
+            // Truy cập bộ sưu tập "Users"
+            MongoCollection<Document> usersCollection = fpteamDBLocal.getCollection("Users");
+
+            // Thực hiện update vào MongoDB trong collection "Users"
+            usersCollection.updateOne(query, updatePasswordDoc);
+
+            // Truy cập bộ sưu tập "Gamers"
+            MongoCollection<Document> publisherCollection = fpteamDBLocal.getCollection("GamePublishers");
+
+            // Thực hiện update vào MongoDB trong collection "Gamers"
+            publisherCollection.updateOne(query, updatePasswordDoc);
+            publisherCollection.updateOne(query, updateAvatarDoc);
+            publisherCollection.updateOne(query, updateDes);
+
+            
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 

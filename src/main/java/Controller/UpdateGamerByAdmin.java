@@ -99,7 +99,6 @@ public class UpdateGamerByAdmin extends HttpServlet {
                             }        
             }
             //request.setAttribute("gamer", gamer);
-            request.getSession().setAttribute("successMessage", "Changed successfully!");
             request.getRequestDispatcher("Home.jsp").forward(request, response);
     } 
 
