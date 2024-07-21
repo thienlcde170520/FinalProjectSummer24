@@ -131,7 +131,17 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <div class="form-group">
                         <label for="newEmail">Email</label>
                         <input type="text" class="form-control" id="Email" name="newEmail" placeholder="Enter your new Email ">
-                    </div>                   
+                    </div> 
+    
+                    <div class="form-group">
+                        <label for="NewBankAccount">Bank Account</label>
+                        <input type="text" class="form-control" id="Bank" name="newBank" placeholder="Enter your new Bank Account ">
+                    </div> 
+    
+                    <div class="form-group">
+                        <label for="newDescription">Description</label>
+                        <input type="text" class="form-control" id="Description" name="newDescription" placeholder="Enter your new Description ">
+                    </div> 
     
                        <div class="form-group">
                         <label for="newPassWord">PassWord</label>

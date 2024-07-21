@@ -231,7 +231,7 @@
 
                         <!-- ***** Genres End ***** -->
 
-
+                        
 
 
 
@@ -304,7 +304,7 @@
                 </div>
             </div>
         </div>
-
+                                    
       <footer>
     <div class="container">
       <div class="row">
