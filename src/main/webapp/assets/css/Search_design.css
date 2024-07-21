@@ -1,0 +1,18 @@
+.box .form .optionLanguage {
+    font-size: 13px;
+    font-weight: 500;
+    color: #B6C7EB;
+    padding: 4px 8px;
+    /* display: inline-block; */
+    background-color: #F0F5FF;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+.box .form .optionLanguage .bi {
+    margin: 0 3px;
+}
+
+.box .form .optionLanguage .bi-caret-down-fill {
+    font-size: 11px;
+}
