@@ -177,18 +177,17 @@ https://templatemo.com/tm-579-cyborg-gaming
         
         <% } else if ( isAdmin) { %>
         <div class="d-flex justify-content-start align-items-center">
-        
-                <a href="DeleteAccountServlet?UserId=<%= pub.getId() %>" class="btn btn-primary">Delete Account</a>
-        </div>
-      
-        <% } else if (isUpdateable) {
-%>
-
- <div class="d-flex justify-content-start align-items-center">
+                
             <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>
             <a href="RespondReportServlet?UserId=<%=pub.getId() %>" class="btn btn-primary">Send Report</a>
             <a href="DeleteAccountServlet?UserId=<%= pub.getId() %>" class="btn btn-primary">Delete Account</a>
         </div>
+               
+      
+        <% } else if (isUpdateable) {
+%>
+
+ 
 <%
 }
 %>

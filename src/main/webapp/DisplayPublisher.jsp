@@ -1,3 +1,5 @@
+<%@page import="DAO.TransactionBillDAO"%>
+<%@page import="Model.Bill"%>
 <%@page import="Model.Publishers"%>
 <%@page import="Model.Users"%>
 <%@page import="DAO.GamerDAO"%>
@@ -19,7 +21,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>Cyborg - Awesome HTML5 Template</title>
+    <title>Publisher Profile</title>
 
     <!-- Bootstrap core CSS -->
 
@@ -36,13 +38,7 @@
         <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
         <link rel="stylesheet" href="assets/css/Style.css">
 
-<!--
 
-TemplateMo 579 Cyborg Gaming
-
-https://templatemo.com/tm-579-cyborg-gaming
-
--->
   </head>
 
 <body>
@@ -60,69 +56,70 @@ https://templatemo.com/tm-579-cyborg-gaming
   </div>
   <!-- ***** Preloader End ***** -->
 
-  <!-- ***** Header Area Start ***** -->
-   <header class="header-area header-sticky">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <nav class="main-nav">
-                            <!-- ***** Logo Start ***** -->
-                            <a href="Home.jsp" class="logo">
-                                <img src="assets/images/logo.png" alt="">
-                            </a>
-                            <!-- ***** Logo End ***** -->
-                            <!-- ***** Search End ***** -->
-                            <div class="search-input">
-                                <form id="search" action="SearchGameServlet" method="get">
-                                    <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                                    <i class="fa fa-search"></i>
-                                </form>
-                            </div>
-                            <!-- ***** Search End ***** -->
-                            <!-- ***** Menu Start ***** -->
-                            <ul class="nav">
-                                <li><a href="Home.jsp" class="active">Home</a></li>
+    <!-- ***** Header Area Start ***** -->
+        <header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="Home.jsp" class="logo">
+                        <img src="assets/images/logo.png" alt="">
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Search End ***** -->
+                    <div class="search-input">
+                        <form id="search" action="SearchGameServlet" method="get">
+                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <i class="fa fa-search"></i>
+                        </form>
+                    </div>
+                    <!-- ***** Search End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                       
+                                                                 
 
-                            
+                        <%
+                            Users user = (Users) session.getAttribute("account");
+                            if (user != null) {
+                                if (user.getRole() == 2) {
+                        %>
                            
-                
-                                <%    Users user = (Users) session.getAttribute("account");
-%>
-                                <%
-    
-    if (user != null && user.getRole()== 2 ) {
-%>
-        <li><a href="UploadGame">Upload Game</a></li>
-   
-<%
-    }
-%>
-
-                <%
-    if (user != null && user.getRole()== 1 ) {
-%>
-        <li><a href="PublishGameServlet">Verify Game</a></li>
-          <li><a href="ManageUser.jsp"> Manage User</a></li>
-           <li><a href="ReportServlet">Respond Report </a></li>
-<%
-    }
-%>
-        
-           <li><a href="LogOutServlet">LOG OUT</a></li>
-       <%
-                               
-                               if (user != null && user.getRole()== 2 ||  user.getRole()== 3 ) {
-%>    <li><a href="BestSellerServlet">Game</a></li>
-
-                                <li><a href="DisplayGenreServlet">Genre</a></li>
-                    <li><a href="CallSupport.jsp">Report </a></li>
-            <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
-
-<%
-    }
-%>
-                            
-                            </ul>   
+                        <li><a href="UploadGame">Upload Game</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 1) {
+                        %>
+                                  
+                        <li><a href="PublishGameServlet">Verify Game</a></li>
+                                    <li><a href="ManageUser.jsp">Manage User</a></li>
+                                    <li><a href="ReportServlet">Respond Report</a></li>
+                                              <li><a href="Statistic.jsp">View Profit </a></li>
+                                       <li><a href="LogOutServlet">LOG OUT</a></li>
+                        <%
+                                }
+                                if (user.getRole() == 2 || user.getRole() == 3) {
+                        %>
+                                     <li><a href="BestSellerServlet"> Best Game</a></li>
+                                    <li><a href="DisplayGenreServlet">Genre</a></li>
+                                    <li><a href="CallSupport.jsp">Report</a></li>
+                                       <li><a href="LogOutServlet">LOG OUT</a></li>
+                                    <li><a href="profileServlet">Profile <img src="assets/images/profile-header.jpg" alt=""></a></li>
+                        <%
+                                }
+                        %>
+                        <%
+                            } else {
+                        %>
+                              <li><a href="BestSellerServlet"> Best Game</a></li>
+                                    <li><a href="DisplayGenreServlet">Genre</a></li>
+                                    <li><a href="Login.jsp">LOG IN</a></li>
+                                <li><a href="Register.jsp">REGISTER</a></li>
+                        <%
+                            }
+                        %>
+                    </ul>
                             <a class='menu-trigger'>
                                 <span>Menu</span>
                             </a>
@@ -132,8 +129,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                 </div>
             </div>
         </header>
-
-  <!-- ***** Header Area End ***** -->
+        <!-- ***** Header Area End ***** -->
 
  <div class="container">
     <div class="row">
@@ -288,6 +284,37 @@ https://templatemo.com/tm-579-cyborg-gaming
                                                             <li><h4>Description</h4><span><%= review.getDescription() %></span></li>
                                                             <li><h4>Game Name</h4><span><a href="GameDetailServlet?gameid=<%= GameDAO.getGameByReview(review).getId() %>"><%= GameDAO.getGameByReview(review).getName() %></a></span></li>
                                                             <li><div class="main-border-button border-no-active"><a href="profileServlet?gamerid=<%= GamerDAO.getGamerByReview(review).getId() %>"><%= GamerDAO.getGamerByReview(review).getName() %></a></div></li>
+                                                        </ul>
+                                                    </div>
+                                            <%
+                                                }
+                                            }
+                                            %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ***** Gaming Library End ***** -->
+                                <!-- ***** Gaming Library Start ***** -->
+                                  <div class="gaming-library profile-library">
+                                    <div class="col-md-12">
+                                        <div class="heading-section">
+                                            <h4><em>Buy Game History</em></h4>
+                                        </div>
+                                        <div class="transactions-container">
+                                            <%
+                                            ArrayList<Bill> bills = new ArrayList<>();
+                                            for (Game g : publishgames){
+                                                   bills.addAll(TransactionBillDAO.getBillsByGameID(g.getId()));
+                                                }
+                                            if (bills != null) {
+                                                for (Bill bill : bills) {
+                                            %>
+                                                    <div class="item <%= (reviews.indexOf(bill) == bills.size() - 1) ? "last-item" : "" %>">
+                                                        <ul>
+                                                            <li><h4>Price <%= bill.getBuyPrice()  %></h4></li>
+                                                            <li><h4>Time </h4><span><%= bill.getBuyTime() %></span></li>
+                                                            <li><h4>Game Name</h4><span><a href="GameDetailServlet?gameid=<%= bill.getGameId()  %>"><%= GameDAO.getGameByGameID(bill.getGameId()) .getName() %></a></span></li>
+                                                             <li><div class="main-border-button border-no-active"><a href="profileServlet?userid=<%= bill.getGamerId()  %>"><%= GamerDAO.getGamerByGamerId(bill.getGamerId()).getName() %></a></div></li>
                                                         </ul>
                                                     </div>
                                             <%

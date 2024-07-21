@@ -44,9 +44,8 @@
                                 <!-- ***** Search End ***** -->
                                 <!-- ***** Menu Start ***** -->
                                 <ul class="nav" id="listPage">
-                                    <li><a href="Home.jsp">Home</a></li>
-                                    <li><a href="browse.html">Best seller</a></li>
-                                    <li><a href="details.html">Genre</a></li>                                                                                                             
+                                    <li><a href="BestSellerServlet">Best seller</a></li>
+                                    <li><a href="DisplayGenreServlet">Genre</a></li>                                                                                                             
                                     <li><a href="Register.jsp" >Register</a></li>
     
                                 </ul>   

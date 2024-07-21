@@ -5,6 +5,7 @@ import DAO.GameDAO;
 import DAO.GamerDAO;
 import DAO.PublisherDAO;
 import DAO.ReportDAO;
+import DAO.ReviewDAO;
 import Model.Users;
 import com.mongodb.BasicDBObject;
 import com.mongodb.ConnectionString;
@@ -75,7 +76,7 @@ public class JavaMongo {
 //    }
 
 
- System.out.println(GamerDAO.getAllGamers());
+ System.out.println(ReviewDAO.getReviewByGamerID("gamer_1"));
 
 
     }
