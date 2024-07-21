@@ -61,19 +61,21 @@ public class DisplayGenreServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+   @Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String selectedGenre = request.getParameter("selectedGenre");
-        ArrayList<Genre> Genres = (GenreDAO.getAllGenres());
-           ArrayList<Game> games = (GameDAO.searchGames("","","","","",new String[]{selectedGenre}));
-        request.setAttribute("genres", Genres);
-          request.setAttribute("games", games);
-          Genre genre = GenreDAO.getGenreByType(selectedGenre);
-          request.setAttribute("selectedGenre", genre);
-         
-         request.getRequestDispatcher("Products.jsp").forward(request, response);
-    }
+    String selectedGenre = request.getParameter("selectedGenre");
+    ArrayList<Genre> genres = GenreDAO.getAllGenres();
+    ArrayList<Game> games = GameDAO.searchGames("", "", "", "", "", new String[]{selectedGenre});
+    
+    Genre genre = GenreDAO.getGenreByType(selectedGenre);
+    request.setAttribute("genres", genres);
+    request.setAttribute("games", games);
+    request.setAttribute("selectedGenre", genre);
+    
+    request.getRequestDispatcher("Products.jsp").forward(request, response);
+}
+
 
     /** 
      * Returns a short description of the servlet.

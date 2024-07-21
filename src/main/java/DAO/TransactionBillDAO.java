@@ -425,7 +425,7 @@ public class TransactionBillDAO {
                 gamersCollection.updateOne(Filters.eq("ID", gamerId), updateBalance);
                 System.out.println("Gamer balance updated: " + newBalance);
 
-                // Calculate the profit as 90% of the buy price
+         
                 Double profitAmount = (Double) (1.0 * buyPrice);
 
                 // Update the profit for the publisher

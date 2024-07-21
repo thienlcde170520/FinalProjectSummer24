@@ -113,12 +113,13 @@ private void handleInputProfile(HttpServletRequest request, HttpServletResponse 
             if (user != null && (isAdmin || user.getId().equals(gamer.getId()))) {
                 isUpdateable = true;
             }
-
+            ArrayList<Review> reviews = ReviewDAO.getReviewByGamerID(gamer.getId());
             request.setAttribute("isUpdateable", isUpdateable);
             request.setAttribute("isAdmin", isAdmin);
             request.setAttribute("gamer", gamer);
             request.setAttribute("games", games);
             request.setAttribute("transactionHistory", transactionHistory);
+             request.setAttribute("reviews", reviews);
             request.getRequestDispatcher("profile.jsp").forward(request, response);
         } else {
             Publishers pub = PublisherDAO.getPublisherByPublisherId(userId);
@@ -136,6 +137,7 @@ private void handleInputProfile(HttpServletRequest request, HttpServletResponse 
                 request.setAttribute("isAdmin", isAdmin);
                 request.setAttribute("games", publishgames);
                 request.setAttribute("reviews", reviews);
+                
                 request.getRequestDispatcher("PublisherProfile.jsp").forward(request, response);
             } else {
                 showErrorPage(response, "User not found");
@@ -154,10 +156,12 @@ private void handleGamerProfileByEmail(HttpServletRequest request, HttpServletRe
             ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(gamer.getId());
             ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
             boolean isUpdateable = true; // Default to false
+                    ArrayList<Review> reviews = ReviewDAO.getReviewByGamerID(gamer.getId());
             request.setAttribute("gamer", gamer);
             request.setAttribute("games", games); 
             request.setAttribute("isUpdateable", isUpdateable);
             request.setAttribute("transactionHistory", transactionHistory);
+                   request.setAttribute("reviews", reviews);
             request.getRequestDispatcher("profile.jsp").forward(request, response);
         } else {
             showErrorPage(response, "Gamer not found");

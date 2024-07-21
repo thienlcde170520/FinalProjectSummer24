@@ -58,6 +58,31 @@ public class ReviewDAO {
 
         return reviews;
     }
+          public static ArrayList<Review> getReviewByGamerID(String  Id) {
+        ArrayList<Review> reviews = new ArrayList<>();
+
+        try (MongoClient mongoClient = MongoClients.create(getConnectionLocal())) {
+            MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
+            MongoCollection<Document> collection = fpteamDB.getCollection("Reviews");
+
+            MongoCursor<Document> cursor = collection.find(new Document("ID_Gamer", Id)).iterator();
+            while (cursor.hasNext()) {
+                Document doc = cursor.next();
+                Review review = new Review(
+                        doc.getString("ID_Gamer"),
+                        doc.getString("ID_Game"),
+                        doc.getDouble("Rating"),
+                        doc.getString("Description")
+                );
+                reviews.add(review);
+            }
+            cursor.close();
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        return reviews;
+    }
   public static ArrayList<Review> getReviewsByPublisherName(String publisherName) {
         MongoClientSettings settings = getConnectionLocal();
         ArrayList<Review> reviews = new ArrayList<>();

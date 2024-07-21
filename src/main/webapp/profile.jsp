@@ -1,3 +1,8 @@
+<%@page import="DAO.TransactionBillDAO"%>
+<%@page import="Model.Bill"%>
+<%@page import="DAO.GamerDAO"%>
+<%@page import="DAO.GameDAO"%>
+<%@page import="Model.Review"%>
 <%@page import="Model.Users"%>
 <%@page import="Model.Game"%>
 <%@page import="java.util.ArrayList"%>
@@ -142,6 +147,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                       Boolean isAdminObj = (Boolean) request.getAttribute("isAdmin");
             boolean isAdmin = isAdminObj != null && isAdminObj.booleanValue();
                Boolean isUpdateableObj = (Boolean) request.getAttribute("isUpdateable");
+                    ArrayList<Review> reviews = (ArrayList<Review>) request.getAttribute("reviews");
             boolean isUpdateable = isUpdateableObj != null && isUpdateableObj.booleanValue();
             // Lấy thông tin người chơi từ request attribute
             Model.Gamers gamer = (Model.Gamers) request.getAttribute("gamer");
@@ -271,6 +277,66 @@ https://templatemo.com/tm-579-cyborg-gaming
             </div>
           </div>
           <!-- ***** Gaming Library End ***** -->
+            <!-- ***** Gaming Library Start ***** -->
+                                <div class="gaming-library profile-library">
+                                    <div class="col-md-12">
+                                        <div class="heading-section">
+                                            <h4><em>Review History</em></h4>
+                                        </div>
+                                        <div class="transactions-container">
+                                            <%
+                                            if (reviews != null) {
+                                                for (Review review : reviews) {
+                                            %>
+                                                    <div class="item <%= (reviews.indexOf(review) == reviews.size() - 1) ? "last-item" : "" %>">
+                                                        <ul>
+                                                            <li><h4>Rating: <%= review.getRating() %></h4></li>
+                                                            <li><h4>Description</h4><span><%= review.getDescription() %></span></li>
+                                                            <li><h4>Game Name</h4><span><a href="GameDetailServlet?gameid=<%= GameDAO.getGameByReview(review).getId() %>"><%= GameDAO.getGameByReview(review).getName() %></a></span></li>
+                                                            <li><div class="main-border-button border-no-active"><a href="profileServlet?userid=<%= GamerDAO.getGamerByReview(review).getId() %>"><%= GamerDAO.getGamerByReview(review).getName() %></a></div></li>
+                                                        </ul>
+                                                    </div>
+                                            <%
+                                                }
+                                            }
+                                            %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ***** Gaming Library End ***** -->
+                                
+                                
+                                    <!-- ***** Gaming Library Start ***** -->
+                                <div class="gaming-library profile-library">
+                                    <div class="col-md-12">
+                                        <div class="heading-section">
+                                            <h4><em>Buy Game History</em></h4>
+                                        </div>
+                                        <div class="transactions-container">
+                                            <%
+                                            ArrayList<Bill> bills = new ArrayList<>();
+                                            for (Game g : games){
+                                                   bills.add(TransactionBillDAO.getBillByGameIDAndGamerID(g.getId(), gamer.getId()));
+                                                }
+                                            if (bills != null) {
+                                                for (Bill bill : bills) {
+                                            %>
+                                                    <div class="item <%= (reviews.indexOf(bill) == bills.size() - 1) ? "last-item" : "" %>">
+                                                        <ul>
+                                                            <li><h4>Price <%= bill.getBuyPrice()  %></h4></li>
+                                                            <li><h4>Time </h4><span><%= bill.getBuyTime() %></span></li>
+                                                            <li><h4>Game Name</h4><span><a href="GameDetailServlet?gameid=<%= bill.getGameId()  %>"><%= GameDAO.getGameByGameID(bill.getGameId()) .getName() %></a></span></li>
+                                                 
+                                                        </ul>
+                                                    </div>
+                                            <%
+                                                }
+                                            }
+                                            %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ***** Gaming Library End ***** -->
         </div>
       </div>
     </div>

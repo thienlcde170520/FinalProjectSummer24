@@ -64,11 +64,11 @@
                                     <!-- ***** Search End ***** -->
                                     <!-- ***** Menu Start ***** -->
                                     <ul class="nav" id="listPage">
-                                        <li><a href="Home.jsp">Home</a></li>
+                               
 
-                                        <li><a href="browse.html">Best Seller</a></li>
+                                        <li><a href="BestSellerServlet">Best Seller</a></li>
 
-                                        <li><a href="details.html">Genre</a></li>                                                                                                             
+                                        <li><a href="DisplayGenreServlet">Genre</a></li>                                                                                                             
                                         <li><a href="Login.jsp" >Login</a></li>
         
                                     </ul>   
