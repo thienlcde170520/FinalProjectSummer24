@@ -139,7 +139,10 @@
       %>
       <div class="item">
         <div class="thumb">
-          <img src="<%= game.getAvatarLink() %>" alt="<%= game.getName() %>">
+        <a href="GameDetailServlet?gameid=<%= game.getId() %>">
+    <img src="<%= game.getAvatarLink() %>" alt="<%= game.getName() %>">
+</a>
+
           <div class="hover-effect">
             <h6><%= game.getNumberOfBuyers() %> Buyers</h6>
           </div>
@@ -241,20 +244,24 @@
     %>
         <div class="col-lg-3 col-sm-6 game-item">
             <div class="thumb">
-                <img src="<%= game.getAvatarLink() %>" alt="">
+                <a href="GameDetailServlet?gameid=<%= game.getId() %>">
+    <img src="<%= game.getAvatarLink() %>" alt="<%= game.getName() %>">
+</a>
                 <div class="hover-effect">
                     <div class="content">
                         <ul>
-                            <li><a href="#"> <%= game.getNumberOfBuyers() %> Buyers</a></li>
-                            <li><a href="#"><%= game.getName() %></a></li>
+                            <li> <%= game.getNumberOfBuyers() %> Buyers</li>
+                            <li><%= game.getName() %></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="down-content">
                 <div class="avatar">
+                     <a href="profileServlet?userid=<%= PublisherDAO.getPublisherByGameId(game.getId()).getId() %>">
                     <img src="<%= PublisherDAO.getPublisherByGameId(game.getId()).getAvatarLink() %>" alt="" style="max-width: 46px; border-radius: 0%; float: left;">
-                </div>
+                     </a>
+                    </div>
                 <span> Genre : <%= GenreDAO.getGenresByGameID(game.getId()) %></span>
             </div>
         </div>

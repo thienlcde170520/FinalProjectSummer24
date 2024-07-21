@@ -231,11 +231,7 @@ https://templatemo.com/tm-579-cyborg-gaming
 </div>
 
 
-                        <div class="col-lg-12">
-                          <div class="main-button">
-                            <a href="#">Load More Games</a>
-                          </div>
-                        </div>
+                       
                       </div>
                     </div>
                   </div>
