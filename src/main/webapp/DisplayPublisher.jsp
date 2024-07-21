@@ -159,7 +159,13 @@
                                         <div class="main-info header-text">
                                             <h4><%= pub.getName() %></h4>
                                             <p>Email: <%= pub.getGmail() %></p>
-                                            <p>Tham gia từ: <%= pub.getRegistrationDate() %></p>
+                                            <p>Joined from: <%= pub.getRegistrationDate() %></p>
+                                            <p>Description: <%= pub.getDescription() %></p>
+                                            <%
+                                                if (user != null && (user.getRole()== 1 || user.getRole() == 2 )) {
+                                            %>
+                                            <p>Bank Account: <%= pub.getBank_account() %></p>
+                                            <%}%>
                                             <div class="main-border-button">
                                                 <!-- Add button or other content here if needed -->
                                             </div>
@@ -179,7 +185,7 @@
  <div class="d-flex justify-content-start align-items-center">
              <a href="UpdatePubProfile.jsp" class="btn btn-primary" >Update</a>
             <a href="RespondReportServlet?UserId=<%=user.getId() %>" class="btn btn-primary">Send Report</a>
-            <a href="DeleteAccountServlet?UserId=<%= user.getId() %>" class="btn btn-primary">Delete Account</a>
+            <a href="DeleteAccountServlet?UserId=<%= user.getId() %>" class="btn btn-primary">Delete Account</a>            
         </div>
 <%
 }

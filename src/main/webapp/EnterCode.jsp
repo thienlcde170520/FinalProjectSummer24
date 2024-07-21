@@ -28,8 +28,14 @@
 
             <label for="Code">OTP</label>
             <div class="pass_time">
-                <input type="password" name="code" placeholder="Enter OTP" id="password">
+                <input type="text" name="code" placeholder="Enter OTP" id="password">
+                <%
+                    //Integer null dc int ko
+                    Integer  code = (Integer) session.getAttribute("code");
+                    if (code != null) {
+                %>
                 <div class="timer" id="countdown">60s</div>
+                <%}%>
             </div>
             <button type="submit" id="submitBtn">Verify</button>    
             

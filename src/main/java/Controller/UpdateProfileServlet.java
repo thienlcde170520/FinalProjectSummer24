@@ -12,7 +12,9 @@ import static Controller.DriveQuickstart.JSON_FACTORY;
 import static Controller.JavaMongo.updateProfile;
 import DAO.GameDAO;
 import DAO.GamerDAO;
+import static DAO.GamerDAO.getGamerByEmail;
 import DAO.PublisherDAO;
+import static DAO.PublisherDAO.getPublisherByEmail;
 import DAO.TransactionBillDAO;
 import Model.BankTransactions;
 import Model.Game;
@@ -110,7 +112,8 @@ public class UpdateProfileServlet extends HttpServlet {
         String newDOB = request.getParameter("newDOB");
         String newP = request.getParameter("newPassWord");
         String conP = request.getParameter("confirmPass");
-
+        String newBank = request.getParameter("newBank");
+        String newDescription = request.getParameter("newDescription");
         String gamerAvatarUrl = null;
         boolean hasErrors = false; //them       
         // Upload game file to Google Drive if provided
@@ -162,6 +165,11 @@ public class UpdateProfileServlet extends HttpServlet {
                 Gamers g = (Gamers) session.getAttribute("account");
                 if(newDOB == null || newDOB.isEmpty()){newDOB = g.getDOB();}
             }
+            if(c.getRole() == 2){
+                Publishers p = (Publishers) session.getAttribute("account");
+                if(newBank == null || newBank.isEmpty()){newBank = p.getBank_account();}
+                if(newDescription == null || newDescription.isEmpty()){newDescription = p.getDescription();}
+            }
             if(newN == null || newN.isEmpty()){newN = c.getName();}
             
             Users as = CheckEmail(newEM);
@@ -175,10 +183,11 @@ public class UpdateProfileServlet extends HttpServlet {
                         if( u.getRole() == 3){
                            
 
-                        updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,newDOB,u.getRole());
+                        updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,newDOB,u.getRole(),newBank,newDescription);
 
                         Gamers gamer = GamerDAO.getGamerByEmail(newEM);
                             if(gamer != null){
+                                session.setAttribute("account",getGamerByEmail(newEM));
                                 request.setAttribute("gamer", gamer);
                                  ArrayList<BankTransactions> transactionHistory = TransactionBillDAO.getTransactionHistoryByPayerId(gamer.getId());
             ArrayList<Game> games = GameDAO.getGamesByGamerId(gamer.getId());
@@ -202,29 +211,30 @@ public class UpdateProfileServlet extends HttpServlet {
                             }
                         }else if( u.getRole() ==2){
 
-                             updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,newDOB,u.getRole());
-
-                             Publishers pub = PublisherDAO.getPublisherByEmail(newEM);
-                             if(pub != null){
-                                 response.sendRedirect("Home.jsp");
-                                 /*
-                                 request.setAttribute("pub", pub);
-                                 request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);
-                                 */
-                             }else{
-                                 try (PrintWriter out = response.getWriter()) {
-                                    /* TODO output your page here. You may use following sample code. */
-                                    out.println("<!DOCTYPE html>");
-                                    out.println("<html>");
-                                    out.println("<head>");
-                                    out.println("<title>Servlet profileServlet</title>");  
-                                    out.println("</head>");
-                                    out.println("<body>");
-                                    out.println("<h1>Servlet profileServlet at " + u.getId()+ "</h1>");
-                                    out.println("</body>");
-                                    out.println("</html>");
-                                }                 
-                            }
+                             updateProfile(u.getId(),newN,newEM,newP,gamerAvatarUrl,newDOB,u.getRole(),newBank,newDescription);
+                             session.setAttribute("account",getPublisherByEmail(newEM));
+                             response.sendRedirect("profileServlet");
+//                             Publishers pub = PublisherDAO.getPublisherByEmail(newEM);
+//                             if(pub != null){
+//                                 response.sendRedirect("profileServlet");
+//                                 /*
+//                                 request.setAttribute("pub", pub);
+//                                 request.getRequestDispatcher("DisplayPublisher.jsp").forward(request, response);
+//                                 */
+//                             }else{
+//                                 try (PrintWriter out = response.getWriter()) {
+//                                    /* TODO output your page here. You may use following sample code. */
+//                                    out.println("<!DOCTYPE html>");
+//                                    out.println("<html>");
+//                                    out.println("<head>");
+//                                    out.println("<title>Servlet profileServlet</title>");  
+//                                    out.println("</head>");
+//                                    out.println("<body>");
+//                                    out.println("<h1>Servlet profileServlet at " + u.getId()+ "</h1>");
+//                                    out.println("</body>");
+//                                    out.println("</html>");
+//                                }                 
+//                            }
                         }
                    
 

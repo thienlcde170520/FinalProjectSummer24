@@ -52,6 +52,7 @@ public class ValidateCode extends HttpServlet {
                             request.getRequestDispatcher("EnterCode.jsp").forward(request, response);
                         }
                     }else {
+                        session.removeAttribute("code");
                         request.setAttribute("message", "OTP has expired.");
                         request.getRequestDispatcher("ForgetPass.jsp").forward(request, response);
                     }

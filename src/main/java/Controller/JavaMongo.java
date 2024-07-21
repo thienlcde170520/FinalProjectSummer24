@@ -75,8 +75,7 @@ public class JavaMongo {
 //        System.out.println(game.getName() + " Year: " + game.getPublishDay() + " | Price: " + game.getPrice());
 //    }
 
-
- System.out.println(ReviewDAO.getReviewByGamerID("gamer_1"));
+PublisherDAO.updateDefaultPublisher("123", "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg", "pub_534407", "123");
 
 
     }
@@ -258,7 +257,7 @@ public class JavaMongo {
     }
 
 
-   public static void updateProfile(String id, String name, String email, String password, String AvatarLink, String DOB , int role){
+   public static void updateProfile(String id, String name, String email, String password, String AvatarLink, String DOB , int role, String Bank, String Description){
 
         try (MongoClient mongoClient = MongoClients.create(getConnection())) {
             MongoDatabase fpteamDB = mongoClient.getDatabase("FPT");
@@ -354,6 +353,12 @@ public class JavaMongo {
             }
             if (password != null && !password.isEmpty()) {
                 publisherUpdateFields.append("Password", password);
+            }
+            if (Bank != null && !Bank.isEmpty()) {
+                publisherUpdateFields.append("Bank_account", Bank);
+            }
+            if (Description != null && !Description.isEmpty()) {
+                publisherUpdateFields.append("Description", Description);
             }
 
             if (!gamerUpdateFields.isEmpty() || !userUpdateFields.isEmpty() || !publisherUpdateFields.isEmpty()) {

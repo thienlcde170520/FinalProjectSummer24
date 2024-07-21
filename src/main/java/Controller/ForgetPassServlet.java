@@ -85,7 +85,7 @@ public class ForgetPassServlet extends HttpServlet {
                             try {				
                                     message.setFrom(from);// change accordingly
                                     message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to,false));
-                                    message.setSubject("Hello");
+                                    message.setSubject("From CyBorg - Platform Tradding Game");
                                     message.setSentDate(new Date());
                                     message.setText("Your OTP is: " + codeValue);
                                     // send message

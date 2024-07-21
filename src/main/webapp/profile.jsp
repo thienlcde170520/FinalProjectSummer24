@@ -181,8 +181,8 @@ https://templatemo.com/tm-579-cyborg-gaming
         <% } else if ( isAdmin) { %>
         <div class="d-flex justify-content-start align-items-center">
         
-                <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary">Delete Account</a>
-                <a href="UpdateAccountByAdmin?UserId=<%= gamer.getId() %>" class="btn btn-primary">Default Info</a>   
+                <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary" onclick="return confirmDelete()">Delete Account</a>
+                <a href="UpdateGamerByAdmin?UserId=<%= gamer.getId() %>" class="btn btn-primary" onclick="return confirmUpdate()">Default Info</a>   
         </div>
       
         <% } else if (isUpdateable) {
@@ -360,7 +360,16 @@ https://templatemo.com/tm-579-cyborg-gaming
   <script src="assets/js/tabs.js"></script>
   <script src="assets/js/popup.js"></script>
   <script src="assets/js/custom.js"></script>
+  
+  <script>
+    function confirmDelete() {
+        return confirm('Are you sure you want to delete this account?');
+    }
 
+    function confirmUpdate() {
+        return confirm('Are you sure you want to update the default information for this account?');
+    }
+</script>
 
   </body>
 
