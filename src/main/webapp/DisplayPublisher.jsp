@@ -185,7 +185,7 @@
  <div class="d-flex justify-content-start align-items-center">
              <a href="UpdatePubProfile.jsp" class="btn btn-primary" >Update</a>
             <a href="RespondReportServlet?UserId=<%=user.getId() %>" class="btn btn-primary">Send Report</a>
-            <a href="DeleteAccountServlet?UserId=<%= user.getId() %>" class="btn btn-primary">Delete Account</a>            
+            <a href="DeleteAccountServlet?UserId=<%= user.getId() %>" class="btn btn-primary" onclick="return confirmDelete()">Delete Account</a>            
         </div>
 <%
 }
@@ -344,6 +344,11 @@
 
 
   <!-- Scripts -->
+  <script>
+    function confirmDelete() {
+        return confirm('Are you sure you want to delete this account?');
+    }   
+</script>
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.min.js"></script>

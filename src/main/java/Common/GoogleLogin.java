@@ -44,6 +44,5 @@ public class GoogleLogin {
 		return googlePojo;
 
 	}
-
+        
 }
-

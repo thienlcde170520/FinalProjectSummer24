@@ -165,7 +165,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                       <h4><%=gamer.getName() %></h4>
                       <p>Email: <%=gamer.getGmail()%></p>
                       <p>Date of Birth: <%=gamer.getDOB()%></p>
-                      <p>Tham gia từ : <%=gamer.getRegistrationDate()%></p>
+                      <p>Join Since : <%=gamer.getRegistrationDate()%></p>
                       <div class="main-border-button">
                       </div>
                     </div>
@@ -192,7 +192,7 @@ https://templatemo.com/tm-579-cyborg-gaming
             <a href="UpdateProfile.jsp" class="btn btn-primary">Update</a>            
             <a href="NewTransaction.jsp" class="btn btn-primary">Transaction</a>
             <a href="RespondReportServlet?UserId=<%=user.getId() %>" class="btn btn-primary">Send Report</a>
-            <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary">Delete Account</a>
+            <a href="DeleteAccountServlet?UserId=<%= gamer.getId() %>" class="btn btn-primary"onclick="return confirmDelete()">Delete Account</a>
         </div>
 <%
 }

@@ -17,16 +17,17 @@ import java.util.Set;
 public class GooglePojo {
         private String id;
 	private String email;
-	private boolean verified_email;
+	//private boolean verified_email;
 	private String name;
-	private String given_name;
-	private String family_name;
-	private String link;
-	private String picture;
+	//private String given_name;
+	//private String family_name;
+	//private String link;
+	//private String picture;
         private String password; // bonus
-        private int Money;
+        private Double Money;
         private String AvatarLink;
         private String RegistrationDate;
+        private String DOB;
         
         // Set để lưu trữ các id đã sinh ra
         private  static Set<String> generatedIds = new HashSet<>();
@@ -35,8 +36,8 @@ public class GooglePojo {
         public GooglePojo() {
         this.id = generateRandomId();
         this.name = generateRandomName();
-        
-        this.Money = 0;
+        this.DOB = "";
+        this.Money = 0.0;
         this.AvatarLink = "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg";
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -65,13 +66,13 @@ public class GooglePojo {
 		this.email = email;
 	}
 
-	public boolean isVerified_email() {
-		return this.verified_email;
-	}
-
-	public void setVerified_email(boolean verified_email) {
-		this.verified_email = verified_email;
-	}
+//	public boolean isVerified_email() {
+//		return this.verified_email;
+//	}
+//
+//	public void setVerified_email(boolean verified_email) {
+//		this.verified_email = verified_email;
+//	}
 
 	public String getName() {
 		return this.name;
@@ -85,37 +86,47 @@ public class GooglePojo {
         }
     }
 
-	public String getGiven_name() {
-		return this.given_name;
-	}
+//	public String getGiven_name() {
+//		return this.given_name;
+//	}
+//
+//	public void setGiven_name(String given_name) {
+//		this.given_name = given_name;
+//	}
+//
+//	public String getFamily_name() {
+//		return this.family_name;
+//	}
+//
+//	public void setFamily_name(String family_name) {
+//		this.family_name = family_name;
+//	}
+//
+//	public String getLink() {
+//		return link;
+//	}
+//
+//	public void setLink(String link) {
+//		this.link = link;
+//	}
+//
+//	public String getPicture() {
+//		return picture;
+//	}
+//
+//	public void setPicture(String picture) {
+//		this.picture = picture;
+//	}
 
-	public void setGiven_name(String given_name) {
-		this.given_name = given_name;
-	}
+    public String getDOB() {
+        return DOB;
+    }
 
-	public String getFamily_name() {
-		return this.family_name;
-	}
-
-	public void setFamily_name(String family_name) {
-		this.family_name = family_name;
-	}
-
-	public String getLink() {
-		return link;
-	}
-
-	public void setLink(String link) {
-		this.link = link;
-	}
-
-	public String getPicture() {
-		return picture;
-	}
-
-	public void setPicture(String picture) {
-		this.picture = picture;
-	}
+    public void setDOB(String DOB) {
+        this.DOB = DOB;
+    }
+        
+        
         
         public String getPassword() {
         return password;
@@ -125,11 +136,11 @@ public class GooglePojo {
             this.password = password;
         }
 
-        public int getMoney() {
+        public Double getMoney() {
             return Money;
         }
 
-        public void setMoney(int Money) {
+        public void setMoney(Double Money) {
             this.Money = Money;
         }
 
@@ -197,8 +208,8 @@ public class GooglePojo {
 	public String toString() {
 		return
 
-		"GooglePojo [id=" + this.id + ", email=" + this.email + ", verified_email=" + this.verified_email + ", name="
-				+ this.name + ", given_name=" + this.given_name + ", family_name=" + this.family_name + "]";
+		"GooglePojo [id=" + this.id + ", email=" + this.email  + ", name="
+				+ this.name +   "]";
 	}
 
     

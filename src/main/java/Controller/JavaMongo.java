@@ -75,7 +75,18 @@ public class JavaMongo {
 //        System.out.println(game.getName() + " Year: " + game.getPublishDay() + " | Price: " + game.getPrice());
 //    }
 
-PublisherDAO.updateDefaultPublisher("123", "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg", "pub_534407", "123");
+        String id = "gamer_4409249271";
+        String name = "thiencajca";
+        String email = "thienle2105@gmail.com";
+        String password = "lecongthien1";
+        String avatarLink = "https://drive.google.com/thumbnail?id=14MhZYp0uLsyJ2aE6LVHDmeSM7beHtNd-&sz=w1000";
+        String dob = "01/01/2000";
+        int role = 3;
+        String bank = "";
+        String description = "";
+
+        // Gọi phương thức cập nhật
+        updateProfile(id, name, email, password, avatarLink, dob, role, bank, description);
 
 
     }
@@ -330,6 +341,9 @@ PublisherDAO.updateDefaultPublisher("123", "https://i.pinimg.com/736x/bc/43/98/b
             }
             if (AvatarLink != null && !AvatarLink.isEmpty()) {
                 gamerUpdateFields.append("AvatarLink", AvatarLink);
+            }
+            if(DOB != null && !DOB.isEmpty()){
+                gamerUpdateFields.append("Date of Birth",DOB);
             }
             // Tạo một document mới chứa thông tin cập nhật cho Users
             Document userUpdateFields = new Document();
